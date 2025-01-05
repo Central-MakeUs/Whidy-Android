@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/navigation_map">
+
+    <fragment
+        android:id="@+id/navigation_map"
+        android:name="com.whidy.whidyandroid.presentation.map.MapFragment"
+        android:label="fragment_map"
+        tools:layout="@layout/fragment_map">
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_scrap"
+        android:name="com.whidy.whidyandroid.presentation.scrap.ScrapFragment"
+        android:label="fragment_scrap"
+        tools:layout="@layout/fragment_scrap">
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_my"
+        android:name="com.whidy.whidyandroid.presentation.my.MyFragment"
+        android:label="fragment_my"
+        tools:layout="@layout/fragment_my">
+    </fragment>
+
+</navigation>
