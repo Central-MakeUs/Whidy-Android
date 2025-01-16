@@ -1,8 +1,15 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     id("kotlin-kapt")
 }
+
+val localProperties = Properties()
+localProperties.load(project.rootProject.file("local.properties").inputStream())
+val naverMapClientId = localProperties.getProperty("NAVER_MAP_CLIENT_ID")?:""
+val naverMapClientSECRET = localProperties.getProperty("NAVER_MAP_CLIENT_SECRET")?:""
 
 android {
     namespace = "com.whidy.whidyandroid"
@@ -16,6 +23,9 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "NAVER_MAP_CLIENT_ID", "\"$naverMapClientId\"")
+        buildConfigField("String", "NAVER_MAP_CLIENT_SECRET", "\"$naverMapClientSECRET\"")
     }
 
     buildTypes {
@@ -50,6 +60,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
+    implementation(libs.navermap)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

@@ -4,16 +4,16 @@
     <item
         android:id="@+id/navigation_map"
         android:icon="@drawable/ic_navigation_map"
-        android:title="" />
+        android:title="지도" />
 
     <item
         android:id="@+id/navigation_scrap"
         android:icon="@drawable/ic_navigation_scrap"
-        android:title="" />
+        android:title="스크랩" />
 
     <item
         android:id="@+id/navigation_my"
         android:icon="@drawable/ic_navigation_my"
-        android:title="" />
+        android:title="마이" />
 
 </menu>
