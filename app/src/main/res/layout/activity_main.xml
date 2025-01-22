@@ -24,12 +24,12 @@
         android:id="@+id/bottom_navi"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:labelVisibilityMode="unlabeled"
+        app:labelVisibilityMode="labeled"
         app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/bottom_navi_item"
         app:itemRippleColor="@null"
         app:itemActiveIndicatorStyle="@null"
-        android:background="@color/white"
+        android:background="@color/White"
         app:itemIconTint="@drawable/bottom_navi_color"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
