@@ -65,4 +65,5 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.timber)
+    implementation(libs.play.services.location)
 }
