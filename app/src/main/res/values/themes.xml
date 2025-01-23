@@ -6,4 +6,8 @@
     </style>
 
     <style name="Theme.Whidy" parent="Base.Theme.Whidy" />
+
+    <style name="CustomExtendedFabShape" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <item name="cornerSize">40dp</item>
+    </style>
 </resources>
