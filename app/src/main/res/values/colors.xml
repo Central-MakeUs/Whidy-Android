@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="font_color">#1E1F23</color>
     <color name="BO70">#B3000000</color>
     <color name="White">#FFFFFFFF</color>
     <color name="PB600">#3A290C</color>
