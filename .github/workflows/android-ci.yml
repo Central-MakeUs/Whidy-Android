@@ -1,0 +1,38 @@
+name: Android CI
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  build:
+    name: Build Android App
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Create local.properties
+        run: |
+          echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
+          echo "NAVER_MAP_CLIENT_ID=${{ secrets.NAVER_MAP_CLIENT_ID }}" >> local.properties
+          echo "NAVER_MAP_CLIENT_SECRET=${{ secrets.NAVER_MAP_CLIENT_SECRET }}" >> local.properties
+
+      - name: Grant execute permission to Gradle
+        run: chmod +x gradlew
