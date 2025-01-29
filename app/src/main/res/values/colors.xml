@@ -44,4 +44,5 @@
     <color name="B300">#78C4F4</color>
     <color name="B200">#B3DEF9</color>
     <color name="B100">#DEF1FF</color>
+    <color name="transparent">#00000000</color>
 </resources>
