@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/White"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_search_l"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.13" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_search_r"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.96" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_back_v"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.04" />
+
+    <ImageView
+        android:id="@+id/btn_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_back"
+        android:layout_marginEnd="10dp"
+        app:layout_constraintStart_toStartOf="@+id/gl_back_v"
+        app:layout_constraintTop_toTopOf="@+id/et_search"
+        app:layout_constraintBottom_toBottomOf="@+id/et_search" />
+
+    <EditText
+        android:id="@+id/et_search"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="원하는 공간을 검색해보세요"
+        android:textColorHint="@color/G300"
+        android:textColor="@color/G800"
+        android:imeOptions="actionSearch"
+        android:inputType="text"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        style="@style/b1_sb"
+        android:background="@drawable/bg_search_bar"
+        android:layout_marginTop="12dp"
+        app:layout_constraintStart_toStartOf="@id/gl_search_l"
+        app:layout_constraintEnd_toEndOf="@id/gl_search_r"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/btn_delete_et"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_small_x"
+        android:layout_marginEnd="13dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@+id/et_search"
+        app:layout_constraintTop_toTopOf="@+id/et_search"
+        app:layout_constraintBottom_toBottomOf="@+id/et_search" />
+
+    <TextView
+        android:id="@+id/tv_title_recent_search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="최근 검색"
+        android:textColor="@color/G800"
+        style="@style/b2_sb"
+        android:layout_marginTop="30dp"
+        app:layout_constraintStart_toStartOf="@+id/gl_back_v"
+        app:layout_constraintTop_toBottomOf="@+id/et_search" />
+
+    <TextView
+        android:id="@+id/btn_delete_entire"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="전체 삭제"
+        android:textColor="@color/G500"
+        style="@style/b3_m"
+        android:layout_marginTop="30dp"
+        app:layout_constraintEnd_toEndOf="@+id/gl_search_r"
+        app:layout_constraintTop_toBottomOf="@+id/et_search" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_recent_search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="14dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintStart_toStartOf="@+id/gl_back_v"
+        app:layout_constraintTop_toBottomOf="@+id/tv_title_recent_search"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
