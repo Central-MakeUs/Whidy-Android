@@ -66,4 +66,5 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.timber)
     implementation(libs.play.services.location)
+    implementation(libs.glide)
 }
