@@ -29,6 +29,8 @@
         app:menu="@menu/bottom_navi_item"
         app:itemRippleColor="@null"
         app:itemActiveIndicatorStyle="@null"
+        app:itemTextAppearanceActive="@style/b3_sb"
+        app:itemTextAppearanceInactive="@style/b3_m"
         android:background="@color/White"
         app:itemIconTint="@drawable/bottom_navi_color"/>
 
