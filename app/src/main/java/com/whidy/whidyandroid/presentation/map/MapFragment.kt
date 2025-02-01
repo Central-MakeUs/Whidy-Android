@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import com.bumptech.glide.Glide
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -28,7 +29,9 @@ import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.util.FusedLocationSource
 import com.whidy.whidyandroid.R
 import com.whidy.whidyandroid.databinding.FragmentMapBinding
+import com.whidy.whidyandroid.presentation.base.MainActivity
 import com.whidy.whidyandroid.utils.PlaceTagItemDecoration
+import timber.log.Timber
 
 class MapFragment : Fragment(), OnMapReadyCallback {
 
@@ -70,6 +73,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
 
+        (requireActivity() as MainActivity).hideBottomNavigation(false)
+
         placeTagAdapter = PlaceTagAdapter(getDummyData())
         binding.rvPlaceTag.apply {
             adapter = placeTagAdapter
@@ -86,10 +91,36 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             navController.navigate(R.id.action_navigation_map_to_place_filter)
         }
 
+        binding.floatingActionButton.setOnClickListener{
+            navController.navigate(R.id.action_navigation_map_to_place_add)
+        }
+
         val bottomSheet: ConstraintLayout = binding.homeBottomSheet
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
+
+        binding.root.post {
+            val targetView = binding.clAppBar
+            val targetY = targetView.y.toInt()
+            val screenHeight = resources.displayMetrics.heightPixels
+            val maxHeight = screenHeight - targetY
+
+            bottomSheetBehavior.maxHeight = maxHeight
+        }
+
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
         bottomSheetBehavior.peekHeight = resources.getDimensionPixelSize(R.dimen.bottom_sheet_peek_height)
+
+        bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                if (newState == BottomSheetBehavior.STATE_EXPANDED) {
+                    // 최대로 올렸을 때 Fragment 전환
+                    navController.navigate(R.id.action_navigation_map_to_place_info)
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+            }
+        })
 
         binding.homeBottomSheet.apply {
             setOnTouchListener { v, event ->
@@ -110,6 +141,12 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             setOnClickListener {}
         }
 
+        binding.apply {
+            Glide.with(ivPlaceImage.context)
+                .load("https://helios-i.mashable.com/imagery/articles/04GeUVUQwZxpTYXdqbocKH2/hero-image.fill.size_1248x702.v1722586579.jpg")
+                .into(ivPlaceImage)
+        }
+
         binding.btnCancel.setOnClickListener {
             binding.btnFilter.visibility = View.VISIBLE
             binding.rvPlaceTag.visibility = View.VISIBLE
@@ -119,7 +156,16 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             currentMarker?.map = null
             currentMarker = null
 
-            mapViewModel.clearLocation()
+//            mapViewModel.clearLocation()
+
+            mapViewModel.selectedLocation.observe(viewLifecycleOwner) { latLng ->
+                if (latLng == null) {
+                    Timber.d("latLng is null")
+                } else {
+                    val cameraUpdate = CameraUpdate.scrollTo(latLng)
+                    naverMap.moveCamera(cameraUpdate)
+                }
+            }
         }
     }
 

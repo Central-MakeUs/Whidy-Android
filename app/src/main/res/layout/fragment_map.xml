@@ -175,6 +175,7 @@
                 android:layout_height="90dp"
                 android:scaleType="centerCrop"
                 android:layout_marginTop="30dp"
+                android:clipToOutline="true"
                 android:background="@drawable/bg_place_info_image"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
