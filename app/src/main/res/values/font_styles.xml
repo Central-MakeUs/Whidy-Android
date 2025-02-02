@@ -1,4 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+    <style name="h1_b">
+        <item name="android:fontStyle">normal</item>
+        <item name="android:fontFamily">@font/pretendardbold</item>
+        <item name="android:textSize">22sp</item>
+    </style>
+    <style name="t1_sb">
+        <item name="android:fontStyle">normal</item>
+        <item name="android:fontFamily">@font/pretendardsemibold</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+    <style name="t2_b">
+        <item name="android:fontStyle">normal</item>
+        <item name="android:fontFamily">@font/pretendardbold</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+    <style name="b1_sb">
+        <item name="android:fontStyle">normal</item>
+        <item name="android:fontFamily">@font/pretendardsemibold</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+    <style name="b1_m">
+        <item name="android:fontStyle">normal</item>
+        <item name="android:fontFamily">@font/pretendardmedium</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+    <style name="b1_r">
+        <item name="android:fontStyle">normal</item>
+        <item name="android:fontFamily">@font/pretendardregular</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+    <style name="b2_b">
+        <item name="android:fontStyle">normal</item>
+        <item name="android:fontFamily">@font/pretendardbold</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+    <style name="b2_sb">
+        <item name="android:fontStyle">normal</item>
+        <item name="android:fontFamily">@font/pretendardsemibold</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+    <style name="b2_m">
+        <item name="android:fontStyle">normal</item>
+        <item name="android:fontFamily">@font/pretendardmedium</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+    <style name="b3_b">
+        <item name="android:fontStyle">normal</item>
+        <item name="android:fontFamily">@font/pretendardbold</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+    <style name="b3_sb">
+        <item name="android:fontStyle">normal</item>
+        <item name="android:fontFamily">@font/pretendardsemibold</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+    <style name="b3_m">
+        <item name="android:fontStyle">normal</item>
+        <item name="android:fontFamily">@font/pretendardmedium</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+    <style name="b3_r">
+        <item name="android:fontStyle">normal</item>
+        <item name="android:fontFamily">@font/pretendardregular</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+    <style name="d_m">
+        <item name="android:fontStyle">normal</item>
+        <item name="android:fontFamily">@font/pretendardmedium</item>
+        <item name="android:textSize">10sp</item>
+    </style>
 </resources>

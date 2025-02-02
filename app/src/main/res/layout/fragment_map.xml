@@ -1,14 +1,289 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<layout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/map_fragment"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:name="com.naver.maps.map.MapFragment" />
+        android:layout_height="match_parent">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/map_fragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:name="com.naver.maps.map.MapFragment" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_app_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/White"
+                android:paddingBottom="6dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/gl_search_l"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.04" />
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/gl_search_r"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.84" />
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/gl_filter_v"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.96" />
+
+                <TextView
+                    android:id="@+id/tv_search"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:hint="원하는 공간을 검색해보세요"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    style="@style/b1_r"
+                    android:background="@drawable/bg_search_bar"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginBottom="6dp"
+                    app:layout_constraintStart_toStartOf="@id/gl_search_l"
+                    app:layout_constraintEnd_toEndOf="@id/gl_search_r"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/btn_search"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_search"
+                    android:layout_marginEnd="10dp"
+                    app:layout_constraintEnd_toEndOf="@+id/tv_search"
+                    app:layout_constraintTop_toTopOf="@+id/tv_search"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_search" />
+
+                <ImageView
+                    android:id="@+id/btn_filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/btn_filter"
+                    app:layout_constraintEnd_toEndOf="@+id/gl_filter_v"
+                    app:layout_constraintTop_toTopOf="@+id/tv_search"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_search"/>
+
+                <ImageView
+                    android:id="@+id/btn_cancel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_no"
+                    android:visibility="invisible"
+                    app:layout_constraintEnd_toEndOf="@+id/gl_filter_v"
+                    app:layout_constraintTop_toTopOf="@+id/tv_search"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_search"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_place_tag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="14dp"
+                    android:layout_marginBottom="6dp"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintStart_toStartOf="@id/gl_search_l"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_search"
+                    app:layout_constraintBottom_toBottomOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <ImageView
+                android:id="@+id/btn_gps"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/btn_gps"
+                android:layout_marginStart="14dp"
+                android:layout_marginBottom="21dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+            <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+                android:id="@+id/floatingActionButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                android:backgroundTint="@color/PB600"
+                app:cornerRadius="40dp"
+                android:text="+ 장소 추가"
+                android:textColor="@color/White"
+                style="@style/b2_m"
+                app:shapeAppearanceOverlay="@style/CustomExtendedFabShape"
+                android:layout_marginEnd="14dp"
+                android:layout_marginBottom="18dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/home_bottom_sheet"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            android:background="@drawable/bg_bottom_sheet"
+            android:orientation="vertical"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp"
+            android:paddingBottom="18dp"
+            app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+            <View
+                android:id="@+id/touch_bar"
+                android:layout_width="34dp"
+                android:layout_height="3dp"
+                android:background="@drawable/bg_touch_bar"
+                android:layout_marginTop="6dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <TextView
+                android:id="@+id/tv_place_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="카페 이름"
+                android:textColor="@color/G900"
+                style="@style/t2_b"
+                android:layout_marginTop="30dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/iv_place_image"
+                android:layout_width="90dp"
+                android:layout_height="90dp"
+                android:scaleType="centerCrop"
+                android:layout_marginTop="30dp"
+                android:clipToOutline="true"
+                android:background="@drawable/bg_place_info_image"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_place_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="개인 카페"
+                android:textColor="@color/G300"
+                style="@style/b3_m"
+                android:layout_marginStart="6dp"
+                app:layout_constraintStart_toEndOf="@+id/tv_place_name"
+                app:layout_constraintTop_toTopOf="@+id/tv_place_name"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_place_name"/>
+
+            <TextView
+                android:id="@+id/tv_place_address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="서울 성북구 종암로 214-3 1, 2층"
+                android:textColor="@color/G800"
+                style="@style/b2_m"
+                android:layout_marginTop="4dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_place_name" />
+
+            <TextView
+                android:id="@+id/tv_place_open"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="영업중"
+                android:textColor="@color/G800"
+                style="@style/b2_sb"
+                android:layout_marginTop="4dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_place_address" />
+
+            <TextView
+                android:id="@+id/tv_place_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="24:00 까지"
+                android:textColor="@color/G700"
+                style="@style/b2_m"
+                android:layout_marginStart="6dp"
+                app:layout_constraintStart_toEndOf="@+id/tv_place_open"
+                app:layout_constraintTop_toTopOf="@+id/tv_place_open" />
+
+            <ImageView
+                android:id="@+id/iv_place_star"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_place_info_star"
+                android:layout_marginTop="8dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_place_open" />
+
+            <TextView
+                android:id="@+id/tv_place_score"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="3.5"
+                android:textColor="@color/G800"
+                style="@style/b3_sb"
+                android:layout_marginStart="2dp"
+                app:layout_constraintStart_toEndOf="@+id/iv_place_star"
+                app:layout_constraintTop_toTopOf="@+id/iv_place_star"
+                app:layout_constraintBottom_toBottomOf="@+id/iv_place_star"/>
+
+            <TextView
+                android:id="@+id/tv_place_review"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="후기 35개"
+                android:textColor="@color/G600"
+                style="@style/b3_m"
+                android:layout_marginStart="10dp"
+                app:layout_constraintStart_toEndOf="@+id/tv_place_score"
+                app:layout_constraintTop_toTopOf="@+id/tv_place_score"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_place_score"/>
+
+            <TextView
+                android:id="@+id/tv_place_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="4500원"
+                android:textColor="@color/G700"
+                style="@style/b3_m"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:drawableLeft="@drawable/ic_place_info_cafe"
+                android:drawablePadding="4dp"
+                android:background="@drawable/bg_place_info_tag"
+                android:layout_marginTop="18dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_place_review" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_place_info_more"
+                android:layout_marginStart="4dp"
+                app:layout_constraintStart_toEndOf="@+id/tv_place_price"
+                app:layout_constraintTop_toTopOf="@+id/tv_place_price"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_place_price" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

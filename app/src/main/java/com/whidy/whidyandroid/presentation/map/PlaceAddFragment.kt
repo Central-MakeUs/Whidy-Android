@@ -1,0 +1,94 @@
+package com.whidy.whidyandroid.presentation.map
+
+import android.content.Intent
+import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.Fragment
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
+import com.whidy.whidyandroid.databinding.FragmentPlaceAddBinding
+import com.whidy.whidyandroid.presentation.base.MainActivity
+
+class PlaceAddFragment : Fragment() {
+    private lateinit var navController: NavController
+    private var _binding: FragmentPlaceAddBinding? = null
+    private val binding: FragmentPlaceAddBinding
+        get() = requireNotNull(_binding){"FragmentPlaceAddBinding -> null"}
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+
+        _binding = FragmentPlaceAddBinding.inflate(inflater, container, false)
+
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        navController = Navigation.findNavController(view)
+
+        (requireActivity() as MainActivity).hideBottomNavigation(true)
+
+        val launcher = registerForActivityResult(
+            // AddrActivity 로부터 결과값을 전달 받음
+            ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.data != null) {
+                when (result.resultCode) {
+                    // ADDR_RESULT : 1001
+                    1001 -> {
+                        val data = result.data!!.getStringExtra("data")
+                        binding.tvPlaceAddress.text = data
+                        updateCompleteButtonState()
+                    }
+                }
+            }
+        }
+
+        binding.btnBack.setOnClickListener {
+            navController.navigateUp()
+        }
+
+        binding.tvPlaceAddress.setOnClickListener {
+            val intent = Intent(requireContext(), AddressActivity::class.java)
+            launcher.launch(intent)
+        }
+
+        binding.btnAddressSearch.setOnClickListener {
+            val intent = Intent(requireContext(), AddressActivity::class.java)
+            launcher.launch(intent)
+        }
+
+        binding.etPlaceName.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                updateCompleteButtonState()
+            }
+            override fun afterTextChanged(s: Editable?) { }
+        })
+
+        binding.btnPlaceAddComplete.setOnClickListener {
+            navController.navigateUp()
+        }
+    }
+
+    private fun updateCompleteButtonState() {
+        val isAddressFilled = binding.tvPlaceAddress.text.toString().trim().isNotEmpty()
+        val isPlaceNameFilled = binding.etPlaceName.text.toString().trim().isNotEmpty()
+        binding.btnPlaceAddComplete.isEnabled = isAddressFilled && isPlaceNameFilled
+        binding.btnPlaceAddComplete.isSelected = isAddressFilled && isPlaceNameFilled
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+}

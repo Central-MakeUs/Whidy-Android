@@ -13,6 +13,8 @@ navigationFragmentKtx = "2.8.5"
 navigationUiKtx = "2.8.5"
 timber = "5.0.1"
 navermap = "3.20.0"
+play-services-location = "21.3.0"
+glide = "4.16.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -27,6 +29,8 @@ androidx-navigation-fragment-ktx = { group = "androidx.navigation", name = "navi
 androidx-navigation-ui-ktx = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navigationUiKtx" }
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
 navermap = { group = "com.naver.maps", name = "map-sdk", version.ref = "navermap" }
+play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "play-services-location" }
+glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -1,9 +1,13 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.Whidy" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="android:statusBarColor">@color/White</item>
+        <item name="android:windowLightStatusBar">true</item>
     </style>
 
     <style name="Theme.Whidy" parent="Base.Theme.Whidy" />
+
+    <style name="CustomExtendedFabShape" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <item name="cornerSize">40dp</item>
+    </style>
 </resources>

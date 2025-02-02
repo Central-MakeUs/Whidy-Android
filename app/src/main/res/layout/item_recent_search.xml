@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_recent_search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sample Item"
+        android:textColor="@color/G500"
+        android:background="@drawable/bg_recent_search"
+        android:paddingStart="18dp"
+        android:paddingEnd="18dp"
+        android:paddingTop="13dp"
+        android:paddingBottom="13dp"
+        style="@style/b3_sb" />
+</LinearLayout>

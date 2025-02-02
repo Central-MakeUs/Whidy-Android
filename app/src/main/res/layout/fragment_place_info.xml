@@ -1,0 +1,427 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingTop="16dp"
+    android:paddingStart="14dp"
+    android:paddingEnd="14dp"
+    android:background="@color/White"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_place_info_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" >
+
+        <ImageView
+            android:id="@+id/btn_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_back"
+            android:layout_marginEnd="4dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/btn_scrap"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/scrap_selector"
+            android:layout_marginEnd="12dp"
+            app:layout_constraintEnd_toStartOf="@+id/btn_share"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/btn_share"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_share"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="22dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cl_place_info_bar">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_place_image"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/gl_place_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.64"/>
+
+                <ImageView
+                    android:id="@+id/iv_place_image_1"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:background="@drawable/bg_place_info_image"
+                    android:scaleType="centerCrop"
+                    android:clipToOutline="true"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/gl_place_image"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="@+id/iv_place_image_3"/>
+
+                <ImageView
+                    android:id="@+id/iv_place_image_2"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:background="@drawable/bg_place_info_image"
+                    android:scaleType="centerCrop"
+                    android:layout_marginStart="8dp"
+                    android:clipToOutline="true"
+                    app:layout_constraintDimensionRatio="1:1"
+                    app:layout_constraintStart_toEndOf="@+id/iv_place_image_1"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+                <ImageView
+                    android:id="@+id/iv_place_image_3"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:background="@drawable/bg_place_info_image"
+                    android:scaleType="centerCrop"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:clipToOutline="true"
+                    app:layout_constraintDimensionRatio="1:1"
+                    app:layout_constraintStart_toEndOf="@+id/iv_place_image_1"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/iv_place_image_2"/>
+
+                <TextView
+                    android:id="@+id/tv_overlay"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:text="더보기\n+3"
+                    android:textColor="@color/White"
+                    style="@style/b2_m"
+                    android:gravity="center"
+                    android:background="@drawable/bg_place_photo_3"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintDimensionRatio="1:1"
+                    app:layout_constraintStart_toEndOf="@+id/iv_place_image_1"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/iv_place_image_2"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_place_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="30dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cl_place_image">
+
+                <TextView
+                    android:id="@+id/tv_place_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="카페 이름"
+                    android:textColor="@color/G900"
+                    style="@style/t2_b"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/iv_place_star"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_place_info_star"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_place_name" />
+
+                <TextView
+                    android:id="@+id/tv_place_score"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="3.5"
+                    android:textColor="@color/G800"
+                    style="@style/b3_sb"
+                    android:layout_marginStart="2dp"
+                    app:layout_constraintStart_toEndOf="@+id/iv_place_star"
+                    app:layout_constraintTop_toTopOf="@+id/iv_place_star"
+                    app:layout_constraintBottom_toBottomOf="@+id/iv_place_star"/>
+
+                <TextView
+                    android:id="@+id/tv_place_review"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="후기 35개"
+                    android:textColor="@color/G600"
+                    style="@style/b3_m"
+                    android:layout_marginStart="10dp"
+                    app:layout_constraintStart_toEndOf="@+id/tv_place_score"
+                    app:layout_constraintTop_toTopOf="@+id/tv_place_score"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_place_score"/>
+
+                <TextView
+                    android:id="@+id/tv_place_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="개인 카페"
+                    android:textColor="@color/G300"
+                    style="@style/b3_m"
+                    android:layout_marginStart="6dp"
+                    app:layout_constraintStart_toEndOf="@+id/tv_place_name"
+                    app:layout_constraintTop_toTopOf="@+id/tv_place_name"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_place_name"/>
+
+                <TextView
+                    android:id="@+id/tv_place_open"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="영업중"
+                    android:textColor="@color/G800"
+                    style="@style/b2_sb"
+                    android:layout_marginTop="4dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/iv_place_star" />
+
+                <TextView
+                    android:id="@+id/tv_place_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="24:00 까지"
+                    android:textColor="@color/G700"
+                    style="@style/b2_m"
+                    android:layout_marginStart="6dp"
+                    app:layout_constraintStart_toEndOf="@+id/tv_place_open"
+                    app:layout_constraintTop_toTopOf="@+id/tv_place_open" />
+
+                <TextView
+                    android:id="@+id/tv_place_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="4500원"
+                    android:textColor="@color/G700"
+                    style="@style/b3_m"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp"
+                    app:drawableLeftCompat="@drawable/ic_place_info_cafe"
+                    android:drawablePadding="4dp"
+                    android:background="@drawable/bg_place_info_tag"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <ImageView
+                android:id="@+id/line_seperate_1"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/G100"
+                android:layout_marginTop="22dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cl_place_info" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_place_info_detail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="22dp"
+                android:paddingBottom="22dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/line_seperate_1">
+
+                <TextView
+                    android:id="@+id/tv_place_info_address"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="서울 성북구 종암로 214-3 1, 2층"
+                    android:textColor="@color/G900"
+                    style="@style/b2_sb"
+                    android:drawablePadding="8dp"
+                    app:drawableLeftCompat="@drawable/ic_place_info_address"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tv_place_info_open"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="영업중"
+                    android:textColor="@color/G900"
+                    style="@style/b2_b"
+                    android:layout_marginTop="14dp"
+                    android:drawablePadding="8dp"
+                    app:drawableLeftCompat="@drawable/ic_place_info_time"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_place_info_address" />
+
+                <TextView
+                    android:id="@+id/tv_place_info_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="24:00 까지"
+                    android:textColor="@color/G900"
+                    style="@style/b2_sb"
+                    android:layout_marginStart="8dp"
+                    android:drawablePadding="4dp"
+                    app:drawableRightCompat="@drawable/ic_small_right"
+                    app:layout_constraintStart_toEndOf="@+id/tv_place_info_open"
+                    app:layout_constraintTop_toTopOf="@+id/tv_place_info_open" />
+
+                <TextView
+                    android:id="@+id/tv_place_info_call"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="02-2275-2388"
+                    android:textColor="@color/G900"
+                    style="@style/b2_sb"
+                    android:layout_marginTop="14dp"
+                    android:drawablePadding="8dp"
+                    app:drawableLeftCompat="@drawable/ic_place_info_call"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_place_info_open" />
+
+                <TextView
+                    android:id="@+id/tv_place_info_network"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="www.instagram.com"
+                    android:textColor="@color/B500"
+                    style="@style/b2_m"
+                    android:autoLink="web"
+                    android:layout_marginTop="14dp"
+                    android:drawablePadding="8dp"
+                    app:drawableLeftCompat="@drawable/ic_place_info_network"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_place_info_call" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <ImageView
+                android:id="@+id/line_seperate_2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/G100"
+                android:layout_marginTop="22dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cl_place_info_detail" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_place_info_review_tag"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="22dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/line_seperate_2">
+
+                <TextView
+                    android:id="@+id/tv_title_place_info_review"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="후기"
+                    android:textColor="@color/G900"
+                    style="@style/t2_b"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/iv_place_info_star"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_star_26"
+                    android:layout_marginTop="11dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_title_place_info_review" />
+
+                <TextView
+                    android:id="@+id/tv_place_info_score"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="3.5"
+                    android:textColor="@color/G900"
+                    style="@style/t1_sb"
+                    android:layout_marginStart="6dp"
+                    app:layout_constraintStart_toEndOf="@+id/iv_place_info_star"
+                    app:layout_constraintTop_toTopOf="@+id/iv_place_info_star"
+                    app:layout_constraintBottom_toBottomOf="@+id/iv_place_info_star" />
+
+                <TextView
+                    android:id="@+id/tv_place_info_review_amount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="(24)"
+                    android:textColor="@color/G400"
+                    style="@style/b1_sb"
+                    android:layout_marginStart="6dp"
+                    app:layout_constraintStart_toEndOf="@+id/tv_place_info_score"
+                    app:layout_constraintTop_toTopOf="@+id/iv_place_info_star"
+                    app:layout_constraintBottom_toBottomOf="@+id/iv_place_info_star" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_place_review_tag"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cl_place_info_review_tag" />
+
+            <ImageView
+                android:id="@+id/btn_place_review_tag_all"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/btn_place_info_arrow"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="@+id/rv_place_review_tag" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_place_review"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btn_place_review_tag_all" />
+
+            <TextView
+                android:id="@+id/btn_place_review_all"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="후기 전체보기"
+                android:textColor="@color/G800"
+                style="@style/b2_m"
+                android:paddingStart="18dp"
+                android:paddingEnd="18dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:background="@drawable/bg_place_review_more"
+                android:layout_marginTop="36dp"
+                android:layout_marginBottom="82dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/rv_place_review"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

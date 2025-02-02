@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_place_tag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sample Item"
+        android:textColor="@color/G800"
+        android:background="@drawable/bg_place_tag"
+        android:paddingStart="14dp"
+        android:paddingEnd="14dp"
+        android:paddingTop="11dp"
+        android:paddingBottom="11dp"
+        style="@style/b2_sb" />
+</LinearLayout>

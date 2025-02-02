@@ -11,6 +11,53 @@
         android:name="com.whidy.whidyandroid.presentation.map.MapFragment"
         android:label="fragment_map"
         tools:layout="@layout/fragment_map">
+        <action
+            android:id="@+id/action_navigation_map_to_place_add"
+            app:destination="@id/navigation_place_add"
+            app:popUpTo="@id/navigation_map" />
+        <action
+            android:id="@+id/action_navigation_map_to_place_search"
+            app:destination="@id/navigation_place_search" />
+        <action
+            android:id="@+id/action_navigation_map_to_place_filter"
+            app:destination="@id/navigation_place_filter"
+            app:popUpTo="@id/navigation_map" />
+        <action
+            android:id="@+id/action_navigation_map_to_place_info"
+            app:destination="@id/navigation_place_info"
+            app:popUpTo="@id/navigation_map" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_place_add"
+        android:name="com.whidy.whidyandroid.presentation.map.PlaceAddFragment"
+        android:label="fragment_place_add"
+        tools:layout="@layout/fragment_place_add">
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_place_search"
+        android:name="com.whidy.whidyandroid.presentation.map.PlaceSearchFragment"
+        android:label="fragment_place_search"
+        tools:layout="@layout/fragment_place_search">
+        <action
+            android:id="@+id/action_navigation_place_search_to_map"
+            app:destination="@id/navigation_map"
+            app:popUpTo="@id/navigation_map" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_place_info"
+        android:name="com.whidy.whidyandroid.presentation.map.PlaceInfoFragment"
+        android:label="fragment_place_info"
+        tools:layout="@layout/fragment_place_info">
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_place_filter"
+        android:name="com.whidy.whidyandroid.presentation.map.PlaceFilterFragment"
+        android:label="fragment_place_filter"
+        tools:layout="@layout/fragment_place_filter">
     </fragment>
 
     <fragment
