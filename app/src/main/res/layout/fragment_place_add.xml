@@ -51,10 +51,17 @@
         android:text="장소 추가"
         android:textColor="@color/G900"
         style="@style/t2_b"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="15dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/G100"
+        app:layout_constraintTop_toBottomOf="@+id/tv_title_place_add"
+        app:layout_constraintBottom_toTopOf="@+id/tv_title_location" />
 
     <TextView
         android:id="@+id/tv_title_location"
