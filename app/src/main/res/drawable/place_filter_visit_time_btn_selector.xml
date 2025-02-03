@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- RecyclerView 터치 상태: 여기서는 activated 상태로 표현 -->
+    <item android:state_activated="true" android:drawable="@drawable/bg_btn_place_filter_visit_time_hover" />
+    <!-- 선택된 상태 (예를 들어, 이미 선택되어 활성화된 상태) -->
+    <item android:state_selected="true" android:drawable="@drawable/bg_btn_place_filter_visit_time_clicked" />
+    <!-- 기본 상태 -->
+    <item android:drawable="@drawable/bg_btn_place_filter_visit_time" />
+</selector>
