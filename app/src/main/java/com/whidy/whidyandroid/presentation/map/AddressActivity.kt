@@ -32,6 +32,16 @@ class AddressActivity : AppCompatActivity() {
         // 최초 웹뷰 로드
         webView.loadUrl("https://whidy-542a7.web.app/")
 
+        binding.btnBack.setOnClickListener {
+            onBackPressed()
+        }
+
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        setResult(RESULT_CANCELED)
+        finish()
     }
 
     inner class BridgeInterface{
