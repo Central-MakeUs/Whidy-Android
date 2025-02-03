@@ -11,6 +11,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import com.whidy.whidyandroid.R
 import com.whidy.whidyandroid.databinding.FragmentPlaceAddBinding
 import com.whidy.whidyandroid.presentation.base.MainActivity
 
@@ -72,7 +73,13 @@ class PlaceAddFragment : Fragment() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 updateCompleteButtonState()
             }
-            override fun afterTextChanged(s: Editable?) { }
+            override fun afterTextChanged(s: Editable?) {
+                if (s.isNullOrEmpty()) {
+                    binding.etPlaceName.setBackgroundResource(R.drawable.bg_input_place_add_default)
+                } else {
+                    binding.etPlaceName.setBackgroundResource(R.drawable.bg_input_place_add_active)
+                }
+            }
         })
 
         binding.btnPlaceAddComplete.setOnClickListener {
