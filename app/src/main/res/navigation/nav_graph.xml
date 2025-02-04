@@ -30,7 +30,7 @@
 
     <fragment
         android:id="@+id/navigation_place_add"
-        android:name="com.whidy.whidyandroid.presentation.map.PlaceAddFragment"
+        android:name="com.whidy.whidyandroid.presentation.map.add.PlaceAddFragment"
         android:label="fragment_place_add"
         tools:layout="@layout/fragment_place_add">
     </fragment>
@@ -55,7 +55,7 @@
 
     <fragment
         android:id="@+id/navigation_place_filter"
-        android:name="com.whidy.whidyandroid.presentation.map.PlaceFilterFragment"
+        android:name="com.whidy.whidyandroid.presentation.map.filter.PlaceFilterFragment"
         android:label="fragment_place_filter"
         tools:layout="@layout/fragment_place_filter">
     </fragment>

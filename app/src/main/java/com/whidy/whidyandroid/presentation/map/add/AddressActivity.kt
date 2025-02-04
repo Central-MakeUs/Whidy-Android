@@ -1,4 +1,4 @@
-package com.whidy.whidyandroid.presentation.map
+package com.whidy.whidyandroid.presentation.map.add
 
 import android.content.Intent
 import android.os.Bundle

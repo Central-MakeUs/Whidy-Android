@@ -1,14 +1,14 @@
-package com.whidy.whidyandroid.presentation.map
+package com.whidy.whidyandroid.presentation.map.filter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.whidy.whidyandroid.databinding.ItemPlaceFilterBinding
 
-class PlaceFilterPMTimeAdapter(
+class PlaceFilterAMTimeAdapter(
     private val times: List<String>,
     private val onItemClick: (String) -> Unit
-) : RecyclerView.Adapter<PlaceFilterPMTimeAdapter.PlaceFilterTimeViewHolder>(){
+) : RecyclerView.Adapter<PlaceFilterAMTimeAdapter.PlaceFilterTimeViewHolder>(){
 
     inner class PlaceFilterTimeViewHolder(val binding: ItemPlaceFilterBinding) : RecyclerView.ViewHolder(binding.root)
 

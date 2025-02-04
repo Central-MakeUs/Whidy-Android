@@ -1,4 +1,4 @@
-package com.whidy.whidyandroid.presentation.map
+package com.whidy.whidyandroid.presentation.map.filter
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
