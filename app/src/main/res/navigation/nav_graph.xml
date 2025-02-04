@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/navigation_map">
+    app:startDestination="@id/navigation_login">
 
     <fragment
         android:id="@+id/navigation_map"
@@ -58,6 +58,51 @@
         android:name="com.whidy.whidyandroid.presentation.map.PlaceFilterFragment"
         android:label="fragment_place_filter"
         tools:layout="@layout/fragment_place_filter">
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_login"
+        android:name="com.whidy.whidyandroid.presentation.onboarding.LoginFragment"
+        android:label="fragment_login"
+        tools:layout="@layout/fragment_login">
+        <action
+            android:id="@+id/action_navigation_login_sign_up_email"
+            app:destination="@id/navigation_sign_up_email"
+            app:popUpTo="@id/navigation_sign_up_email"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_sign_up_email"
+        android:name="com.whidy.whidyandroid.presentation.onboarding.SignUpEmailFragment"
+        android:label="fragment_sign_up_email"
+        tools:layout="@layout/fragment_sign_up_email">
+        <action
+            android:id="@+id/action_navigation_sign_up_email_to_nickname"
+            app:destination="@id/navigation_sign_up_nickname"
+            app:popUpTo="@id/navigation_sign_up_nickname"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_sign_up_nickname"
+        android:name="com.whidy.whidyandroid.presentation.onboarding.SignUpNicknameFragment"
+        android:label="fragment_sign_up_nickname"
+        tools:layout="@layout/fragment_sign_up_nickname">
+        <action
+            android:id="@+id/action_navigation_sign_up_nickname_to_map"
+            app:destination="@id/navigation_map"
+            app:popUpTo="@id/navigation_map"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
 
     <fragment

@@ -4,10 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.trace
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import com.whidy.whidyandroid.R
 import com.whidy.whidyandroid.databinding.FragmentLoginBinding
+import com.whidy.whidyandroid.presentation.base.MainActivity
 
 class LoginFragment : Fragment() {
     private lateinit var navController: NavController
@@ -29,7 +32,17 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        (requireActivity() as MainActivity).hideBottomNavigation(true)
+
         navController = Navigation.findNavController(view)
+
+        binding.btnKakaoLogin.setOnClickListener {
+            navController.navigate(R.id.action_navigation_login_sign_up_email)
+        }
+
+        binding.btnGoogleLogin.setOnClickListener {
+            navController.navigate(R.id.action_navigation_login_sign_up_email)
+        }
     }
 
     override fun onDestroyView() {
