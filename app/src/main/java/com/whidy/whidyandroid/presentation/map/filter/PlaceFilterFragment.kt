@@ -117,6 +117,15 @@ class PlaceFilterFragment : Fragment() {
                 }
                 textView.isSelected = true
                 viewModel.setVisitTime(textView.text.toString())
+
+                binding.rvVisitTimePm.visibility = View.GONE
+                binding.tvVisitTimeAm.visibility = View.GONE
+                binding.tvVisitTimePm.visibility = View.GONE
+
+                binding.btnAm.isSelected = false
+                binding.btnAm.isActivated = false
+                binding.btnPm.isSelected = false
+                binding.btnPm.isActivated = false
             }
         }
 
@@ -175,6 +184,9 @@ class PlaceFilterFragment : Fragment() {
             binding.rvVisitTimeAm.visibility = View.GONE
             binding.tvVisitTimeAm.visibility = View.VISIBLE
             viewModel.setVisitTime(selectedTime)
+
+            binding.btnOpen.isSelected = false
+            binding.btnOpenAllDay.isSelected = false
         }
         binding.rvVisitTimeAm.adapter = amTimeAdapter
 
@@ -183,6 +195,9 @@ class PlaceFilterFragment : Fragment() {
             binding.rvVisitTimePm.visibility = View.GONE
             binding.tvVisitTimePm.visibility = View.VISIBLE
             viewModel.setVisitTime(selectedTime)
+
+            binding.btnOpen.isSelected = false
+            binding.btnOpenAllDay.isSelected = false
         }
         binding.rvVisitTimePm.adapter = pmTimeAdapter
 
@@ -204,10 +219,10 @@ class PlaceFilterFragment : Fragment() {
         binding.rvVisitTimePm.apply {
             setOnTouchListener { view, event ->
                 when (event.action) {
-                    MotionEvent.ACTION_DOWN -> {
+                    MotionEvent.ACTION_UP,MotionEvent.ACTION_DOWN -> {
                         binding.btnPm.isActivated = true
                     }
-                    MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                    MotionEvent.ACTION_CANCEL -> {
                         binding.btnPm.isActivated = false
                         view.performClick()
                     }
@@ -227,6 +242,9 @@ class PlaceFilterFragment : Fragment() {
             binding.btnAm.isSelected = true
             binding.btnPm.isSelected = false
             binding.btnPm.isActivated = false
+
+            binding.btnOpen.isSelected = false
+            binding.btnOpenAllDay.isSelected = false
         }
 
         // 오후 버튼 클릭 시: 오후 리사이클러뷰 표시, 오전 관련 뷰는 감춤
@@ -240,6 +258,9 @@ class PlaceFilterFragment : Fragment() {
             binding.btnPm.isSelected = true
             binding.btnAm.isSelected = false
             binding.btnAm.isActivated = false
+
+            binding.btnOpen.isSelected = false
+            binding.btnOpenAllDay.isSelected = false
         }
 
         binding.btnPlaceFilterInitial.setOnClickListener {
