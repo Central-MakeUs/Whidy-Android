@@ -80,7 +80,7 @@ class SignUpNicknameFragment : Fragment() {
         })
 
         binding.btnSignUpNicknameComplete.setOnClickListener {
-            navController.navigate(R.id.action_navigation_sign_up_nickname_to_map)
+            navController.navigate(R.id.action_navigation_sign_up_nickname_to_onboarding)
         }
     }
 

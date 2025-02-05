@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <View
+        android:id="@+id/background_onboarding"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/R300"
+        android:layout_marginBottom="26dp"
+        app:layout_constraintBottom_toTopOf="@+id/tv_title_onboarding" />
+
+    <ImageView
+        android:id="@+id/iv_image_onboarding"
+        android:layout_width="320dp"
+        android:layout_height="261dp"
+        android:layout_marginBottom="100dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/background_onboarding" />
+
+    <TextView
+        android:id="@+id/tv_title_onboarding"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="공부 공간에 대한 고민을\n해결해드려요"
+        android:textColor="@color/G900"
+        style="@style/onboarding"
+        android:gravity="center"
+        android:layout_marginBottom="14dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/tv_sub_title_onboarding" />
+
+    <TextView
+        android:id="@+id/tv_sub_title_onboarding"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="무료 공부 공간부터, 카페,\n취업 준비에 도움이 될 장소도 볼 수 있어요."
+        android:textColor="@color/G500"
+        style="@style/b1_r"
+        android:gravity="center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

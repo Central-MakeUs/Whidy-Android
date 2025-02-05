@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">Whidy</string>
+
+    <string name="onboarding_1_title">공부 공간에 대한 고민을\n해결해드려요</string>
+    <string name="onboarding_2_title">합리적인 가격을 가진\n카페를 검색해보세요</string>
+    <string name="onboarding_3_title">나에게 딱 맞는\n공부 공간을 찾아봐요</string>
+
+    <string name="onboarding_1_subtitle">무료 공부 공간부터, 카페,\n취업 준비에 도움이 될 장소도 볼 수 있어요.</string>
+    <string name="onboarding_2_subtitle">아메리카노 가격을 필터링해\n가장 저렴한 카페를 찾아볼 수 있어요.</string>
+    <string name="onboarding_3_subtitle">같이 시작해볼까요?</string>
 </resources>

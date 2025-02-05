@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <style name="onboarding">
+        <item name="android:fontStyle">normal</item>
+        <item name="android:fontFamily">@font/pretendardsemibold</item>
+        <item name="android:textSize">28sp</item>
+        <item name="android:lineSpacingExtra">6sp</item>
+    </style>
     <style name="h1_b">
         <item name="android:fontStyle">normal</item>
         <item name="android:fontFamily">@font/pretendardbold</item>
