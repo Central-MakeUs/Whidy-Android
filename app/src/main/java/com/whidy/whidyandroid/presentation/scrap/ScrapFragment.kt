@@ -22,11 +22,7 @@ class ScrapFragment : Fragment() {
         ScrapItem("무료 독서실", "서울 서대문구 신촌로 35", PlaceType.FREE_STUDY),
         ScrapItem("카페 베네", "서울 종로구 대학로 12", PlaceType.GENERAL_CAFE),
         ScrapItem("공유 스터디룸", "서울 마포구 홍대입구 23", PlaceType.FREE_STUDY),
-        ScrapItem("이디야 커피 홍대점", "서울 마포구 양화로 127", PlaceType.FRANCHISE_CAFE),
-        ScrapItem("무료 면접사진 촬영소", "서울 강남구 역삼로 45", PlaceType.FREE_PICTURE),
-        ScrapItem("네스프레소 카페", "서울 서초구 서초대로 77", PlaceType.GENERAL_CAFE),
-        ScrapItem("무료 면접복 대여소", "서울 중구 남대문로 100", PlaceType.FREE_CLOTHES),
-        ScrapItem("커피빈 종각점", "서울 종로구 종로 78", PlaceType.FRANCHISE_CAFE)
+        ScrapItem("이디야 커피 홍대점", "서울 마포구 양화로 127", PlaceType.FRANCHISE_CAFE)
     )
     private var isSortedByName = false
 
@@ -60,10 +56,6 @@ class ScrapFragment : Fragment() {
         }
     }
 
-    private fun updateItemCount(count: Int) {
-        binding.tvAmountScrap.text = "전체 $count"
-    }
-
     private fun applySorting() {
         scrapList = if (isSortedByName) {
             scrapList.sortedBy { it.name }.toMutableList()
@@ -72,6 +64,14 @@ class ScrapFragment : Fragment() {
         }
         scrapAdapter.updateData(scrapList)
         binding.btnScrapFilter.text = if (isSortedByName) "가나다순" else "등록순"
+
+        updateItemCount(scrapList.size)
+    }
+
+    private fun updateItemCount(count: Int) {
+        binding.tvAmountScrap.text = "전체 $count"
+        binding.clScrapEmptyView.visibility = if (count == 0) View.VISIBLE else View.GONE
+        binding.rvScrap.visibility = if (count == 0) View.GONE else View.VISIBLE
     }
 
     override fun onDestroyView() {
