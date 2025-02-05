@@ -100,4 +100,65 @@
         app:layout_constraintStart_toStartOf="@+id/gl_back_v"
         app:layout_constraintTop_toBottomOf="@+id/tv_title_recent_search"/>
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_search_empty_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <ImageView
+            android:id="@+id/iv_scrap_empty_view"
+            android:layout_width="120dp"
+            android:layout_height="116dp"
+            android:src="@drawable/ic_search_empty_view"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_scrap_empty_view_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="검색 결과가 없습니다."
+            android:textColor="@color/G700"
+            style="@style/b1_sb"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/iv_scrap_empty_view" />
+
+        <TextView
+            android:id="@+id/tv_scrap_empty_view_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="찾고 있는 장소가 없다면 직접 추가해보세요!"
+            android:textColor="@color/G400"
+            style="@style/b2_m"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_scrap_empty_view_1" />
+
+        <TextView
+            android:id="@+id/btn_place_add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="새로운 장소 추가"
+            android:textColor="@color/G700"
+            style="@style/b3_sb"
+            android:layout_marginTop="18dp"
+            android:paddingTop="9dp"
+            android:paddingBottom="9dp"
+            android:paddingStart="18dp"
+            android:paddingEnd="18dp"
+            android:background="@drawable/bg_btn_place_filter"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_scrap_empty_view_2" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

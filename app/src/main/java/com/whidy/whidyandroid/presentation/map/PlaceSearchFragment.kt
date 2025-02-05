@@ -111,6 +111,10 @@ class PlaceSearchFragment : Fragment() {
                 return false
             }
         })
+
+        binding.btnPlaceAdd.setOnClickListener {
+            navController.navigate(R.id.action_navigation_place_search_to_add)
+        }
     }
 
     private fun getDummyData(): List<String> {
