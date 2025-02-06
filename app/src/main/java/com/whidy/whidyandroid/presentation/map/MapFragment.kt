@@ -167,6 +167,13 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 }
             }
         }
+
+        binding.btnPopup.setOnClickListener {
+            PlaceInfoPopup(
+                context = requireContext(),
+                anchorView = binding.btnPopup
+            )
+        }
     }
 
     private fun hasPermission(): Boolean {
