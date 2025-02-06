@@ -98,10 +98,23 @@ class MyReviewFragment : Fragment() {
         )
 
         binding.rvMyReview.adapter = myReviewAdapter
+
+        updateEmptyView()
+    }
+
+    private fun updateEmptyView() {
+        if (reviews.isEmpty()) {
+            binding.clMyReviewEmptyView.visibility = View.VISIBLE
+            binding.rvMyReview.visibility = View.GONE
+        } else {
+            binding.clMyReviewEmptyView.visibility = View.GONE
+            binding.rvMyReview.visibility = View.VISIBLE
+        }
     }
 
     private fun removeReview(review: MyReview) {
         myReviewAdapter.removeItem(review)
+        updateEmptyView()
     }
 
     private fun navigateToEditScreen() {

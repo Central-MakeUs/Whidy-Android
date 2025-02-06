@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.whidy.whidyandroid.databinding.ItemMyReviewBinding
 
 class MyReviewAdapter(
-    private val reviews: MutableList<MyReview>,
+    private var reviews: MutableList<MyReview>,
     private val onDeleteClick: (MyReview) -> Unit,
     private val onPlaceNameClick: (MyReview) -> Unit,
     private val onEditClick: (MyReview) -> Unit
@@ -56,6 +56,7 @@ class MyReviewAdapter(
         if (position != -1) {
             reviews.removeAt(position)
             notifyItemRemoved(position)
+            notifyItemRangeChanged(position, reviews.size) // 인덱스 재조정
         }
     }
 }

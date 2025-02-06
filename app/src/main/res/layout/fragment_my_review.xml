@@ -60,4 +60,49 @@
         app:layout_constraintEnd_toEndOf="@+id/gl_end"
         app:layout_constraintTop_toBottomOf="@+id/line_seperate" />
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_my_review_empty_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <ImageView
+            android:id="@+id/iv_scrap_empty_view"
+            android:layout_width="120dp"
+            android:layout_height="116dp"
+            android:src="@drawable/ic_scrap_empty_view"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_scrap_empty_view_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="작성한 후기가 없습니다."
+            android:textColor="@color/G700"
+            style="@style/b1_sb"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/iv_scrap_empty_view" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="방문했던 장소를 검색해,\n솔직한 후기를 작성해주세요!"
+            android:textColor="@color/G400"
+            style="@style/b2_m"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:lineSpacingExtra="3sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_scrap_empty_view_1" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
