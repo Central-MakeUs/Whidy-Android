@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingTop="22dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/White">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="14dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="14dp" />
+
+    <TextView
+        android:id="@+id/tv_place_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="폴드 커피"
+        android:textColor="@color/G900"
+        style="@style/b1_sb"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_small_right"
+        android:layout_marginStart="4dp"
+        app:layout_constraintStart_toEndOf="@+id/tv_place_name"
+        app:layout_constraintTop_toTopOf="@+id/tv_place_name"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_place_name" />
+
+    <TextView
+        android:id="@+id/btn_edit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="수정"
+        android:textColor="@color/G500"
+        style="@style/b3_sb"
+        android:background="@drawable/bg_btn_my_review"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        app:layout_constraintEnd_toStartOf="@+id/btn_delete"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/btn_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="삭제"
+        android:textColor="@color/G500"
+        style="@style/b3_sb"
+        android:background="@drawable/bg_btn_my_review"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/iv_place_star"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_star_18"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_place_name" />
+
+    <TextView
+        android:id="@+id/tv_place_score"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="3.5"
+        android:textColor="@color/G900"
+        style="@style/b3_b"
+        android:layout_marginStart="3dp"
+        app:layout_constraintStart_toEndOf="@+id/iv_place_star"
+        app:layout_constraintTop_toTopOf="@+id/iv_place_star"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_place_star" />
+
+    <TextView
+        android:id="@+id/tv_place_review_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="2024.12.31"
+        android:textColor="@color/G400"
+        style="@style/b3_r"
+        android:layout_marginStart="6dp"
+        app:layout_constraintStart_toEndOf="@+id/tv_place_score"
+        app:layout_constraintTop_toTopOf="@+id/iv_place_star"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_place_star" />
+
+    <TextView
+        android:id="@+id/tv_place_review_comment"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="1층은 분위기 좋고 2층은 작업이나 공부하기 좋은 곳이네요 ㅎㅎ 인테리어도 이쁘고 음악도 잔잔하니 다시 방문하고 싶어요! 말차라떼랑 크로플도 맛있네요 :)"
+        android:textColor="@color/G900"
+        style="@style/b2_m"
+        android:layout_marginTop="12dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/gl_end"
+        app:layout_constraintTop_toBottomOf="@+id/iv_place_star" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_place_review_tag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="12dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_place_review_comment" />
+
+    <ImageView
+        android:id="@+id/line_seperate"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/G100"
+        android:layout_marginTop="22dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rv_place_review_tag" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
