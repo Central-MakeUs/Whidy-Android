@@ -1,17 +1,16 @@
 package com.whidy.whidyandroid.presentation.map
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.whidy.whidyandroid.R
 import com.whidy.whidyandroid.databinding.ItemPlaceReviewTagBinding
-import timber.log.Timber
 
 class PlaceReviewTagAdapter(private val items: List<PlaceReviewTag>) :
     RecyclerView.Adapter<PlaceReviewTagAdapter.ViewHolder>() {
 
-    private var isExpanded = false
+    private val fillRatios = listOf(0.8f, 0.7f, 0.6f, 0.5f, 0.4f)
 
     inner class ViewHolder(private val binding: ItemPlaceReviewTagBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -19,6 +18,10 @@ class PlaceReviewTagAdapter(private val items: List<PlaceReviewTag>) :
         fun bind(item: PlaceReviewTag, position: Int) {
             binding.tvPlaceReviewTag.text = item.type.description
             binding.tvPlaceReviewAmount.text = "${item.peopleCount}명"
+
+            val params = binding.viewBackgroundFill.layoutParams as ConstraintLayout.LayoutParams
+            params.matchConstraintPercentWidth = fillRatios.getOrElse(position) { 0.5f } // 기본값 50%
+            binding.viewBackgroundFill.layoutParams = params
 
             // 배경 변경 (인원 수 순서대로 적용)
             val imageRes = when (position) {
@@ -29,9 +32,6 @@ class PlaceReviewTagAdapter(private val items: List<PlaceReviewTag>) :
                 else -> R.drawable.ic_coffee
             }
             binding.ivPlaceReviewTag.setImageResource(imageRes)
-
-            // 처음 3개만 표시, 나머지는 isExpanded 상태에 따라 보이기
-            binding.root.visibility = if (position < 3 || isExpanded) View.VISIBLE else View.GONE
         }
     }
 
@@ -45,10 +45,4 @@ class PlaceReviewTagAdapter(private val items: List<PlaceReviewTag>) :
     }
 
     override fun getItemCount(): Int = items.size
-
-    fun toggleItems() {
-        Timber.d("toggleItems()")
-        isExpanded = !isExpanded
-        notifyDataSetChanged()
-    }
 }

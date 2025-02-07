@@ -9,20 +9,19 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:paddingStart="0dp"
+        android:paddingEnd="6dp">
 
         <TextView
             android:id="@+id/tv_place_tag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="무료 공부 공간"
+            android:text="커피가 맛있어요"
             android:textColor="@color/G600"
             style="@style/b3_m"
-            android:background="@drawable/bg_place_tag"
-            android:paddingStart="14dp"
-            android:paddingEnd="14dp"
-            android:paddingTop="11dp"
-            android:paddingBottom="11dp"
+            android:background="@drawable/bg_place_review_tag"
+            android:padding="8dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
     </androidx.constraintlayout.widget.ConstraintLayout>

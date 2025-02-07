@@ -6,4 +6,5 @@ data class PlaceReviewComment(
     val reviewScore: Int,
     val reviewTime: String,
     val reviewComment: String,
+    val tags: List<ItemType>
 )

@@ -3,19 +3,25 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="40dp"
     android:orientation="vertical"
-    android:paddingStart="18dp"
-    android:paddingEnd="8dp"
-    android:paddingTop="10dp"
-    android:paddingBottom="10dp"
     android:background="@drawable/bg_place_review_tag">
+
+    <View
+        android:id="@+id/view_background_fill"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_place_review_tag_brown"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/iv_place_review_tag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_coffee"
+        android:layout_marginStart="18dp"
+        android:layout_marginTop="10dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -28,7 +34,8 @@
         style="@style/b2_sb"
         android:layout_marginStart="6dp"
         app:layout_constraintStart_toEndOf="@+id/iv_place_review_tag"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/iv_place_review_tag"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_place_review_tag"/>
 
     <TextView
         android:id="@+id/tv_place_review_amount"
@@ -38,6 +45,8 @@
         android:text="10명"
         android:textColor="@color/G900"
         style="@style/b3_b"
+        app:layout_goneMarginEnd="8dp"
+        android:layout_marginTop="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
