@@ -714,7 +714,7 @@
                     android:id="@+id/tv_title_review_score"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="방문 요일"
+                    android:text="후기 평점"
                     android:textColor="@color/G900"
                     style="@style/b2_sb"
                     app:layout_constraintStart_toStartOf="parent"

@@ -45,7 +45,7 @@ class PlaceFilterFragment : Fragment() {
             navController.navigateUp()
         }
 
-        // 1. 공간 종류 그룹 처리
+        // 1. 공간 종류 그룹 처리 (토글 적용)
         val spaceOptions = listOf(
             binding.btnFreeSpace,
             binding.btnStudyCafe,
@@ -56,17 +56,18 @@ class PlaceFilterFragment : Fragment() {
         )
         spaceOptions.forEach { textView ->
             textView.setOnClickListener {
-                // 그룹 내 모든 옵션 초기화
-                spaceOptions.forEach {
-                    it.isSelected = false
+                if (textView.isSelected) {
+                    textView.isSelected = false
+                    viewModel.setSpaceType("")
+                } else {
+                    spaceOptions.forEach { it.isSelected = false }
+                    textView.isSelected = true
+                    viewModel.setSpaceType(textView.text.toString())
                 }
-                // 현재 옵션 선택
-                textView.isSelected = true
-                viewModel.setSpaceType(textView.text.toString())
             }
         }
 
-        // 2. 아메리카노 가격 그룹 처리
+        // 2. 아메리카노 가격 그룹 처리 (토글 적용)
         val priceOptions = listOf(
             binding.btnPrice1000,
             binding.btnPrice2000,
@@ -76,15 +77,18 @@ class PlaceFilterFragment : Fragment() {
         )
         priceOptions.forEach { textView ->
             textView.setOnClickListener {
-                priceOptions.forEach {
-                    it.isSelected = false
+                if (textView.isSelected) {
+                    textView.isSelected = false
+                    viewModel.setPriceRange("")
+                } else {
+                    priceOptions.forEach { it.isSelected = false }
+                    textView.isSelected = true
+                    viewModel.setPriceRange(textView.text.toString())
                 }
-                textView.isSelected = true
-                viewModel.setPriceRange(textView.text.toString())
             }
         }
 
-        // 3. 방문 요일 그룹 처리
+        // 3. 방문 요일 그룹 처리 (토글 적용)
         val weekOptions = listOf(
             binding.btnMon,
             binding.btnTue,
@@ -97,69 +101,81 @@ class PlaceFilterFragment : Fragment() {
         )
         weekOptions.forEach { textView ->
             textView.setOnClickListener {
-                weekOptions.forEach {
-                    it.isSelected = false
+                if (textView.isSelected) {
+                    textView.isSelected = false
+                    viewModel.setVisitWeek("")
+                } else {
+                    weekOptions.forEach { it.isSelected = false }
+                    textView.isSelected = true
+                    viewModel.setVisitWeek(textView.text.toString())
                 }
-                textView.isSelected = true
-                viewModel.setVisitWeek(textView.text.toString())
             }
         }
 
-        // 4. 방문 시간 그룹 처리 (예: 영업중 / 24시간 영업)
+        // 4. 방문 시간 그룹 처리 (영업중 / 24시간 영업, 토글 적용)
         val visitTimeOptions = listOf(
             binding.btnOpen,
             binding.btnOpenAllDay
         )
         visitTimeOptions.forEach { textView ->
             textView.setOnClickListener {
-                visitTimeOptions.forEach {
-                    it.isSelected = false
+                if (textView.isSelected) {
+                    textView.isSelected = false
+                    viewModel.setVisitTime("")
+                } else {
+                    visitTimeOptions.forEach { it.isSelected = false }
+                    textView.isSelected = true
+                    viewModel.setVisitTime(textView.text.toString())
+
+                    binding.rvVisitTimePm.visibility = View.GONE
+                    binding.tvVisitTimeAm.visibility = View.GONE
+                    binding.tvVisitTimePm.visibility = View.GONE
+
+                    binding.btnAm.isSelected = false
+                    binding.btnAm.isActivated = false
+                    binding.btnPm.isSelected = false
+                    binding.btnPm.isActivated = false
                 }
-                textView.isSelected = true
-                viewModel.setVisitTime(textView.text.toString())
-
-                binding.rvVisitTimePm.visibility = View.GONE
-                binding.tvVisitTimeAm.visibility = View.GONE
-                binding.tvVisitTimePm.visibility = View.GONE
-
-                binding.btnAm.isSelected = false
-                binding.btnAm.isActivated = false
-                binding.btnPm.isSelected = false
-                binding.btnPm.isActivated = false
             }
         }
 
-        // 5. 방문 인원 그룹 처리
+        // 5. 방문 인원 그룹 처리 (토글 적용)
         val peopleOptions = listOf(
             binding.btnPrivate,
             binding.btnGroup
         )
         peopleOptions.forEach { textView ->
             textView.setOnClickListener {
-                peopleOptions.forEach {
-                    it.isSelected = false
+                if (textView.isSelected) {
+                    textView.isSelected = false
+                    viewModel.setVisitPeople("")
+                } else {
+                    peopleOptions.forEach { it.isSelected = false }
+                    textView.isSelected = true
+                    viewModel.setVisitPeople(textView.text.toString())
                 }
-                textView.isSelected = true
-                viewModel.setVisitPeople(textView.text.toString())
             }
         }
 
-        // 6. 예약 필수 유무 그룹 처리
+        // 6. 예약 필수 유무 그룹 처리 (토글 적용)
         val reservOptions = listOf(
             binding.btnReservNeeded,
             binding.btnReservNeededNot
         )
         reservOptions.forEach { textView ->
             textView.setOnClickListener {
-                reservOptions.forEach {
-                    it.isSelected = false
+                if (textView.isSelected) {
+                    textView.isSelected = false
+                    viewModel.setReservation("")
+                } else {
+                    reservOptions.forEach { it.isSelected = false }
+                    textView.isSelected = true
+                    viewModel.setReservation(textView.text.toString())
                 }
-                textView.isSelected = true
-                viewModel.setReservation(textView.text.toString())
             }
         }
 
-        // 7. 리뷰 점수 그룹 처리
+        // 7. 리뷰 점수 그룹 처리 (토글 적용)
         val reviewScoreOptions = listOf(
             binding.btn1,
             binding.btn2,
@@ -169,11 +185,14 @@ class PlaceFilterFragment : Fragment() {
         )
         reviewScoreOptions.forEach { textView ->
             textView.setOnClickListener {
-                reviewScoreOptions.forEach {
-                    it.isSelected = false
+                if (textView.isSelected) {
+                    textView.isSelected = false
+                    viewModel.setReviewScore("")
+                } else {
+                    reviewScoreOptions.forEach { it.isSelected = false }
+                    textView.isSelected = true
+                    viewModel.setReviewScore(textView.text.toString())
                 }
-                textView.isSelected = true
-                viewModel.setReviewScore(textView.text.toString())
             }
         }
 
