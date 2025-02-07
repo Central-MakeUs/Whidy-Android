@@ -134,6 +134,14 @@ class PlaceInfoFragment: Fragment() {
         binding.btnScrap.setOnClickListener {
             it.isSelected = !it.isSelected
         }
+
+        binding.btnPlaceReviewAll.setOnClickListener {
+            navController.navigate(R.id.action_navigation_place_info_to_review_all)
+        }
+
+        binding.clPlaceReviewStars.setOnClickListener {
+            navController.navigate(R.id.action_navigation_place_info_to_review_write)
+        }
     }
 
     private fun expandView(view: View, duration: Long) {
