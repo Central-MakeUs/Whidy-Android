@@ -1,4 +1,4 @@
-package com.whidy.whidyandroid.presentation.my
+package com.whidy.whidyandroid.presentation.my.review
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

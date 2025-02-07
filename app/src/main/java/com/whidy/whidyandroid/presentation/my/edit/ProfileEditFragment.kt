@@ -1,4 +1,4 @@
-package com.whidy.whidyandroid.presentation.my
+package com.whidy.whidyandroid.presentation.my.edit
 
 import android.os.Bundle
 import android.text.Editable
@@ -13,6 +13,7 @@ import androidx.navigation.Navigation
 import com.whidy.whidyandroid.R
 import com.whidy.whidyandroid.databinding.FragmentProfileEditBinding
 import com.whidy.whidyandroid.presentation.base.MainActivity
+import com.whidy.whidyandroid.presentation.my.MyViewModel
 import timber.log.Timber
 
 class ProfileEditFragment : Fragment() {

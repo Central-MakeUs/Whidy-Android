@@ -1,4 +1,4 @@
-package com.whidy.whidyandroid.presentation.my
+package com.whidy.whidyandroid.presentation.my.review
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -13,7 +13,7 @@ import com.whidy.whidyandroid.R
 import com.whidy.whidyandroid.databinding.FragmentMyReviewBinding
 import com.whidy.whidyandroid.presentation.base.MainActivity
 import com.whidy.whidyandroid.presentation.map.ItemType
-import com.whidy.whidyandroid.presentation.map.MapViewModel
+import com.whidy.whidyandroid.presentation.map.home.MapViewModel
 
 class MyReviewFragment : Fragment() {
     private lateinit var navController: NavController

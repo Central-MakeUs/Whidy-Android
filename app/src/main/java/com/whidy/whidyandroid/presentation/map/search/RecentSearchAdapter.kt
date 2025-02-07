@@ -1,4 +1,4 @@
-package com.whidy.whidyandroid.presentation.map
+package com.whidy.whidyandroid.presentation.map.search
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

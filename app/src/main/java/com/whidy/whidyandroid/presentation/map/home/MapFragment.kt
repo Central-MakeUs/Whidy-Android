@@ -1,4 +1,4 @@
-package com.whidy.whidyandroid.presentation.map
+package com.whidy.whidyandroid.presentation.map.home
 
 import android.content.pm.PackageManager
 import android.location.Location
@@ -30,7 +30,8 @@ import com.naver.maps.map.util.FusedLocationSource
 import com.whidy.whidyandroid.R
 import com.whidy.whidyandroid.databinding.FragmentMapBinding
 import com.whidy.whidyandroid.presentation.base.MainActivity
-import com.whidy.whidyandroid.utils.PlaceTagItemDecoration
+import com.whidy.whidyandroid.presentation.map.info.PlaceInfoPopup
+import com.whidy.whidyandroid.utils.ItemHorizontalDecoration
 import timber.log.Timber
 
 class MapFragment : Fragment(), OnMapReadyCallback {
@@ -79,7 +80,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         binding.rvPlaceTag.apply {
             adapter = placeTagAdapter
             val itemSpace = resources.getDimensionPixelSize(R.dimen.place_tag)
-            addItemDecoration(PlaceTagItemDecoration(itemSpace))
+            addItemDecoration(ItemHorizontalDecoration(itemSpace))
         }
 
         binding.tvSearch.setOnClickListener {
@@ -156,7 +157,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             currentMarker?.map = null
             currentMarker = null
 
-//            mapViewModel.clearLocation()
+            mapViewModel.clearLocation()
 
             mapViewModel.selectedLocation.observe(viewLifecycleOwner) { latLng ->
                 if (latLng == null) {
@@ -173,6 +174,10 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 context = requireContext(),
                 anchorView = binding.btnPopup
             )
+        }
+
+        binding.btnScrap.setOnClickListener {
+            it.isSelected = !it.isSelected
         }
     }
 
@@ -289,7 +294,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun getDummyData(): List<String> {
-        return listOf("무료 공간", "프랜차이즈 카페", "개인 카페", "스터디 카페")
+        return listOf("무료 공부 공간", "프랜차이즈 카페", "개인 카페", "스터디 카페")
     }
 
     override fun onDestroyView() {

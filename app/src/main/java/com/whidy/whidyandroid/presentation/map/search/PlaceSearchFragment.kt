@@ -1,4 +1,4 @@
-package com.whidy.whidyandroid.presentation.map
+package com.whidy.whidyandroid.presentation.map.search
 
 import android.os.Bundle
 import android.text.Editable
@@ -9,16 +9,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import androidx.navigation.navOptions
 import com.naver.maps.geometry.LatLng
 import com.whidy.whidyandroid.R
 import com.whidy.whidyandroid.databinding.FragmentPlaceSearchBinding
-import com.whidy.whidyandroid.utils.PlaceTagItemDecoration
+import com.whidy.whidyandroid.presentation.map.home.MapViewModel
+import com.whidy.whidyandroid.utils.ItemHorizontalDecoration
 
 class PlaceSearchFragment : Fragment() {
     private lateinit var navController: NavController
@@ -50,7 +49,7 @@ class PlaceSearchFragment : Fragment() {
         binding.rvRecentSearch.apply {
             adapter = recentSearchAdapter
             val itemSpace = resources.getDimensionPixelSize(R.dimen.place_tag)
-            addItemDecoration(PlaceTagItemDecoration(itemSpace))
+            addItemDecoration(ItemHorizontalDecoration(itemSpace))
         }
 
         binding.btnBack.setOnClickListener {

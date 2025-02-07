@@ -1,4 +1,4 @@
-package com.whidy.whidyandroid.presentation.map
+package com.whidy.whidyandroid.presentation.map.info
 
 import android.os.Bundle
 import android.view.LayoutInflater

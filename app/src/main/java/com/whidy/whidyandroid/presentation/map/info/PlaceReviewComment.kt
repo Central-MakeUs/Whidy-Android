@@ -1,4 +1,6 @@
-package com.whidy.whidyandroid.presentation.map
+package com.whidy.whidyandroid.presentation.map.info
+
+import com.whidy.whidyandroid.presentation.map.ItemType
 
 data class PlaceReviewComment(
     val userProfileImageUrl: String,

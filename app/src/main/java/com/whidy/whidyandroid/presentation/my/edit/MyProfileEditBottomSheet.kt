@@ -1,4 +1,4 @@
-package com.whidy.whidyandroid.presentation.my
+package com.whidy.whidyandroid.presentation.my.edit
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,6 +8,7 @@ import androidx.fragment.app.activityViewModels
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.whidy.whidyandroid.R
 import com.whidy.whidyandroid.databinding.BottomSheetMyProfileEditBinding
+import com.whidy.whidyandroid.presentation.my.MyViewModel
 
 class MyProfileEditBottomSheet(
     private val onImageSelected: (Int) -> Unit
