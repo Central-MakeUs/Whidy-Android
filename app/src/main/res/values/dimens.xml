@@ -2,6 +2,7 @@
 <resources>
     <dimen name="place_tag">8dp</dimen>
     <dimen name="place_review_tag">6dp</dimen>
+    <dimen name="place_photo">4dp</dimen>
     <dimen name="place_review">18dp</dimen>
 
     <dimen name="bottom_sheet_peek_height">191dp</dimen>
