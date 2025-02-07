@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/White"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_iv_profile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.1" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.04" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.96" />
+
+    <ImageView
+        android:id="@+id/btn_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_back"
+        app:layout_constraintStart_toStartOf="@+id/gl_start"
+        app:layout_constraintTop_toTopOf="@+id/tv_title_profile_edit"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_title_profile_edit" />
+
+    <TextView
+        android:id="@+id/tv_title_profile_edit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="프로필 수정"
+        android:textColor="@color/G900"
+        style="@style/t2_b"
+        android:layout_marginTop="15dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/btn_submit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="저장"
+        android:textColor="@color/G800"
+        style="@style/b1_m"
+        android:layout_marginTop="15dp"
+        app:layout_constraintEnd_toEndOf="@+id/gl_end"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/iv_user_profile"
+        android:layout_width="78dp"
+        android:layout_height="78dp"
+        android:src="@drawable/ic_profile_default"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/gl_iv_profile" />
+
+    <TextView
+        android:id="@+id/btn_profile_edit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="프로필 사진 변경"
+        android:textColor="@color/B500"
+        style="@style/b2_m"
+        android:layout_marginTop="12dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iv_user_profile" />
+
+    <TextView
+        android:id="@+id/tv_title_profile_nickname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="닉네임"
+        android:textColor="@color/G900"
+        style="@style/b2_sb"
+        android:layout_marginTop="37dp"
+        app:layout_constraintStart_toStartOf="@+id/gl_start"
+        app:layout_constraintTop_toBottomOf="@+id/btn_profile_edit" />
+
+    <EditText
+        android:id="@+id/et_nickname"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="거부기"
+        android:textColor="@color/G800"
+        style="@style/b1_m"
+        android:imeOptions="actionDone"
+        android:padding="12dp"
+        android:background="@drawable/bg_input_place_add_default"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toStartOf="@+id/gl_start"
+        app:layout_constraintEnd_toEndOf="@+id/gl_end"
+        app:layout_constraintTop_toBottomOf="@+id/tv_title_profile_nickname" />
+
+    <TextView
+        android:id="@+id/tv_default"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="한글, 영문 최대 5자 / 중복 닉네임 가능"
+        android:textColor="@color/G400"
+        style="@style/b3_r"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="@+id/gl_start"
+        app:layout_constraintTop_toBottomOf="@+id/et_nickname" />
+
+    <TextView
+        android:id="@+id/tv_error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="한글, 영문 최대 5자 이하로만 입력해주세요.\n(숫자, 이모티콘, 특수문자는 사용이 불가합니다.)"
+        android:textColor="@color/R400"
+        android:lineSpacingExtra="2sp"
+        style="@style/b3_m"
+        android:visibility="gone"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="@+id/gl_start"
+        app:layout_constraintTop_toBottomOf="@+id/et_nickname" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

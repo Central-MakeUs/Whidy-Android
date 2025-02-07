@@ -3,17 +3,30 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:paddingTop="16dp"
-    android:paddingStart="14dp"
-    android:paddingEnd="14dp"
     android:background="@color/White"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.04" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.96" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_place_info_bar"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/gl_start"
+        app:layout_constraintEnd_toEndOf="@+id/gl_end"
         app:layout_constraintTop_toTopOf="parent" >
 
         <ImageView
@@ -45,10 +58,11 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="22dp"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/gl_start"
+        app:layout_constraintEnd_toEndOf="@+id/gl_end"
         app:layout_constraintTop_toBottomOf="@+id/cl_place_info_bar">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -176,6 +190,16 @@
                     app:layout_constraintTop_toTopOf="@+id/tv_place_score"
                     app:layout_constraintBottom_toBottomOf="@+id/tv_place_score"/>
 
+                <ImageView
+                    android:id="@+id/place_review_arrow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_small_right"
+                    android:layout_marginStart="4dp"
+                    app:layout_constraintStart_toEndOf="@+id/tv_place_review"
+                    app:layout_constraintTop_toTopOf="@+id/tv_place_review"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_place_review" />
+
                 <TextView
                     android:id="@+id/tv_place_type"
                     android:layout_width="wrap_content"
@@ -281,9 +305,19 @@
                     style="@style/b2_sb"
                     android:layout_marginStart="8dp"
                     android:drawablePadding="4dp"
-                    app:drawableRightCompat="@drawable/ic_small_right"
+                    app:drawableRightCompat="@drawable/ic_small_down"
                     app:layout_constraintStart_toEndOf="@+id/tv_place_info_open"
                     app:layout_constraintTop_toTopOf="@+id/tv_place_info_open" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_place_info_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:layout_marginStart="22dp"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintStart_toStartOf="@+id/tv_place_info_open"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_place_info_time" />
 
                 <TextView
                     android:id="@+id/tv_place_info_call"
@@ -296,7 +330,7 @@
                     android:drawablePadding="8dp"
                     app:drawableLeftCompat="@drawable/ic_place_info_call"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_place_info_open" />
+                    app:layout_constraintTop_toBottomOf="@+id/rv_place_info_time" />
 
                 <TextView
                     android:id="@+id/tv_place_info_network"
@@ -306,6 +340,7 @@
                     android:textColor="@color/B500"
                     style="@style/b2_m"
                     android:autoLink="web"
+                    android:textColorLink="@color/B500"
                     android:layout_marginTop="14dp"
                     android:drawablePadding="8dp"
                     app:drawableLeftCompat="@drawable/ic_place_info_network"
@@ -319,9 +354,47 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@color/G100"
-                android:layout_marginTop="22dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/cl_place_info_detail" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_place_review_stars"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="26dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/line_seperate_2">
+
+                <TextView
+                    android:id="@+id/tv_title_review"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="솔직한 방문 후기를 남겨주세요!"
+                    android:textColor="@color/G900"
+                    style="@style/b1_sb"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_review_stars"
+                    android:layout_marginTop="16dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_title_review" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <ImageView
+                android:id="@+id/line_seperate_3"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/G100"
+                android:layout_marginTop="26dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cl_place_review_stars" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/cl_place_info_review_tag"
@@ -329,7 +402,7 @@
                 android:layout_height="wrap_content"
                 android:paddingTop="22dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/line_seperate_2">
+                app:layout_constraintTop_toBottomOf="@+id/line_seperate_3">
 
                 <TextView
                     android:id="@+id/tv_title_place_info_review"
@@ -375,24 +448,61 @@
                     app:layout_constraintBottom_toBottomOf="@+id/iv_place_info_star" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_place_review_tag"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_place_review_tag"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="28dp"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/cl_place_info_review_tag" />
+                app:layout_constraintTop_toBottomOf="@+id/cl_place_info_review_tag">
 
-            <ImageView
-                android:id="@+id/btn_place_review_tag_all"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/btn_place_info_arrow"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="@+id/rv_place_review_tag" />
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_place_review_tag_collapsed"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="visible"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_place_review_tag_expanded"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/btn_place_review_tag_all_down"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_small_down"
+                    android:paddingTop="20dp"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent" />
+
+                <ImageView
+                    android:id="@+id/btn_place_review_tag_all_up"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_small_up"
+                    android:paddingTop="20dp"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:visibility="gone"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_place_review"
@@ -401,7 +511,7 @@
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btn_place_review_tag_all" />
+                app:layout_constraintTop_toBottomOf="@+id/cl_place_review_tag" />
 
             <TextView
                 android:id="@+id/btn_place_review_all"

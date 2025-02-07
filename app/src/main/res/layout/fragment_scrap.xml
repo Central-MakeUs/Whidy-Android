@@ -3,6 +3,124 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/White">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.04" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_sub_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.11" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.04" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.96" />
+
+    <TextView
+        android:id="@+id/tv_title_scrap"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="스크랩"
+        android:textColor="@color/G900"
+        style="@style/t1_sb"
+        app:layout_constraintStart_toStartOf="@+id/gl_start"
+        app:layout_constraintTop_toTopOf="@+id/gl_title" />
+
+    <TextView
+        android:id="@+id/tv_amount_scrap"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="전체 3"
+        android:textColor="@color/G800"
+        style="@style/b3_sb"
+        app:layout_constraintStart_toStartOf="@+id/gl_start"
+        app:layout_constraintTop_toTopOf="@+id/gl_sub_title" />
+
+    <TextView
+        android:id="@+id/btn_scrap_filter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="등록순"
+        android:textColor="@color/G800"
+        style="@style/b3_m"
+        android:drawablePadding="4dp"
+        android:drawableRight="@drawable/ic_scrap_filter"
+        app:layout_constraintEnd_toEndOf="@+id/gl_end"
+        app:layout_constraintTop_toTopOf="@+id/gl_sub_title" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/gl_start"
+        app:layout_constraintEnd_toEndOf="@+id/gl_end"
+        app:layout_constraintTop_toBottomOf="@+id/tv_amount_scrap">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_scrap"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+    </androidx.core.widget.NestedScrollView>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_scrap_empty_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+        
+        <ImageView
+            android:id="@+id/iv_scrap_empty_view"
+            android:layout_width="120dp"
+            android:layout_height="116dp"
+            android:src="@drawable/ic_scrap_empty_view"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_scrap_empty_view_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="저장한 장소가 없습니다."
+            android:textColor="@color/G700"
+            style="@style/b1_sb"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/iv_scrap_empty_view" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="마음에 드는 장소를 스크랩해보세요!"
+            android:textColor="@color/G400"
+            style="@style/b2_m"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_scrap_empty_view_1" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

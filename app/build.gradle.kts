@@ -67,4 +67,6 @@ dependencies {
     implementation(libs.timber)
     implementation(libs.play.services.location)
     implementation(libs.glide)
+
+    implementation(libs.dotsindicator)
 }

@@ -4,11 +4,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/navigation_map">
+    app:startDestination="@id/navigation_login">
 
     <fragment
         android:id="@+id/navigation_map"
-        android:name="com.whidy.whidyandroid.presentation.map.MapFragment"
+        android:name="com.whidy.whidyandroid.presentation.map.home.MapFragment"
         android:label="fragment_map"
         tools:layout="@layout/fragment_map">
         <action
@@ -30,34 +30,154 @@
 
     <fragment
         android:id="@+id/navigation_place_add"
-        android:name="com.whidy.whidyandroid.presentation.map.PlaceAddFragment"
+        android:name="com.whidy.whidyandroid.presentation.map.add.PlaceAddFragment"
         android:label="fragment_place_add"
         tools:layout="@layout/fragment_place_add">
     </fragment>
 
     <fragment
         android:id="@+id/navigation_place_search"
-        android:name="com.whidy.whidyandroid.presentation.map.PlaceSearchFragment"
+        android:name="com.whidy.whidyandroid.presentation.map.search.PlaceSearchFragment"
         android:label="fragment_place_search"
         tools:layout="@layout/fragment_place_search">
         <action
             android:id="@+id/action_navigation_place_search_to_map"
             app:destination="@id/navigation_map"
             app:popUpTo="@id/navigation_map" />
+        <action
+            android:id="@+id/action_navigation_place_search_to_add"
+            app:destination="@id/navigation_place_add"
+            app:popUpTo="@id/navigation_place_add" />
     </fragment>
 
     <fragment
         android:id="@+id/navigation_place_info"
-        android:name="com.whidy.whidyandroid.presentation.map.PlaceInfoFragment"
+        android:name="com.whidy.whidyandroid.presentation.map.info.PlaceInfoFragment"
         android:label="fragment_place_info"
         tools:layout="@layout/fragment_place_info">
+        <action
+            android:id="@+id/action_navigation_place_info_to_photo"
+            app:destination="@id/navigation_place_photo"
+            app:popUpTo="@id/navigation_place_info" />
+        <action
+            android:id="@+id/action_navigation_place_info_to_review_all"
+            app:destination="@id/navigation_place_review_all"
+            app:popUpTo="@id/navigation_place_review_all" />
+        <action
+            android:id="@+id/action_navigation_place_info_to_review_write"
+            app:destination="@id/navigation_place_review_write"
+            app:popUpTo="@id/navigation_place_review_write" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_place_photo"
+        android:name="com.whidy.whidyandroid.presentation.map.info.PlacePhotoFragment"
+        android:label="fragment_place_photo"
+        tools:layout="@layout/fragment_place_photo">
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_place_review_all"
+        android:name="com.whidy.whidyandroid.presentation.map.info.PlaceReviewAllFragment"
+        android:label="fragment_place_review_all"
+        tools:layout="@layout/fragment_place_review_all">
+        <action
+            android:id="@+id/action_navigation_place_review_all_to_write"
+            app:destination="@id/navigation_place_review_write"
+            app:popUpTo="@id/navigation_place_review_write" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_place_review_write"
+        android:name="com.whidy.whidyandroid.presentation.map.info.PlaceReviewWriteFragment"
+        android:label="fragment_place_review_write"
+        tools:layout="@layout/fragment_place_review_write">
+        <action
+            android:id="@+id/action_navigation_place_review_write_to_2"
+            app:destination="@id/navigation_place_review_write_2"
+            app:popUpTo="@id/navigation_place_review_write_2" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_place_review_write_2"
+        android:name="com.whidy.whidyandroid.presentation.map.info.PlaceReviewWrite2Fragment"
+        android:label="fragment_place_review_write_2"
+        tools:layout="@layout/fragment_place_review_write_2">
+        <action
+            android:id="@+id/action_navigation_place_write_2_to_info"
+            app:destination="@id/navigation_place_info"
+            app:popUpTo="@id/navigation_place_info" />
     </fragment>
 
     <fragment
         android:id="@+id/navigation_place_filter"
-        android:name="com.whidy.whidyandroid.presentation.map.PlaceFilterFragment"
+        android:name="com.whidy.whidyandroid.presentation.map.filter.PlaceFilterFragment"
         android:label="fragment_place_filter"
         tools:layout="@layout/fragment_place_filter">
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_onboarding"
+        android:name="com.whidy.whidyandroid.presentation.onboarding.OnboardingFragment"
+        android:label="fragment_onboarding"
+        tools:layout="@layout/fragment_onboarding">
+        <action
+            android:id="@+id/action_navigation_onboarding_to_map"
+            app:destination="@id/navigation_map"
+            app:popUpTo="@id/navigation_map"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_login"
+        android:name="com.whidy.whidyandroid.presentation.onboarding.LoginFragment"
+        android:label="fragment_login"
+        tools:layout="@layout/fragment_login">
+        <action
+            android:id="@+id/action_navigation_login_sign_up_email"
+            app:destination="@id/navigation_sign_up_email"
+            app:popUpTo="@id/navigation_sign_up_email"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_sign_up_email"
+        android:name="com.whidy.whidyandroid.presentation.onboarding.SignUpEmailFragment"
+        android:label="fragment_sign_up_email"
+        tools:layout="@layout/fragment_sign_up_email">
+        <action
+            android:id="@+id/action_navigation_sign_up_email_to_nickname"
+            app:destination="@id/navigation_sign_up_nickname"
+            app:popUpTo="@id/navigation_sign_up_nickname"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_sign_up_nickname"
+        android:name="com.whidy.whidyandroid.presentation.onboarding.SignUpNicknameFragment"
+        android:label="fragment_sign_up_nickname"
+        tools:layout="@layout/fragment_sign_up_nickname">
+        <action
+            android:id="@+id/action_navigation_sign_up_nickname_to_map"
+            app:destination="@id/navigation_map"
+            app:popUpTo="@id/navigation_map"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_navigation_sign_up_nickname_to_onboarding"
+            app:destination="@id/navigation_onboarding"
+            app:popUpTo="@id/navigation_onboarding"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out" />
     </fragment>
 
     <fragment
@@ -72,6 +192,43 @@
         android:name="com.whidy.whidyandroid.presentation.my.MyFragment"
         android:label="fragment_my"
         tools:layout="@layout/fragment_my">
+        <action
+            android:id="@+id/action_navigation_my_to_profile_edit"
+            app:destination="@id/navigation_profile_edit"
+            app:popUpTo="@id/navigation_my"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+
+        <action
+            android:id="@+id/action_navigation_my_to_my_review"
+            app:destination="@id/navigation_my_review"
+            app:popUpTo="@id/navigation_my_review"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_profile_edit"
+        android:name="com.whidy.whidyandroid.presentation.my.edit.ProfileEditFragment"
+        android:label="fragment_profile_edit"
+        tools:layout="@layout/fragment_profile_edit">
+        <action
+            android:id="@+id/action_navigation_profile_edit_to_my"
+            app:destination="@id/navigation_my"
+            app:popUpTo="@id/navigation_my"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_my_review"
+        android:name="com.whidy.whidyandroid.presentation.my.review.MyReviewFragment"
+        android:label="fragment_my_review"
+        tools:layout="@layout/fragment_my_review">
     </fragment>
 
 </navigation>

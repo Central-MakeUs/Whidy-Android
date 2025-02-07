@@ -95,7 +95,7 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_place_tag"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:layout_marginTop="14dp"
@@ -170,6 +170,15 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
+                android:id="@+id/btn_scrap"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/scrap_selector"
+                android:layout_marginTop="30dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
                 android:id="@+id/iv_place_image"
                 android:layout_width="90dp"
                 android:layout_height="90dp"
@@ -178,7 +187,7 @@
                 android:clipToOutline="true"
                 android:background="@drawable/bg_place_info_image"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintBottom_toBottomOf="@+id/tv_place_price" />
 
             <TextView
                 android:id="@+id/tv_place_type"
@@ -277,6 +286,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/tv_place_review" />
 
             <ImageView
+                android:id="@+id/btn_popup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_place_info_more"
