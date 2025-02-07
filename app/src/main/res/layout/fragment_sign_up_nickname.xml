@@ -122,6 +122,7 @@
                 style="@style/b2_sb"
                 android:hint="ex) 위디유저"
                 android:imeOptions="actionDone"
+                android:inputType="text"
                 android:maxLines="1"
                 android:paddingTop="12dp"
                 android:paddingBottom="12dp"

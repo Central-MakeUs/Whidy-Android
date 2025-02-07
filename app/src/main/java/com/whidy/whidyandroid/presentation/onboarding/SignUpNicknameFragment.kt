@@ -1,11 +1,13 @@
 package com.whidy.whidyandroid.presentation.onboarding
 
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -80,8 +82,14 @@ class SignUpNicknameFragment : Fragment() {
         })
 
         binding.btnSignUpNicknameComplete.setOnClickListener {
+            hideKeyboard(binding.etSignUpNickname)
             navController.navigate(R.id.action_navigation_sign_up_nickname_to_onboarding)
         }
+    }
+
+    private fun hideKeyboard(view: View) {
+        val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
     private fun isValidEmail(email: String): Boolean {

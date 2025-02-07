@@ -121,6 +121,7 @@
                 style="@style/b2_sb"
                 android:hint="ex) whidy@gmail.com"
                 android:imeOptions="actionDone"
+                android:inputType="textEmailAddress"
                 android:maxLines="1"
                 android:paddingTop="12dp"
                 android:paddingBottom="12dp"

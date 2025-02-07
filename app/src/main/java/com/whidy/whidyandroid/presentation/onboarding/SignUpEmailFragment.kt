@@ -1,11 +1,13 @@
 package com.whidy.whidyandroid.presentation.onboarding
 
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -77,8 +79,14 @@ class SignUpEmailFragment : Fragment() {
         })
 
         binding.btnSignUpEmailComplete.setOnClickListener {
+            hideKeyboard(binding.etSignUpEmail)
             navController.navigate(R.id.action_navigation_sign_up_email_to_nickname)
         }
+    }
+
+    private fun hideKeyboard(view: View) {
+        val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
     // 이메일 유효성 검사 함수: Android 내장 패턴 사용
