@@ -294,7 +294,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun getDummyData(): List<String> {
-        return listOf("무료 공부 공간", "프랜차이즈 카페", "개인 카페", "스터디 카페")
+        return listOf("무료 공부 공간", "프랜차이즈 카페", "개인 카페", "스터디 카페", "정장 대여", "면접 사진")
     }
 
     override fun onDestroyView() {
