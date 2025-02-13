@@ -118,8 +118,8 @@ class PlaceReviewWriteFragment : Fragment() {
         }
 
         // 각 그룹에 대해 토글 로직 적용
-        setSingleSelectOption(keywordOptions) { selected ->
-            viewModel.setKeyword(selected)
+        setMultiSelectOption(keywordOptions) { selectedList ->
+            viewModel.setKeyword(selectedList)
         }
         setSingleSelectOption(howToUseOptions) { selected ->
             viewModel.setHowToUse(selected)
