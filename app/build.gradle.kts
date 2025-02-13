@@ -67,6 +67,9 @@ dependencies {
     implementation(libs.timber)
     implementation(libs.play.services.location)
     implementation(libs.glide)
+    implementation(libs.splashscreen)
 
     implementation(libs.dotsindicator)
+    implementation(libs.retrofit.core)
+    implementation(libs.retrofit.converter.gson)
 }
