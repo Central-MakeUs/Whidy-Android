@@ -1,6 +1,9 @@
 package com.whidy.whidyandroid.network
 
+import com.whidy.whidyandroid.data.scrap.ScrapService
 import com.whidy.whidyandroid.data.auth.AuthService
+import com.whidy.whidyandroid.data.naver.NaverMapService
+import com.whidy.whidyandroid.data.place.PlaceService
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -33,7 +36,26 @@ object RetrofitClient {
             .build()
     }
 
+    private val naverRetrofit: Retrofit by lazy {
+        Retrofit.Builder()
+            .baseUrl("https://naveropenapi.apigw.ntruss.com")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
+    val geocodeService: NaverMapService by lazy {
+        naverRetrofit.create(NaverMapService::class.java)
+    }
+
     val authService: AuthService by lazy {
         retrofit.create(AuthService::class.java)
+    }
+
+    val placeService: PlaceService by lazy {
+        retrofit.create(PlaceService::class.java)
+    }
+
+    val scrapService: ScrapService by lazy {
+        retrofit.create(ScrapService::class.java)
     }
 }
