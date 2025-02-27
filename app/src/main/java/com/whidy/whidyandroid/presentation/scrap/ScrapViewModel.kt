@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.whidy.whidyandroid.data.scrap.PlaceScrapRequest
 import com.whidy.whidyandroid.model.PlaceType
 import com.whidy.whidyandroid.network.RetrofitClient
 import kotlinx.coroutines.launch
@@ -24,12 +25,28 @@ class ScrapViewModel : ViewModel() {
                 val items = response.map { scrapResponse ->
                     ScrapItem(
                         scrapId = scrapResponse.scrapId,
+                        placeId = scrapResponse.place.id,
                         name = scrapResponse.place.name,
                         address = scrapResponse.place.address,
                         placeType = PlaceType.valueOf(scrapResponse.place.placeType)
                     )
                 }
                 _scrapItems.postValue(items)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    fun isScrapped(placeId: Int): Boolean {
+        return _scrapItems.value?.any { it.placeId == placeId } ?: false
+    }
+
+    fun setScrap(placeId: Int) {
+        viewModelScope.launch {
+            try {
+                RetrofitClient.scrapService.setScrap(PlaceScrapRequest(placeId))
+                fetchScrapItems()
             } catch (e: Exception) {
                 e.printStackTrace()
             }
