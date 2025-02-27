@@ -32,6 +32,7 @@ import com.whidy.whidyandroid.databinding.FragmentMapBinding
 import com.whidy.whidyandroid.presentation.base.MainActivity
 import com.whidy.whidyandroid.presentation.map.add.PlaceAddDialog
 import com.whidy.whidyandroid.presentation.map.info.PlaceInfoPopup
+import com.whidy.whidyandroid.presentation.scrap.ScrapViewModel
 import com.whidy.whidyandroid.utils.ItemHorizontalDecoration
 import timber.log.Timber
 
@@ -51,6 +52,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
 
     private val mapViewModel: MapViewModel by activityViewModels()
+    private val scrapViewModel: ScrapViewModel by activityViewModels()
 
     private var currentMarker: Marker? = null
 
@@ -88,6 +90,23 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                     navController.currentBackStackEntry?.savedStateHandle?.remove<Boolean>("showPlaceAddSuccessDialog")
                 }
             }
+
+        mapViewModel.placeDetail.observe(viewLifecycleOwner) { place ->
+            binding.tvPlaceName.text = place.name
+            binding.tvPlaceAddress.text = place.address
+            binding.tvPlacePrice.text = "${place.beveragePrice}원"
+
+            val isScrapped = scrapViewModel.isScrapped(place.id)
+            binding.btnScrap.isSelected = isScrapped
+
+            binding.btnScrap.setOnClickListener {
+                if (!binding.btnScrap.isSelected) {
+                    scrapViewModel.setScrap(place.id)
+                } else {
+                    // scrapViewModel.deleteScrap(place.id)
+                }
+            }
+        }
 
         placeTagAdapter = PlaceTagAdapter(getDummyData())
         binding.rvPlaceTag.apply {

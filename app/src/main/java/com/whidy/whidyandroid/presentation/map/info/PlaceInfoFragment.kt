@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.bumptech.glide.Glide
@@ -16,6 +17,8 @@ import com.whidy.whidyandroid.R
 import com.whidy.whidyandroid.databinding.FragmentPlaceInfoBinding
 import com.whidy.whidyandroid.presentation.base.MainActivity
 import com.whidy.whidyandroid.presentation.map.ItemType
+import com.whidy.whidyandroid.presentation.map.home.MapViewModel
+import com.whidy.whidyandroid.presentation.scrap.ScrapViewModel
 import com.whidy.whidyandroid.utils.ItemVerticalDecoration
 
 class PlaceInfoFragment: Fragment() {
@@ -28,6 +31,9 @@ class PlaceInfoFragment: Fragment() {
     private lateinit var placeTimeAdapter: PlaceTimeAdapter
 
     private var isExpanded = false
+
+    private val mapViewModel: MapViewModel by activityViewModels()
+    private val scrapViewModel: ScrapViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -51,37 +57,81 @@ class PlaceInfoFragment: Fragment() {
             navController.navigateUp()
         }
 
-        fun setImages(imageUrls: List<String>) {
-            val imageViews = listOf(binding.ivPlaceImage1, binding.ivPlaceImage2, binding.ivPlaceImage3)
-            val overlayView = binding.tvOverlay
+        mapViewModel.placeDetail.observe(viewLifecycleOwner) { place ->
+            binding.tvPlaceName.text = place.name
+            binding.tvPlaceInfoAddress.text = place.address
 
-            for (i in imageViews.indices) {
-                if (i < imageUrls.size) {
-                    Glide.with(this).load(imageUrls[i]).into(imageViews[i])
-                    imageViews[i].visibility = View.VISIBLE
+            binding.tvPlacePrice.text = place.beveragePrice.toString()
+
+            val isScrapped = scrapViewModel.isScrapped(place.id)
+            binding.btnScrap.isSelected = isScrapped
+
+            binding.btnScrap.setOnClickListener {
+                if (!binding.btnScrap.isSelected) {
+                    scrapViewModel.setScrap(place.id)
                 } else {
-                    imageViews[i].visibility = View.GONE
+                    // scrapViewModel.deleteScrap(place.id)
                 }
             }
 
-            if (imageUrls.size > 3) {
-                Glide.with(this).load(imageUrls[2]).into(imageViews[2])
-                overlayView.visibility = View.VISIBLE
-                overlayView.text = "더보기\n+${imageUrls.size - 3}"
-            } else {
-                overlayView.visibility = View.GONE
+            fun setImages(imageUrls: List<String>) {
+                val imageViews = listOf(binding.ivPlaceImage1, binding.ivPlaceImage2, binding.ivPlaceImage3)
+                val overlayView = binding.tvOverlay
+
+                for (i in imageViews.indices) {
+                    if (i < imageUrls.size) {
+                        Glide.with(this).load(imageUrls[i]).into(imageViews[i])
+                        imageViews[i].visibility = View.VISIBLE
+                    } else {
+                        imageViews[i].visibility = View.GONE
+                    }
+                }
+
+                if (imageUrls.size > 3) {
+                    Glide.with(this).load(imageUrls[2]).into(imageViews[2])
+                    overlayView.visibility = View.VISIBLE
+                    overlayView.text = "더보기\n+${imageUrls.size - 3}"
+                } else {
+                    overlayView.visibility = View.GONE
+                }
             }
+
+            setImages(place.images.ifEmpty { getDummyImages() })
+
+            val dayOrder = listOf("MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY")
+            val placeTimeData = place.businessHours
+                .sortedBy { dayOrder.indexOf(it.dayOfWeek) }
+                .map { businessHour ->
+                    val openTimeFormatted = businessHour.openTime?.substring(0, 5)
+                    val closeTimeFormatted = businessHour.closeTime?.substring(0, 5)
+                    val timeText = if (openTimeFormatted != null && closeTimeFormatted != null) {
+                        "$openTimeFormatted ~ $closeTimeFormatted"
+                    } else {
+                        "휴무"
+                    }
+                    val dayKorean = when(businessHour.dayOfWeek) {
+                        "MONDAY" -> "월"
+                        "TUESDAY" -> "화"
+                        "WEDNESDAY" -> "수"
+                        "THURSDAY" -> "목"
+                        "FRIDAY" -> "금"
+                        "SATURDAY" -> "토"
+                        "SUNDAY" -> "일"
+                        else -> businessHour.dayOfWeek
+                    }
+                    PlaceTime(
+                        day = dayKorean,
+                        hours = timeText
+                    )
+                }
+
+            placeTimeAdapter = PlaceTimeAdapter(placeTimeData)
+            binding.rvPlaceInfoTime.adapter = placeTimeAdapter
+
         }
 
         binding.ivPlaceImage3.setOnClickListener {
             navController.navigate(R.id.action_navigation_place_info_to_photo)
-        }
-
-        setImages(getDummyImages())
-
-        placeTimeAdapter = PlaceTimeAdapter(getPlaceTimeData())
-        binding.rvPlaceInfoTime.apply {
-            adapter = placeTimeAdapter
         }
 
         binding.tvPlaceInfoTime.setOnClickListener {
@@ -129,10 +179,6 @@ class PlaceInfoFragment: Fragment() {
         placeReviewCommentAdapter = PlaceReviewCommentAdapter(getPlaceReviewCommentData())
         binding.rvPlaceReview.apply {
             adapter = placeReviewCommentAdapter
-        }
-
-        binding.btnScrap.setOnClickListener {
-            it.isSelected = !it.isSelected
         }
 
         binding.btnPlaceReviewAll.setOnClickListener {
@@ -202,18 +248,6 @@ class PlaceInfoFragment: Fragment() {
             PlaceReviewTag(ItemType.FOCUS, 3),
             PlaceReviewTag(ItemType.OTHER, 2),
             PlaceReviewTag(ItemType.ETC, 1)
-        )
-    }
-
-    private fun getPlaceTimeData(): List<PlaceTime> {
-        return listOf(
-            PlaceTime("월", "08:00 ~ 22:00"),
-            PlaceTime("화", "08:00 ~ 22:00"),
-            PlaceTime("수", "08:00 ~ 22:00"),
-            PlaceTime("목", "08:00 ~ 22:00"),
-            PlaceTime("금", "08:00 ~ 22:00"),
-            PlaceTime("토", "10:00 ~ 20:00"),
-            PlaceTime("일", "10:00 ~ 20:00")
         )
     }
 

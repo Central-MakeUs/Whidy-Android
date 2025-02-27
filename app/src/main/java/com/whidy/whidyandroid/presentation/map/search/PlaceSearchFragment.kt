@@ -93,12 +93,7 @@ class PlaceSearchFragment : Fragment() {
                         navController.navigateUp()
                     }
                     if (query.isNotEmpty()) {
-                        // 검색 결과에서 위도, 경도 값을 가져왔다고 가정
-                        val latitude = 37.546752
-                        val longitude = 126.949977
-
-                        // 🔹 ViewModel에 검색한 위치 저장
-                        mapViewModel.setSelectedLocation(LatLng(latitude, longitude))
+                        mapViewModel.fetchPlaceGeneralCafe(2479)
 
                         // 🔹 기존 MapFragment가 백 스택에 있으면 popBackStack 사용하여 되돌아가기
                         if (!navController.popBackStack(R.id.navigation_map, false)) {
