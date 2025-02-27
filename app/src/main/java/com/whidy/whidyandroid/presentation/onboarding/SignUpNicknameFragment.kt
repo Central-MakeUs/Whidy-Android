@@ -8,11 +8,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.whidy.whidyandroid.R
 import com.whidy.whidyandroid.databinding.FragmentSignUpNicknameBinding
+import com.whidy.whidyandroid.di.AuthViewModelFactory
+import com.whidy.whidyandroid.network.RetrofitClient
+import com.whidy.whidyandroid.network.TokenManager
 import com.whidy.whidyandroid.presentation.base.MainActivity
 
 class SignUpNicknameFragment : Fragment() {
@@ -21,6 +26,13 @@ class SignUpNicknameFragment : Fragment() {
     private var _binding: FragmentSignUpNicknameBinding? = null
     private val binding: FragmentSignUpNicknameBinding
         get() = requireNotNull(_binding){"FragmentSignUpNicknameBinding -> null"}
+
+    private val viewModel: SignUpViewModel by activityViewModels {
+        AuthViewModelFactory(
+            RetrofitClient.authService,
+            TokenManager(requireContext().getSharedPreferences("prefs", Context.MODE_PRIVATE))
+        )
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -83,7 +95,19 @@ class SignUpNicknameFragment : Fragment() {
 
         binding.btnSignUpNicknameComplete.setOnClickListener {
             hideKeyboard(binding.etSignUpNickname)
-            navController.navigate(R.id.action_navigation_sign_up_nickname_to_onboarding)
+            viewModel.setNickname(binding.etSignUpNickname.text.toString().trim())
+            viewModel.signUp()
+        }
+
+        viewModel.signUpResult.observe(viewLifecycleOwner) { result ->
+            result.fold(
+                onSuccess = {
+                    navController.navigate(R.id.action_navigation_sign_up_nickname_to_onboarding)
+                },
+                onFailure = { error ->
+                    Toast.makeText(context, "회원가입 실패: ${error.message}", Toast.LENGTH_SHORT).show()
+                }
+            )
         }
     }
 
@@ -93,7 +117,7 @@ class SignUpNicknameFragment : Fragment() {
     }
 
     private fun isValidEmail(email: String): Boolean {
-        // 로컬 파트에 해당하는 문자열이 한글 또는 영문으로 1~5자 구성되었는지 검사합니다.
+        // 로컬 파트에 해당하는 문자열이 한글 또는 영문으로 1~5자 구성되었는지 검사
         val regex = "^[A-Za-z가-힣]{1,5}$"
         return Regex(regex).matches(email)
     }

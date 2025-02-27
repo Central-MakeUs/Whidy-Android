@@ -9,10 +9,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.whidy.whidyandroid.R
 import com.whidy.whidyandroid.databinding.FragmentSignUpEmailBinding
+import com.whidy.whidyandroid.di.AuthViewModelFactory
+import com.whidy.whidyandroid.network.RetrofitClient
+import com.whidy.whidyandroid.network.TokenManager
 import com.whidy.whidyandroid.presentation.base.MainActivity
 
 class SignUpEmailFragment : Fragment() {
@@ -21,6 +25,13 @@ class SignUpEmailFragment : Fragment() {
     private var _binding: FragmentSignUpEmailBinding? = null
     private val binding: FragmentSignUpEmailBinding
         get() = requireNotNull(_binding){"FragmentSignUpEmailBinding -> null"}
+
+    private val viewModel: SignUpViewModel by activityViewModels {
+        AuthViewModelFactory(
+            RetrofitClient.authService,
+            TokenManager(requireContext().getSharedPreferences("prefs", Context.MODE_PRIVATE))
+        )
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -80,6 +91,7 @@ class SignUpEmailFragment : Fragment() {
 
         binding.btnSignUpEmailComplete.setOnClickListener {
             hideKeyboard(binding.etSignUpEmail)
+            viewModel.setEmail(binding.etSignUpEmail.text.toString().trim())
             navController.navigate(R.id.action_navigation_sign_up_email_to_nickname)
         }
     }

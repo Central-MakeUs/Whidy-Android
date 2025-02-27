@@ -37,11 +37,13 @@ class LoginFragment : Fragment() {
         navController = Navigation.findNavController(view)
 
         binding.btnKakaoLogin.setOnClickListener {
-            navController.navigate(R.id.action_navigation_login_sign_up_email)
+            val bundle = Bundle().apply { putString("loginMethod", "KAKAO") }
+            navController.navigate(R.id.action_navigation_login_sign_up_email_to_login_web_view, bundle)
         }
 
         binding.btnGoogleLogin.setOnClickListener {
-            navController.navigate(R.id.action_navigation_login_sign_up_email)
+            val bundle = Bundle().apply { putString("loginMethod", "GOOGLE") }
+            navController.navigate(R.id.action_navigation_login_sign_up_email_to_login_web_view, bundle)
         }
     }
 
