@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.whidy.whidyandroid.databinding.FragmentScrapBinding
@@ -16,14 +17,10 @@ class ScrapFragment : Fragment() {
         get() = requireNotNull(_binding){"FragmentHomeBinding -> null"}
 
     private lateinit var scrapAdapter: ScrapAdapter
-    private var scrapList = mutableListOf(
-        ScrapItem("폴드 커피", "서울 성북구 종암로 214-3 1, 2층", PlaceType.STUDY_CAFE),
-        ScrapItem("스타벅스 강남점", "서울 강남구 테헤란로 152", PlaceType.FRANCHISE_CAFE),
-        ScrapItem("무료 독서실", "서울 서대문구 신촌로 35", PlaceType.FREE_STUDY),
-        ScrapItem("카페 베네", "서울 종로구 대학로 12", PlaceType.GENERAL_CAFE),
-        ScrapItem("공유 스터디룸", "서울 마포구 홍대입구 23", PlaceType.FREE_STUDY),
-        ScrapItem("이디야 커피 홍대점", "서울 마포구 양화로 127", PlaceType.FRANCHISE_CAFE)
-    )
+    private var scrapList = mutableListOf<ScrapItem>()
+
+    private val viewModel: ScrapViewModel by activityViewModels()
+
     private var isSortedByName = false
 
     override fun onCreateView(
@@ -42,13 +39,23 @@ class ScrapFragment : Fragment() {
 
         navController = Navigation.findNavController(view)
 
-        scrapAdapter = ScrapAdapter(scrapList) { itemCount ->
+        viewModel.fetchScrapItems()
+
+        scrapAdapter = ScrapAdapter(scrapList, { itemCount ->
             updateItemCount(itemCount)
-        }
+        }, { scrapId ->
+            // 삭제 API 호출: ViewModel에서 처리
+            viewModel.deleteScrap(scrapId)
+        })
         binding.rvScrap.adapter = scrapAdapter
-        updateItemCount(scrapList.size)
+
+        viewModel.scrapItems.observe(viewLifecycleOwner) { items ->
+            scrapList = items.toMutableList()
+            applySorting()
+        }
 
         binding.btnScrapFilter.setOnClickListener {
+            viewModel.fetchScrapItems()
             ScrapFilterBottomSheet({ sortByName ->
                 isSortedByName = sortByName
                 applySorting()

@@ -19,7 +19,7 @@ class MyFragment : Fragment() {
     private val binding: FragmentMyBinding
         get() = requireNotNull(_binding){"FragmentHomeBinding -> null"}
 
-    private val myViewModel: MyViewModel by activityViewModels()
+    private val viewModel: MyViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,6 +39,8 @@ class MyFragment : Fragment() {
 
         (requireActivity() as MainActivity).hideBottomNavigation(false)
 
+        viewModel.fetchMyPage()
+
         binding.btnProfileEdit.setOnClickListener {
             navController.navigate(R.id.action_navigation_my_to_profile_edit)
         }
@@ -47,12 +49,12 @@ class MyFragment : Fragment() {
             navController.navigate(R.id.action_navigation_my_to_my_review)
         }
 
-        myViewModel.nickname.observe(viewLifecycleOwner) { nickname ->
+        viewModel.nickname.observe(viewLifecycleOwner) { nickname ->
             binding.tvUserNickname.text = nickname
             Timber.d("nickname: $nickname")
         }
 
-        myViewModel.profileImage.observe(viewLifecycleOwner) { imageRes ->
+        viewModel.profileImage.observe(viewLifecycleOwner) { imageRes ->
             binding.ivUserProfile.setImageResource(imageRes)
             Timber.d("imageRes: $imageRes")
         }

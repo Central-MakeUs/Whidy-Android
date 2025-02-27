@@ -16,6 +16,9 @@ timber = "5.0.1"
 navermap = "3.20.0"
 play-services-location = "21.3.0"
 glide = "4.16.0"
+retrofit = "2.9.0"
+splashscreen = "1.0.1"
+browser = "1.8.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -33,6 +36,11 @@ timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "tim
 navermap = { group = "com.naver.maps", name = "map-sdk", version.ref = "navermap" }
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "play-services-location" }
 glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
+retrofit-core = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+retrofit-converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
+splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "splashscreen" }
+androidx-browser = { group = "androidx.browser", name = "browser", version.ref = "browser" }
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

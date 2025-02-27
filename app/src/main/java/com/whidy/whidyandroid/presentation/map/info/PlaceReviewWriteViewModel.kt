@@ -5,8 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 class PlaceReviewWriteViewModel : ViewModel() {
-    private val _keyword = MutableLiveData<String>()
-    val keyword: LiveData<String> get() = _keyword
+    private val _keyword = MutableLiveData<List<String>>()
+    val keyword: LiveData<List<String>> get() = _keyword
 
     private val _howToUse = MutableLiveData<String>()
     val howToUse: LiveData<String> get() = _howToUse
@@ -22,7 +22,7 @@ class PlaceReviewWriteViewModel : ViewModel() {
     private val _withWho = MutableLiveData<String>()
     val withWho: LiveData<String> get() = _withWho
 
-    fun setKeyword(type: String) {
+    fun setKeyword(type: List<String>) {
         _keyword.value = type
     }
     fun setHowToUse(range: String) {
