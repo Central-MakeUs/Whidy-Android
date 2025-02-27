@@ -6,4 +6,7 @@
     <dimen name="place_review">18dp</dimen>
 
     <dimen name="bottom_sheet_peek_height">191dp</dimen>
+
+    <dimen name="dialog_place_add_width">296dp</dimen>
+    <dimen name="dialog_place_add_height">210dp</dimen>
 </resources>

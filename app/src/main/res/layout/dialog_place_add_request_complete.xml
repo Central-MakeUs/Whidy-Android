@@ -1,0 +1,53 @@
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="296dp"
+    android:layout_height="210dp"
+    android:orientation="vertical"
+    android:paddingTop="28dp"
+    android:paddingBottom="22dp"
+    android:paddingStart="25dp"
+    android:paddingEnd="25dp"
+    android:background="@drawable/bg_dialog">
+
+    <TextView
+        android:id="@+id/tv_title_dialog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="장소 추가 제안 완료!"
+        android:textColor="@color/G900"
+        style="@style/t2_b"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_subtitle_dialog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="장소를 제안해주셔서 감사합니다.\n등록해주신 장소는 검수 후 7일 이내로\n등록이 완료됩니다."
+        android:textColor="@color/G600"
+        style="@style/b2_m"
+        android:gravity="center"
+        android:layout_marginTop="7dp"
+        android:lineSpacingExtra="3sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_title_dialog" />
+
+    <TextView
+        android:id="@+id/btn_confirm"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="확인"
+        android:textColor="@color/White"
+        style="@style/b2_sb"
+        android:gravity="center"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:background="@drawable/bg_btn_place_add_default"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
