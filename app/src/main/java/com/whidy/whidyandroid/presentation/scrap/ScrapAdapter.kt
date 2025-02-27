@@ -5,10 +5,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.whidy.whidyandroid.R
 import com.whidy.whidyandroid.databinding.ItemScrapBinding
+import com.whidy.whidyandroid.model.PlaceType
 
 class ScrapAdapter(
     private var items: MutableList<ScrapItem>,
-    private val onItemRemoved: (Int) -> Unit
+    private val onItemRemoved: (Int) -> Unit,
+    private val onDeleteScrap: (scrapId: Int) -> Unit
 ) : RecyclerView.Adapter<ScrapAdapter.ScrapViewHolder>() {
 
     inner class ScrapViewHolder(private val binding: ItemScrapBinding) :
@@ -22,6 +24,7 @@ class ScrapAdapter(
 
             binding.btnScrap.setOnClickListener {
                 removeItem(position)
+                onDeleteScrap(item.scrapId)
             }
         }
 
@@ -29,9 +32,9 @@ class ScrapAdapter(
             return when (placeType) {
                 PlaceType.STUDY_CAFE -> R.drawable.ic_scrap_personal_cafe
                 PlaceType.GENERAL_CAFE -> R.drawable.ic_scrap_personal_cafe
-                PlaceType.FREE_STUDY -> R.drawable.ic_scrap_personal_cafe
+                PlaceType.FREE_STUDY_SPACE -> R.drawable.ic_scrap_personal_cafe
                 PlaceType.FREE_PICTURE -> R.drawable.ic_scrap_personal_cafe
-                PlaceType.FREE_CLOTHES -> R.drawable.ic_scrap_personal_cafe
+                PlaceType.FREE_CLOTHES_RENTAL -> R.drawable.ic_scrap_personal_cafe
                 PlaceType.FRANCHISE_CAFE -> R.drawable.ic_scrap_franchise_cafe
             }
         }
@@ -57,5 +60,6 @@ class ScrapAdapter(
     fun updateData(newItems: MutableList<ScrapItem>) {
         items = newItems
         notifyDataSetChanged()
+        onItemRemoved(items.size) // 아이템 개수 업데이트 콜백 호출
     }
 }
