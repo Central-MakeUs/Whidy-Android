@@ -9,17 +9,21 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.whidy.whidyandroid.R
 import com.whidy.whidyandroid.databinding.FragmentPlaceAddBinding
 import com.whidy.whidyandroid.presentation.base.MainActivity
+import timber.log.Timber
 
 class PlaceAddFragment : Fragment() {
     private lateinit var navController: NavController
     private var _binding: FragmentPlaceAddBinding? = null
     private val binding: FragmentPlaceAddBinding
         get() = requireNotNull(_binding){"FragmentPlaceAddBinding -> null"}
+
+    private val viewModel: PlaceAddViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,15 +44,18 @@ class PlaceAddFragment : Fragment() {
         (requireActivity() as MainActivity).hideBottomNavigation(true)
 
         val launcher = registerForActivityResult(
-            // AddrActivity 로부터 결과값을 전달 받음
             ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.data != null) {
                 when (result.resultCode) {
                     // ADDR_RESULT : 1001
                     1001 -> {
                         val data = result.data!!.getStringExtra("data")
-                        binding.tvPlaceAddress.text = data
-                        updateCompleteButtonState()
+                        Timber.d("Received address: $data")
+                        if (!data.isNullOrEmpty()) {
+                            binding.tvPlaceAddress.text = data
+                            viewModel.setAddress(data)
+                            updateCompleteButtonState()
+                        }
                     }
                 }
             }
@@ -83,7 +90,18 @@ class PlaceAddFragment : Fragment() {
         })
 
         binding.btnPlaceAddComplete.setOnClickListener {
-            navController.navigateUp()
+            val placeName = binding.etPlaceName.text.toString().trim()
+            val addressText = binding.tvPlaceAddress.text.toString().trim()
+            if (placeName.isNotEmpty() && addressText.isNotEmpty()) {
+                viewModel.postPlaceRequest(placeName,
+                    onSuccess = {
+                        navController.previousBackStackEntry?.savedStateHandle?.set("showPlaceAddSuccessDialog", true)
+                        navController.navigateUp()
+                    },
+                    onError = { error ->
+                        Timber.e(error, "Failed to add place")
+                    })
+            }
         }
     }
 
