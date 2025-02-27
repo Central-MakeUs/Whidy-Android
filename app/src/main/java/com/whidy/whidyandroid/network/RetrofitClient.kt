@@ -2,6 +2,7 @@ package com.whidy.whidyandroid.network
 
 import com.whidy.whidyandroid.data.scrap.ScrapService
 import com.whidy.whidyandroid.data.auth.AuthService
+import com.whidy.whidyandroid.data.my.MyPageService
 import com.whidy.whidyandroid.data.naver.NaverMapService
 import com.whidy.whidyandroid.data.place.PlaceService
 import okhttp3.OkHttpClient
@@ -49,6 +50,10 @@ object RetrofitClient {
 
     val authService: AuthService by lazy {
         retrofit.create(AuthService::class.java)
+    }
+
+    val myService: MyPageService by lazy {
+        retrofit.create(MyPageService::class.java)
     }
 
     val placeService: PlaceService by lazy {

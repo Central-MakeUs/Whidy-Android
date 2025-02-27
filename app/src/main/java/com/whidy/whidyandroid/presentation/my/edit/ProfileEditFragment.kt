@@ -104,10 +104,15 @@ class ProfileEditFragment : Fragment() {
         binding.btnSubmit.setOnClickListener {
             val nickname = binding.etNickname.text.toString()
             val profileImage = selectedProfileImage
+            if (nickname.isEmpty() || !isValidNickname(nickname)) {
+                return@setOnClickListener
+            }
 
+            myViewModel.setMyName(nickname)
             myViewModel.setNickname(nickname)
             if (profileImage != null) {
                 myViewModel.setProfileImage(profileImage)
+                myViewModel.setMyProfileImage(profileImage, requireContext())
             }
 
             navController.navigate(R.id.action_navigation_profile_edit_to_my)
