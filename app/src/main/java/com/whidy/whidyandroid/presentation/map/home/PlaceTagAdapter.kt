@@ -9,9 +9,14 @@ class PlaceTagAdapter(
     private val placeTags: List<String>
 ) : RecyclerView.Adapter<PlaceTagAdapter.PlaceTagViewHolder>(){
 
+    var onItemClick: ((position: Int, tag: String) -> Unit)? = null
+
     class PlaceTagViewHolder(private val binding: ItemPlaceTagBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: String) {
+        fun bind(item: String, position: Int, clickListener: ((Int, String) -> Unit)?) {
             binding.tvPlaceTag.text = item
+            itemView.setOnClickListener {
+                clickListener?.invoke(position, item)
+            }
         }
     }
 
@@ -21,7 +26,7 @@ class PlaceTagAdapter(
     }
 
     override fun onBindViewHolder(holder: PlaceTagViewHolder, position: Int) {
-        holder.bind(placeTags[position])
+        holder.bind(placeTags[position], position, onItemClick)
     }
 
     override fun getItemCount(): Int = placeTags.size
