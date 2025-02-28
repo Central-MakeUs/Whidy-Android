@@ -20,6 +20,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.naver.maps.geometry.LatLng
+import com.naver.maps.geometry.LatLngBounds
 import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.LocationTrackingMode
 import com.naver.maps.map.NaverMap
@@ -55,6 +56,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private val scrapViewModel: ScrapViewModel by activityViewModels()
 
     private var currentMarker: Marker? = null
+    private val multiMarkers = mutableListOf<Marker>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -64,6 +66,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         _binding = FragmentMapBinding.inflate(inflater, container, false)
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
+
         if (!hasPermission()) {
             requestLocationPermission()
         } else {
@@ -95,6 +98,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             binding.tvPlaceName.text = place.name
             binding.tvPlaceAddress.text = place.address
             binding.tvPlacePrice.text = "${place.beveragePrice}원"
+            binding.tvPlaceScore.text = place.reviewScore.toString()
+            binding.tvPlaceReview.text = "후기 ${place.reviewNum}개"
 
             val isScrapped = scrapViewModel.isScrapped(place.id)
             binding.btnScrap.isSelected = isScrapped
@@ -103,8 +108,14 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 if (!binding.btnScrap.isSelected) {
                     scrapViewModel.setScrap(place.id)
                 } else {
-                    // scrapViewModel.deleteScrap(place.id)
+                    scrapViewModel.deleteScrap(place.id)
                 }
+            }
+
+            binding.apply {
+                Glide.with(ivPlaceImage.context)
+                    .load(place.images[0])
+                    .into(ivPlaceImage)
             }
         }
 
@@ -113,6 +124,12 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             adapter = placeTagAdapter
             val itemSpace = resources.getDimensionPixelSize(R.dimen.place_tag)
             addItemDecoration(ItemHorizontalDecoration(itemSpace))
+        }
+
+        placeTagAdapter.onItemClick = { position, tag ->
+            if (position == 2) {  // 0부터 시작하므로 3번째 아이템은 인덱스 2
+                addMultiMarkers()
+            }
         }
 
         binding.tvSearch.setOnClickListener {
@@ -174,12 +191,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             setOnClickListener {}
         }
 
-        binding.apply {
-            Glide.with(ivPlaceImage.context)
-                .load("https://helios-i.mashable.com/imagery/articles/04GeUVUQwZxpTYXdqbocKH2/hero-image.fill.size_1248x702.v1722586579.jpg")
-                .into(ivPlaceImage)
-        }
-
         binding.btnCancel.setOnClickListener {
             binding.btnFilter.visibility = View.VISIBLE
             binding.rvPlaceTag.visibility = View.VISIBLE
@@ -189,6 +200,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             currentMarker?.map = null
             currentMarker = null
 
+            clearMarkers()
             mapViewModel.clearLocation()
 
             mapViewModel.selectedLocation.observe(viewLifecycleOwner) { latLng ->
@@ -254,6 +266,53 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
+    // 다중 마커 추가 함수 (예시 좌표 3개)
+    private fun addMultiMarkers() {
+        // 기존 다중 마커가 있다면 지도에서 제거
+        multiMarkers.forEach { it.map = null }
+        multiMarkers.clear()
+
+        val coordinates = listOf(
+            LatLng(37.541113416270406, 127.05062406417724),
+            LatLng(37.54611341627041,  127.05362406417724),
+            LatLng(37.53711341627041, 127.05762406417723)
+        )
+
+        coordinates.forEach { latLng ->
+            val marker = Marker().apply {
+                position = latLng
+                icon = OverlayImage.fromResource(R.drawable.ic_marker_general_cafe)
+                map = naverMap
+            }
+            multiMarkers.add(marker)
+        }
+
+        moveCameraToMarkers(coordinates)
+    }
+
+    private fun moveCameraToMarkers(coordinates: List<LatLng>) {
+        if (coordinates.isEmpty()) return
+
+        // 좌표들의 경계 영역 계산
+        val builder = LatLngBounds.Builder()
+        coordinates.forEach { builder.include(it) }
+        val bounds = builder.build()
+
+        // 패딩을 주어 카메라 이동 (패딩 값은 필요에 따라 조정)
+        val padding = 100
+        val cameraUpdate = CameraUpdate.fitBounds(bounds, padding)
+        naverMap.moveCamera(cameraUpdate)
+    }
+
+    // 취소 버튼 클릭 시 단일 마커와 다중 마커 모두 제거
+    private fun clearMarkers() {
+        currentMarker?.map = null
+        currentMarker = null
+        multiMarkers.forEach { it.map = null }
+        multiMarkers.clear()
+    }
+
+
     override fun onMapReady(naverMap: NaverMap) {
         this.naverMap = naverMap
         mapViewModel.setNaverMap(naverMap)
@@ -299,10 +358,12 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             } else {
                 currentMarker?.map = null
 
-                currentMarker = Marker().apply {
-                    position = latLng
-                    icon = OverlayImage.fromResource(R.drawable.ic_marker)
-                    map = naverMap
+                mapViewModel.placeDetail.observe(viewLifecycleOwner) { place ->
+                    currentMarker = Marker().apply {
+                        position = LatLng(place.latitude, place.longitude)
+                        icon = OverlayImage.fromResource(mapViewModel.getMarkerIcon(place.placeType))
+                        map = naverMap
+                    }
                 }
 
                 val cameraUpdate = CameraUpdate.scrollTo(latLng)

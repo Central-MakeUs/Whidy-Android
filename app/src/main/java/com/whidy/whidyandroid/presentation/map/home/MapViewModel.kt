@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.NaverMap
+import com.whidy.whidyandroid.R
 import com.whidy.whidyandroid.data.place.GetPlaceResponse
 import com.whidy.whidyandroid.data.place.PlaceResponse
 import com.whidy.whidyandroid.network.RetrofitClient
@@ -191,6 +192,18 @@ class MapViewModel : ViewModel() {
             } catch (e: Exception) {
                 Timber.tag("MapViewModel").e(e, "API 호출 중 예외 발생")
             }
+        }
+    }
+
+    fun getMarkerIcon(placeType: String): Int {
+        return when (placeType) {
+            "GENERAL_CAFE" -> R.drawable.ic_marker_general_cafe
+            "STUDY_CAFE" -> R.drawable.ic_marker_study_cafe
+            "FREE_STUDY_SPACE" -> R.drawable.ic_marker_free_study_space
+            "FREE_PICTURE" -> R.drawable.ic_marker_free_picture
+            "FREE_CLOTHES_RENTAL" -> R.drawable.ic_marker_free_clothes_rental
+            "FRANCHISE_CAFE" -> R.drawable.ic_marker_franchise_cafe
+            else -> R.drawable.ic_marker_general_cafe
         }
     }
 }
