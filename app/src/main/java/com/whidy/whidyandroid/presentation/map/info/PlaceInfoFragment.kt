@@ -151,7 +151,7 @@ class PlaceInfoFragment: Fragment() {
             binding.btnShare.setOnClickListener {
                 val defaultFeed = FeedTemplate(
                     content = Content(
-                        title = place.name,
+                        title = place.address,
                         description = "장소의 자세한 정보를 확인해보세요",
 
                         imageUrl = place.images[0],
@@ -161,7 +161,7 @@ class PlaceInfoFragment: Fragment() {
                         )
                     ),
                     itemContent = ItemContent(
-                        profileText = ""
+                        profileText = place.name
                     ),
                     buttons = listOf(
                         Button(
