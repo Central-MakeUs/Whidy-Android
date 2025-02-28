@@ -19,6 +19,7 @@ glide = "4.16.0"
 retrofit = "2.9.0"
 splashscreen = "1.0.1"
 browser = "1.8.0"
+v2Share = "2.20.6"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -40,6 +41,7 @@ retrofit-core = { module = "com.squareup.retrofit2:retrofit", version.ref = "ret
 retrofit-converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
 splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "splashscreen" }
 androidx-browser = { group = "androidx.browser", name = "browser", version.ref = "browser" }
+v2-share = { module = "com.kakao.sdk:v2-share", version.ref = "v2Share" }
 
 
 [plugins]
