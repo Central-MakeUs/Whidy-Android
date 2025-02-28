@@ -10,6 +10,8 @@ val localProperties = Properties()
 localProperties.load(project.rootProject.file("local.properties").inputStream())
 val naverMapClientId = localProperties.getProperty("NAVER_MAP_CLIENT_ID")?:""
 val naverMapClientSECRET = localProperties.getProperty("NAVER_MAP_CLIENT_SECRET")?:""
+val kakaoApiKey = localProperties.getProperty("KAKAO_NATIVE_APP_KEY")?:""
+val nativeAppKey = localProperties.getProperty("KAKAO_NATIVE_APP_KEY_MANIFEST")?:""
 
 android {
     namespace = "com.whidy.whidyandroid"
@@ -26,6 +28,8 @@ android {
 
         buildConfigField("String", "NAVER_MAP_CLIENT_ID", "\"$naverMapClientId\"")
         buildConfigField("String", "NAVER_MAP_CLIENT_SECRET", "\"$naverMapClientSECRET\"")
+        buildConfigField("String", "KAKAO_NATIVE_APP_KEY", "\"$kakaoApiKey\"")
+        manifestPlaceholders["NATIVE_APP_KEY"] = nativeAppKey
     }
 
     buildTypes {
@@ -73,4 +77,6 @@ dependencies {
     implementation(libs.dotsindicator)
     implementation(libs.retrofit.core)
     implementation(libs.retrofit.converter.gson)
+
+    implementation (libs.v2.share)
 }

@@ -2,6 +2,7 @@ package com.whidy.whidyandroid
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
+import com.kakao.sdk.common.KakaoSdk
 import com.naver.maps.map.NaverMapSdk
 import com.whidy.whidyandroid.network.RetrofitClient
 import com.whidy.whidyandroid.network.TokenManager
@@ -15,5 +16,6 @@ class WhidyApplication : Application() {
         val sharedPrefs = getSharedPreferences("prefs", MODE_PRIVATE)
         val tokenManager = TokenManager(sharedPrefs)
         RetrofitClient.init(tokenManager)
+        KakaoSdk.init(this, BuildConfig.KAKAO_NATIVE_APP_KEY)
     }
 }
