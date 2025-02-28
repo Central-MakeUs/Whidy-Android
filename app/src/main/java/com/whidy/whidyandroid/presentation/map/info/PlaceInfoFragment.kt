@@ -1,7 +1,10 @@
 package com.whidy.whidyandroid.presentation.map.info
 
 import android.animation.ValueAnimator
+import android.content.ActivityNotFoundException
+import android.content.Intent
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,13 +16,23 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.bumptech.glide.Glide
+import com.kakao.sdk.common.util.KakaoCustomTabsClient
+import com.kakao.sdk.share.ShareClient
+import com.kakao.sdk.share.WebSharerClient
+import com.kakao.sdk.template.model.Button
+import com.kakao.sdk.template.model.Content
+import com.kakao.sdk.template.model.FeedTemplate
+import com.kakao.sdk.template.model.ItemContent
+import com.kakao.sdk.template.model.Link
 import com.whidy.whidyandroid.R
 import com.whidy.whidyandroid.databinding.FragmentPlaceInfoBinding
+import com.whidy.whidyandroid.model.PlaceType
 import com.whidy.whidyandroid.presentation.base.MainActivity
 import com.whidy.whidyandroid.presentation.map.ItemType
 import com.whidy.whidyandroid.presentation.map.home.MapViewModel
 import com.whidy.whidyandroid.presentation.scrap.ScrapViewModel
 import com.whidy.whidyandroid.utils.ItemVerticalDecoration
+import timber.log.Timber
 
 class PlaceInfoFragment: Fragment() {
     private lateinit var navController: NavController
@@ -38,7 +51,7 @@ class PlaceInfoFragment: Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
 
         _binding = FragmentPlaceInfoBinding.inflate(inflater, container, false)
@@ -60,8 +73,15 @@ class PlaceInfoFragment: Fragment() {
         mapViewModel.placeDetail.observe(viewLifecycleOwner) { place ->
             binding.tvPlaceName.text = place.name
             binding.tvPlaceInfoAddress.text = place.address
+            binding.tvPlacePrice.text = "${place.beveragePrice}원"
+            binding.tvPlaceScore.text = place.reviewScore.toString()
+            binding.tvPlaceReview.text = "후기 ${place.reviewNum}개"
 
-            binding.tvPlacePrice.text = place.beveragePrice.toString()
+            val placeTypeText = PlaceType.entries.find { it.name == place.placeType }?.displayName ?: place.placeType
+            binding.tvPlaceType.text = placeTypeText
+
+            binding.tvPlaceInfoScore.text = place.reviewScore.toString()
+            binding.tvPlaceInfoReviewAmount.text = "(${place.reviewNum})"
 
             val isScrapped = scrapViewModel.isScrapped(place.id)
             binding.btnScrap.isSelected = isScrapped
@@ -127,6 +147,72 @@ class PlaceInfoFragment: Fragment() {
 
             placeTimeAdapter = PlaceTimeAdapter(placeTimeData)
             binding.rvPlaceInfoTime.adapter = placeTimeAdapter
+
+            binding.btnShare.setOnClickListener {
+                val defaultFeed = FeedTemplate(
+                    content = Content(
+                        title = place.address,
+                        description = "장소의 자세한 정보를 확인해보세요",
+
+                        imageUrl = place.images[0],
+                        link = Link(
+                            webUrl = "https://play.google.com/store/apps/details?id=com.whidy.whidyandroid",
+                            mobileWebUrl = "https://play.google.com/store/apps/details?id=com.whidy.whidyandroid"
+                        )
+                    ),
+                    itemContent = ItemContent(
+                        profileText = place.name
+                    ),
+                    buttons = listOf(
+                        Button(
+                            "앱 다운로드",
+                            Link(
+                                webUrl = "https://play.google.com/store/apps/details?id=com.whidy.whidyandroid",
+                                mobileWebUrl = "https://play.google.com/store/apps/details?id=com.whidy.whidyandroid"
+                            )
+                        ),
+                        Button(
+                            "앱으로 이동",
+                            Link(
+                                //바로 앱으로 이동하게 해주는 딥링크
+                                //key랑 value 부분을 사용해서 앱에서 어떤 상세페이지를 띄울지 결정
+                                androidExecutionParams = mapOf("key1" to "value1")
+                            )
+                        )
+                    )
+                )
+
+                val isKakaoTalkAvailable = ShareClient.instance.isKakaoTalkSharingAvailable(requireContext())
+
+                // 카카오톡 설치여부 확인
+                if (isKakaoTalkAvailable) {
+                    // 카카오톡으로 공유
+                    ShareClient.instance.shareDefault(requireContext(), defaultFeed) { sharingResult, error ->
+                        if (error != null) {
+                            Timber.e(error, "카카오톡 공유 실패")
+                        } else if (sharingResult != null) {
+                            Timber.d("카카오톡 공유 성공 " + sharingResult.intent)
+                            startActivity(sharingResult.intent)
+
+                        }
+                    }
+                } else {
+                    // 웹으로 공유
+                    val sharerUrl = WebSharerClient.instance.makeDefaultUrl(defaultFeed)
+                    try {
+                        KakaoCustomTabsClient.openWithDefault(requireContext(), sharerUrl)
+                    } catch (e: UnsupportedOperationException) {
+                        Timber.e(e, "CustomTabs 지원 브라우저가 없습니다.")
+                        // CustomTabs 지원 브라우저가 없을 때, 기본 웹 브라우저로 열기
+                        try {
+                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(sharerUrl.toString()))
+                            startActivity(intent)
+                        } catch (e: ActivityNotFoundException) {
+                            Timber.e(e, "인터넷 브라우저가 없습니다.")
+                        }
+                    }
+                }
+            }
 
         }
 

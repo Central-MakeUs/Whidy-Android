@@ -16,24 +16,18 @@ interface PlaceService {
 
     @GET("/api/place")
     suspend fun getPlace(
-        @Query("reviewScoreFrom") reviewScoreFrom: Int = 0,
-        @Query("reviewScoreTo") reviewScoreTo: Int = 0,
-        @Query("beverageFrom") beverageFrom: Int = 0,
-        @Query("beverageTo") beverageTo: Int = 0,
-        @Query("placeType") placeType: List<String> = listOf("STUDY_CAFE"),
-        @Query("businessDayOfWeek") businessDayOfWeek: List<String> = listOf("MONDAY"),
-        @Query("visitTimeFrom.hour") visitTimeFromHour: Int = 0,
-        @Query("visitTimeFrom.minute") visitTimeFromMinute: Int = 0,
-        @Query("visitTimeFrom.second") visitTimeFromSecond: Int = 0,
-        @Query("visitTimeFrom.nano") visitTimeFromNano: Int = 0,
-        @Query("visitTimeTo.hour") visitTimeToHour: Int = 0,
-        @Query("visitTimeTo.minute") visitTimeToMinute: Int = 0,
-        @Query("visitTimeTo.second") visitTimeToSecond: Int = 0,
-        @Query("visitTimeTo.nano") visitTimeToNano: Int = 0,
-        @Query("centerLatitude") centerLatitude: Double = 0.0,
-        @Query("centerLongitude") centerLongitude: Double = 0.0,
-        @Query("radius") radius: Int = 0,
-        @Query("keyword") keyword: String = "string"
+        @Query("reviewScoreFrom") reviewScoreFrom: Int? = null,
+        @Query("reviewScoreTo") reviewScoreTo: Int? = null,
+        @Query("beverageFrom") beverageFrom: Int? = null,
+        @Query("beverageTo") beverageTo: Int? = null,
+        @Query("placeType") placeType: List<String>? = null,
+        @Query("businessDayOfWeek") businessDayOfWeek: List<String>? = null,
+        @Query("visitTimeFrom") visitTimeFromHour: Int? = null,
+        @Query("visitTimeTo") visitTimeToHour: Int? = null,
+        @Query("centerLatitude") centerLatitude: Double? = null,
+        @Query("centerLongitude") centerLongitude: Double? = null,
+        @Query("radius") radius: Int? = null,
+        @Query("keyword") keyword: String? = null
     ): Response<List<GetPlaceResponse>>
 
     @GET("/api/place/study-cafe/{id}")

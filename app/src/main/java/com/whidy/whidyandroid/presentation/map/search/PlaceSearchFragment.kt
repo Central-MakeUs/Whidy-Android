@@ -3,21 +3,20 @@ package com.whidy.whidyandroid.presentation.map.search
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import com.naver.maps.geometry.LatLng
 import com.whidy.whidyandroid.R
+import com.whidy.whidyandroid.data.place.GetPlaceResponse
 import com.whidy.whidyandroid.databinding.FragmentPlaceSearchBinding
 import com.whidy.whidyandroid.presentation.map.home.MapViewModel
 import com.whidy.whidyandroid.utils.ItemHorizontalDecoration
+import timber.log.Timber
 
 class PlaceSearchFragment : Fragment() {
     private lateinit var navController: NavController
@@ -26,8 +25,10 @@ class PlaceSearchFragment : Fragment() {
         get() = requireNotNull(_binding){"FragmentPlaceSearchBinding -> null"}
 
     private lateinit var recentSearchAdapter: RecentSearchAdapter
+    private lateinit var searchResultAdapter: SearchResultAdapter
 
     private val mapViewModel: MapViewModel by activityViewModels()
+    private var currentSearchResults: List<GetPlaceResponse> = emptyList()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -52,6 +53,14 @@ class PlaceSearchFragment : Fragment() {
             addItemDecoration(ItemHorizontalDecoration(itemSpace))
         }
 
+        searchResultAdapter = SearchResultAdapter { place ->
+            handlePlaceClick(place)
+        }
+
+        binding.rvSearchResult.apply {
+            adapter = searchResultAdapter
+        }
+
         binding.btnBack.setOnClickListener {
             navController.popBackStack()
         }
@@ -59,22 +68,54 @@ class PlaceSearchFragment : Fragment() {
         binding.etSearch.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 binding.btnDeleteEt.visibility = View.VISIBLE
+                binding.tvTitleRecentSearch.visibility = View.GONE
+                binding.rvRecentSearch.visibility = View.GONE
+                binding.btnDeleteEntire.visibility = View.GONE
             } else {
                 binding.btnDeleteEt.visibility = View.GONE
+                binding.tvTitleRecentSearch.visibility = View.VISIBLE
+                binding.rvRecentSearch.visibility = View.VISIBLE
+                binding.btnDeleteEntire.visibility = View.VISIBLE
             }
         }
 
         binding.etSearch.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 if (s.isNullOrEmpty()) {
+                    binding.tvTitleRecentSearch.visibility = View.VISIBLE
                     binding.rvRecentSearch.visibility = View.VISIBLE
+                    binding.btnDeleteEntire.visibility = View.VISIBLE
+                    binding.rvSearchResult.visibility = View.GONE
+                    binding.clSearchEmptyView.visibility = View.GONE
                 } else {
-                    binding.rvRecentSearch.visibility = View.INVISIBLE
+                    binding.tvTitleRecentSearch.visibility = View.GONE
+                    binding.rvRecentSearch.visibility = View.GONE
+                    binding.btnDeleteEntire.visibility = View.GONE
+                    val query = s.toString().trim()
+                    if (query.isNotEmpty()) {
+                        binding.rvSearchResult.visibility = View.VISIBLE
+                        mapViewModel.fetchPlaceList(query)
+                    } else {
+                        binding.rvSearchResult.visibility = View.GONE
+                        binding.clSearchEmptyView.visibility = View.GONE
+                    }
                 }
             }
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
+
+        mapViewModel.searchResults.observe(viewLifecycleOwner) { places ->
+            searchResultAdapter.updateData(places)
+
+            if (places.isEmpty()) {
+                binding.rvSearchResult.visibility = View.GONE
+                binding.clSearchEmptyView.visibility = View.VISIBLE
+            } else {
+                binding.rvSearchResult.visibility = View.VISIBLE
+                binding.clSearchEmptyView.visibility = View.GONE
+            }
+        }
 
         binding.btnDeleteEt.setOnClickListener {
             binding.etSearch.text.clear()
@@ -84,30 +125,37 @@ class PlaceSearchFragment : Fragment() {
             binding.rvRecentSearch.visibility = View.GONE
         }
 
-        binding.etSearch.setOnEditorActionListener(object : TextView.OnEditorActionListener {
-            override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
-                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    val query = binding.etSearch.text.toString().trim()
+        binding.etSearch.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                val query = binding.etSearch.text.toString().trim()
 
-                    if (query.isNotEmpty()) {
-                        navController.navigateUp()
-                    }
-                    if (query.isNotEmpty()) {
-                        mapViewModel.fetchPlaceGeneralCafe(2479)
-
-                        // 🔹 기존 MapFragment가 백 스택에 있으면 popBackStack 사용하여 되돌아가기
-                        if (!navController.popBackStack(R.id.navigation_map, false)) {
-                            navController.navigate(R.id.navigation_map)
-                        }
-                    }
-                    return true
+                if (query.isNotEmpty() && currentSearchResults.isNotEmpty()) {
+                    handlePlaceClick(currentSearchResults.first())
                 }
-                return false
+                true
+            } else {
+                false
             }
-        })
+        }
 
         binding.btnPlaceAdd.setOnClickListener {
             navController.navigate(R.id.action_navigation_place_search_to_add)
+        }
+    }
+
+    private fun handlePlaceClick(place: GetPlaceResponse) {
+        when (place.placeType) {
+            "GENERAL_CAFE" -> mapViewModel.fetchPlaceGeneralCafe(place.id)
+            "STUDY_CAFE" -> mapViewModel.fetchPlaceStudyCafe(place.id)
+            "FREE_STUDY_SPACE" -> mapViewModel.fetchPlaceFreeStudy(place.id)
+            "FREE_PICTURE" -> mapViewModel.fetchPlaceFreePicture(place.id)
+            "FREE_CLOTHES_RENTAL" -> mapViewModel.fetchPlaceFreeClothes(place.id)
+            "FRANCHISE_CAFE" -> mapViewModel.fetchPlaceFranchiseCafe(place.id)
+            else -> Timber.e("Unknown placeType: ${place.placeType}")
+        }
+
+        if (!navController.popBackStack(R.id.navigation_map, false)) {
+            navController.navigate(R.id.navigation_map)
         }
     }
 
