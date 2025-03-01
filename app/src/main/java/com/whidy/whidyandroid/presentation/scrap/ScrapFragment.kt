@@ -9,6 +9,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.whidy.whidyandroid.databinding.FragmentScrapBinding
+import com.whidy.whidyandroid.presentation.base.MainActivity
 
 class ScrapFragment : Fragment() {
     private lateinit var navController: NavController
@@ -38,6 +39,8 @@ class ScrapFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         navController = Navigation.findNavController(view)
+
+        (requireActivity() as MainActivity).hideBottomNavigation(false)
 
         viewModel.fetchScrapItems()
 
