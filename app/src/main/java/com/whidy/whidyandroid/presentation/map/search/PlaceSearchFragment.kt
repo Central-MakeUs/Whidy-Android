@@ -14,6 +14,7 @@ import androidx.navigation.Navigation
 import com.whidy.whidyandroid.R
 import com.whidy.whidyandroid.data.place.GetPlaceResponse
 import com.whidy.whidyandroid.databinding.FragmentPlaceSearchBinding
+import com.whidy.whidyandroid.presentation.base.MainActivity
 import com.whidy.whidyandroid.presentation.map.home.MapViewModel
 import com.whidy.whidyandroid.utils.ItemHorizontalDecoration
 import timber.log.Timber
@@ -45,6 +46,8 @@ class PlaceSearchFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         navController = Navigation.findNavController(view)
+
+        (requireActivity() as MainActivity).hideBottomNavigation(true)
 
         recentSearchAdapter = RecentSearchAdapter(getDummyData())
         binding.rvRecentSearch.apply {
