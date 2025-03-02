@@ -9,6 +9,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -81,6 +82,12 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         navController = Navigation.findNavController(view)
 
         (requireActivity() as MainActivity).hideBottomNavigation(false)
+
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                requireActivity().finish()
+            }
+        })
 
         navController.currentBackStackEntry?.savedStateHandle
             ?.getLiveData<Boolean>("showPlaceAddSuccessDialog")
