@@ -1,5 +1,6 @@
 package com.whidy.whidyandroid.presentation.map.search
 
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -21,6 +22,7 @@ import com.whidy.whidyandroid.utils.ItemHorizontalDecoration
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.json.JSONArray
 import timber.log.Timber
 
 class PlaceSearchFragment : Fragment() {
@@ -55,11 +57,13 @@ class PlaceSearchFragment : Fragment() {
 
         (requireActivity() as MainActivity).hideBottomNavigation(true)
 
-        recentSearchAdapter = RecentSearchAdapter(getDummyData())
+        val recentSearchList = getRecentSearches()
+        recentSearchAdapter = RecentSearchAdapter(recentSearchList)
         binding.rvRecentSearch.apply {
             adapter = recentSearchAdapter
             val itemSpace = resources.getDimensionPixelSize(R.dimen.place_tag)
-            addItemDecoration(ItemHorizontalDecoration(itemSpace))
+            val firstMargin = resources.getDimensionPixelSize(R.dimen.place_tag_first_margin)
+            addItemDecoration(ItemHorizontalDecoration(itemSpace, firstMargin))
         }
 
         searchResultAdapter = SearchResultAdapter { place ->
@@ -142,12 +146,27 @@ class PlaceSearchFragment : Fragment() {
         }
 
         binding.btnDeleteEntire.setOnClickListener {
+            clearRecentSearches()
+            recentSearchAdapter.updateData(emptyList())
             binding.rvRecentSearch.visibility = View.GONE
         }
 
         binding.etSearch.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 val query = binding.etSearch.text.toString().trim()
+
+                if (query.isNotEmpty()) {
+                    val recentSearches = getRecentSearches()
+                    // 이미 존재한다면 제거 후 최신 검색어로 갱신
+                    recentSearches.remove(query)
+                    recentSearches.add(0, query)
+                    // 최대 10개까지만 저장
+                    while (recentSearches.size > 10) {
+                        recentSearches.removeAt(recentSearches.size - 1)
+                    }
+                    saveRecentSearches(recentSearches)
+                    recentSearchAdapter.updateData(recentSearches)
+                }
 
                 if (query.isNotEmpty() && currentSearchResults.isNotEmpty()) {
                     handlePlaceClick(currentSearchResults.first())
@@ -164,6 +183,9 @@ class PlaceSearchFragment : Fragment() {
     }
 
     private fun handlePlaceClick(place: GetPlaceResponse) {
+
+        addToRecentSearches(place.name)
+
         when (place.placeType) {
             "GENERAL_CAFE" -> mapViewModel.fetchPlaceGeneralCafe(place.id)
             "STUDY_CAFE" -> mapViewModel.fetchPlaceStudyCafe(place.id)
@@ -179,8 +201,47 @@ class PlaceSearchFragment : Fragment() {
         }
     }
 
-    private fun getDummyData(): List<String> {
-        return listOf("캐치카페 서울대", "캐치카페 신촌", "프로토콜 연희점")
+    private fun addToRecentSearches(query: String) {
+        if (query.isNotEmpty()) {
+            val recentSearches = getRecentSearches()
+            // 이미 존재하는 경우 제거하고 최신 순서로 추가
+            recentSearches.remove(query)
+            recentSearches.add(0, query)
+            // 최대 10개까지만 저장
+            while (recentSearches.size > 10) {
+                recentSearches.removeAt(recentSearches.size - 1)
+            }
+            saveRecentSearches(recentSearches)
+            recentSearchAdapter.updateData(recentSearches)
+        }
+    }
+
+    // 최근 검색어를 JSONArray 형식으로 저장
+    private fun getRecentSearches(): MutableList<String> {
+        val prefs = requireContext().getSharedPreferences("recent_search", Context.MODE_PRIVATE)
+        val json = prefs.getString("recent_searches", "[]")
+        return try {
+            val jsonArray = JSONArray(json)
+            mutableListOf<String>().apply {
+                for (i in 0 until jsonArray.length()) {
+                    add(jsonArray.getString(i))
+                }
+            }
+        } catch (e: Exception) {
+            mutableListOf()
+        }
+    }
+
+    private fun saveRecentSearches(list: List<String>) {
+        val prefs = requireContext().getSharedPreferences("recent_search", Context.MODE_PRIVATE)
+        val jsonArray = JSONArray()
+        list.forEach { jsonArray.put(it) }
+        prefs.edit().putString("recent_searches", jsonArray.toString()).apply()
+    }
+
+    private fun clearRecentSearches() {
+        val prefs = requireContext().getSharedPreferences("recent_search", Context.MODE_PRIVATE)
+        prefs.edit().remove("recent_searches").apply()
     }
 
     override fun onDestroyView() {

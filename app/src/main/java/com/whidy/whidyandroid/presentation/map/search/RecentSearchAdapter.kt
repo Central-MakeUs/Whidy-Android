@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.whidy.whidyandroid.databinding.ItemRecentSearchBinding
 
 class RecentSearchAdapter(
-    private val recentSearchTags: List<String>
+    private var recentSearchTags: List<String>
 ) : RecyclerView.Adapter<RecentSearchAdapter.RecentSearchViewHolder>(){
 
     class RecentSearchViewHolder(private val binding: ItemRecentSearchBinding) : RecyclerView.ViewHolder(binding.root) {
@@ -25,4 +25,9 @@ class RecentSearchAdapter(
     }
 
     override fun getItemCount(): Int = recentSearchTags.size
+
+    fun updateData(newData: List<String>) {
+        recentSearchTags = newData
+        notifyDataSetChanged()
+    }
 }
