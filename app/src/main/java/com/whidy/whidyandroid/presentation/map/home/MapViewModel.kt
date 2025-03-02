@@ -35,8 +35,12 @@ class MapViewModel : ViewModel() {
     private val _placeDetail = MutableLiveData<PlaceResponse>()
     val placeDetail: LiveData<PlaceResponse> get() = _placeDetail
 
-    private val _searchResults = MutableLiveData<List<GetPlaceResponse>>()
-    val searchResults: LiveData<List<GetPlaceResponse>> get() = _searchResults
+    private val _searchResults = MutableLiveData<List<GetPlaceResponse>?>()
+    val searchResults: LiveData<List<GetPlaceResponse>?> get() = _searchResults
+
+    fun clearSearchResults() {
+        _searchResults.value = null
+    }
 
     fun fetchPlaceList(keyword: String) {
         viewModelScope.launch {
@@ -52,7 +56,7 @@ class MapViewModel : ViewModel() {
                     visitTimeToHour = null,
                     centerLatitude = 37.541113416270406,
                     centerLongitude = 127.05062406417724,
-                    radius = 10000,
+                    radius = 100000000,
                     keyword = keyword
                 )
                 if (response.isSuccessful) {

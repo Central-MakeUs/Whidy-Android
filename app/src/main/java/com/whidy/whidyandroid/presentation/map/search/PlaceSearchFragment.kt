@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.whidy.whidyandroid.R
@@ -17,6 +18,9 @@ import com.whidy.whidyandroid.databinding.FragmentPlaceSearchBinding
 import com.whidy.whidyandroid.presentation.base.MainActivity
 import com.whidy.whidyandroid.presentation.map.home.MapViewModel
 import com.whidy.whidyandroid.utils.ItemHorizontalDecoration
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class PlaceSearchFragment : Fragment() {
@@ -30,6 +34,8 @@ class PlaceSearchFragment : Fragment() {
 
     private val mapViewModel: MapViewModel by activityViewModels()
     private var currentSearchResults: List<GetPlaceResponse> = emptyList()
+
+    private var searchJob: Job? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -71,51 +77,62 @@ class PlaceSearchFragment : Fragment() {
         binding.etSearch.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 binding.btnDeleteEt.visibility = View.VISIBLE
-                binding.tvTitleRecentSearch.visibility = View.GONE
-                binding.rvRecentSearch.visibility = View.GONE
-                binding.btnDeleteEntire.visibility = View.GONE
             } else {
                 binding.btnDeleteEt.visibility = View.GONE
-                binding.tvTitleRecentSearch.visibility = View.VISIBLE
-                binding.rvRecentSearch.visibility = View.VISIBLE
-                binding.btnDeleteEntire.visibility = View.VISIBLE
             }
         }
 
         binding.etSearch.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                if (s.isNullOrEmpty()) {
-                    binding.tvTitleRecentSearch.visibility = View.VISIBLE
-                    binding.rvRecentSearch.visibility = View.VISIBLE
-                    binding.btnDeleteEntire.visibility = View.VISIBLE
-                    binding.rvSearchResult.visibility = View.GONE
-                    binding.clSearchEmptyView.visibility = View.GONE
-                } else {
-                    binding.tvTitleRecentSearch.visibility = View.GONE
-                    binding.rvRecentSearch.visibility = View.GONE
-                    binding.btnDeleteEntire.visibility = View.GONE
-                    val query = s.toString().trim()
-                    if (query.isNotEmpty()) {
-                        binding.rvSearchResult.visibility = View.VISIBLE
-                        mapViewModel.fetchPlaceList(query)
-                    } else {
+                val query = s?.toString()?.trim() ?: ""
+                searchJob?.cancel()  // 이전에 진행 중인 작업 취소
+
+                searchJob = lifecycleScope.launch {
+                    delay(200) // 200ms 후에 실행 (디바운스 시간)
+                    if (query.isEmpty()) {
+                        Timber.d("입력 값이 비어있음 - 최근 검색 UI 보임")
+                        binding.tvTitleRecentSearch.visibility = View.VISIBLE
+                        binding.rvRecentSearch.visibility = View.VISIBLE
+                        binding.btnDeleteEntire.visibility = View.VISIBLE
                         binding.rvSearchResult.visibility = View.GONE
                         binding.clSearchEmptyView.visibility = View.GONE
+                        mapViewModel.clearSearchResults()
+                    } else {
+                        Timber.d("검색어가 유효함: '$query', 장소 리스트 요청")
+                        binding.tvTitleRecentSearch.visibility = View.GONE
+                        binding.rvRecentSearch.visibility = View.GONE
+                        binding.btnDeleteEntire.visibility = View.GONE
+                        binding.rvSearchResult.visibility = View.VISIBLE
+                        mapViewModel.fetchPlaceList(query)
                     }
                 }
             }
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                // 필요 시 추가 로그
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                // 필요 시 추가 로그
+            }
         })
 
         mapViewModel.searchResults.observe(viewLifecycleOwner) { places ->
-            searchResultAdapter.updateData(places)
-
-            if (places.isEmpty()) {
-                binding.rvSearchResult.visibility = View.GONE
-                binding.clSearchEmptyView.visibility = View.VISIBLE
+            Timber.d("검색 결과 업데이트: $places")
+            if (places != null) {
+                searchResultAdapter.updateData(places)
+                if (places.isEmpty()) {
+                    Timber.d("검색 결과가 비어있음")
+                    binding.rvSearchResult.visibility = View.GONE
+                    binding.clSearchEmptyView.visibility = View.VISIBLE
+                } else {
+                    Timber.d("검색 결과가 있음 - 아이템 개수: ${places.size}")
+                    binding.rvSearchResult.visibility = View.VISIBLE
+                    binding.clSearchEmptyView.visibility = View.GONE
+                }
             } else {
-                binding.rvSearchResult.visibility = View.VISIBLE
+                Timber.d("검색 결과가 null")
+                binding.rvSearchResult.visibility = View.GONE
                 binding.clSearchEmptyView.visibility = View.GONE
             }
         }
