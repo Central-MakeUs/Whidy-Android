@@ -74,7 +74,7 @@ class PlaceInfoFragment: Fragment() {
             binding.tvPlaceName.text = place.name
             binding.tvPlaceInfoAddress.text = place.address
             binding.tvPlacePrice.text = "${place.beveragePrice}원"
-            binding.tvPlaceScore.text = place.reviewScore.toString()
+            binding.tvPlaceScore.text = (place.reviewScore ?: 0.0).toString()
             binding.tvPlaceReview.text = "후기 ${place.reviewNum}개"
 
             val placeTypeText = PlaceType.entries.find { it.name == place.placeType }?.displayName ?: place.placeType
@@ -147,6 +147,43 @@ class PlaceInfoFragment: Fragment() {
 
             placeTimeAdapter = PlaceTimeAdapter(placeTimeData)
             binding.rvPlaceInfoTime.adapter = placeTimeAdapter
+
+            val calendar = java.util.Calendar.getInstance()
+            val currentDayOfWeek = when(calendar.get(java.util.Calendar.DAY_OF_WEEK)) {
+                java.util.Calendar.MONDAY -> "MONDAY"
+                java.util.Calendar.TUESDAY -> "TUESDAY"
+                java.util.Calendar.WEDNESDAY -> "WEDNESDAY"
+                java.util.Calendar.THURSDAY -> "THURSDAY"
+                java.util.Calendar.FRIDAY -> "FRIDAY"
+                java.util.Calendar.SATURDAY -> "SATURDAY"
+                java.util.Calendar.SUNDAY -> "SUNDAY"
+                else -> ""
+            }
+            val sdf = java.text.SimpleDateFormat("HH:mm", java.util.Locale.getDefault())
+            val currentTimeStr = sdf.format(calendar.time)
+            val currentTime = sdf.parse(currentTimeStr)
+
+            // 현재 요일에 해당하는 영업시간 찾기
+            val currentBusinessHour = place.businessHours.find { it.dayOfWeek == currentDayOfWeek }
+            val statusText = if (currentBusinessHour?.openTime != null &&
+                currentBusinessHour.closeTime != null) {
+
+                val openTimeStr = currentBusinessHour.openTime.substring(0, 5)
+                val closeTimeStr = currentBusinessHour.closeTime.substring(0, 5)
+                val openTime = sdf.parse(openTimeStr)
+                val closeTime = sdf.parse(closeTimeStr)
+
+                if (currentTime.after(openTime) && currentTime.before(closeTime)) "영업중" else "영업종료"
+            } else {
+                "휴무"
+            }
+            binding.tvPlaceInfoOpen.text = statusText
+
+            if (statusText == "영업종료") {
+                binding.tvPlaceInfoOpen.setTextColor(ContextCompat.getColor(requireContext(), R.color.R400))
+            } else {
+                binding.tvPlaceInfoOpen.setTextColor(ContextCompat.getColor(requireContext(), R.color.G900))
+            }
 
             binding.btnShare.setOnClickListener {
                 val defaultFeed = FeedTemplate(
