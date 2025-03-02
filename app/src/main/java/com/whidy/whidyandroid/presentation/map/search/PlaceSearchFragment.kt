@@ -106,6 +106,26 @@ class PlaceSearchFragment : Fragment() {
                         mapViewModel.fetchPlaceList(query)
                     }
                 }
+
+                mapViewModel.searchResults.observe(viewLifecycleOwner) { places ->
+                    Timber.d("검색 결과 업데이트: $places")
+                    if (places != null) {
+                        searchResultAdapter.updateData(places)
+                        if (places.isEmpty()) {
+                            Timber.d("검색 결과가 비어있음")
+                            binding.rvSearchResult.visibility = View.GONE
+                            binding.clSearchEmptyView.visibility = View.VISIBLE
+                        } else {
+                            Timber.d("검색 결과가 있음 - 아이템 개수: ${places.size}")
+                            binding.rvSearchResult.visibility = View.VISIBLE
+                            binding.clSearchEmptyView.visibility = View.GONE
+                        }
+                    } else {
+                        Timber.d("검색 결과가 null")
+                        binding.rvSearchResult.visibility = View.GONE
+                        binding.clSearchEmptyView.visibility = View.GONE
+                    }
+                }
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -116,26 +136,6 @@ class PlaceSearchFragment : Fragment() {
                 // 필요 시 추가 로그
             }
         })
-
-        mapViewModel.searchResults.observe(viewLifecycleOwner) { places ->
-            Timber.d("검색 결과 업데이트: $places")
-            if (places != null) {
-                searchResultAdapter.updateData(places)
-                if (places.isEmpty()) {
-                    Timber.d("검색 결과가 비어있음")
-                    binding.rvSearchResult.visibility = View.GONE
-                    binding.clSearchEmptyView.visibility = View.VISIBLE
-                } else {
-                    Timber.d("검색 결과가 있음 - 아이템 개수: ${places.size}")
-                    binding.rvSearchResult.visibility = View.VISIBLE
-                    binding.clSearchEmptyView.visibility = View.GONE
-                }
-            } else {
-                Timber.d("검색 결과가 null")
-                binding.rvSearchResult.visibility = View.GONE
-                binding.clSearchEmptyView.visibility = View.GONE
-            }
-        }
 
         binding.btnDeleteEt.setOnClickListener {
             binding.etSearch.text.clear()
