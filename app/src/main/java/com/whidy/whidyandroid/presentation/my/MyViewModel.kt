@@ -43,6 +43,26 @@ class MyViewModel : ViewModel() {
         }
     }
 
+    fun checkTokenExpired(autoLogin: () -> Unit, onFailure: () -> Unit) {
+        viewModelScope.launch {
+            try {
+                val response = RetrofitClient.myService.getMyPage()
+                if (response.isSuccessful) {
+                    response.body()?.let { myPage ->
+                        _nickname.postValue(myPage.name)
+                        _profileImageUrl.postValue(myPage.profileImageUrl)
+                    }
+                    autoLogin()
+                } else {
+                    onFailure()
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                onFailure()
+            }
+        }
+    }
+
     fun setMyName(name: String) {
         viewModelScope.launch {
             try {
