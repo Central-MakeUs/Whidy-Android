@@ -89,17 +89,12 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             }
         })
 
-        navController.currentBackStackEntry?.savedStateHandle
-            ?.getLiveData<Boolean>("showPlaceAddSuccessDialog")
-            ?.observe(viewLifecycleOwner) { showDialog ->
-                if (showDialog == true) {
-                    val dialog = PlaceAddDialog(
-                        context = requireContext()
-                    )
-                    dialog.show()
-                    navController.currentBackStackEntry?.savedStateHandle?.remove<Boolean>("showPlaceAddSuccessDialog")
-                }
+        arguments?.let { bundle ->
+            if (bundle.getBoolean("showPlaceAddSuccessDialog", false)) {
+                val dialog = PlaceAddDialog(requireContext())
+                dialog.show()
             }
+        }
 
         mapViewModel.placeDetail.observe(viewLifecycleOwner) { place ->
             binding.tvPlaceName.text = place.name

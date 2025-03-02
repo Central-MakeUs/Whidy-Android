@@ -95,12 +95,15 @@ class PlaceAddFragment : Fragment() {
             if (placeName.isNotEmpty() && addressText.isNotEmpty()) {
                 viewModel.postPlaceRequest(placeName,
                     onSuccess = {
-                        navController.previousBackStackEntry?.savedStateHandle?.set("showPlaceAddSuccessDialog", true)
-                        navController.navigateUp()
+                        val bundle = Bundle().apply {
+                            putBoolean("showPlaceAddSuccessDialog", true)
+                        }
+                        navController.navigate(R.id.action_navigation_place_add_to_map, bundle)
                     },
                     onError = { error ->
                         Timber.e(error, "Failed to add place")
-                    })
+                    }
+                )
             }
         }
     }

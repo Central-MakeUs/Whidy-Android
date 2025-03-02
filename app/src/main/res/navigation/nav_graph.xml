@@ -33,6 +33,11 @@
         android:name="com.whidy.whidyandroid.presentation.map.add.PlaceAddFragment"
         android:label="fragment_place_add"
         tools:layout="@layout/fragment_place_add">
+        <action
+            android:id="@+id/action_navigation_place_add_to_map"
+            app:destination="@id/navigation_map"
+            app:popUpTo="@id/navigation_place_add"
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
