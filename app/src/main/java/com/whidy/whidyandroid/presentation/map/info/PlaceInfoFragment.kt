@@ -191,8 +191,16 @@ class PlaceInfoFragment: Fragment() {
                             Timber.e(error, "카카오톡 공유 실패")
                         } else if (sharingResult != null) {
                             Timber.d("카카오톡 공유 성공 " + sharingResult.intent)
-                            startActivity(sharingResult.intent)
-
+                            try {
+                                startActivity(sharingResult.intent)
+                            } catch (e: ActivityNotFoundException) {
+                                // 앱이 설치되어 있지 않으므로 앱 다운로드 링크로 리다이렉트
+                                val downloadIntent = Intent(
+                                    Intent.ACTION_VIEW,
+                                    Uri.parse("https://play.google.com/store/apps/details?id=com.whidy.whidyandroid")
+                                )
+                                startActivity(downloadIntent)
+                            }
                         }
                     }
                 } else {
