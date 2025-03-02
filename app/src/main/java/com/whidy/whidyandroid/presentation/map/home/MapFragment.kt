@@ -248,6 +248,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun initMapView() {
+        locationSource = FusedLocationSource(this, REQUEST_CODE_LOCATION_PERMISSION)
+
         val fm = childFragmentManager
         val mapFragment = fm.findFragmentById(R.id.map_fragment) as com.naver.maps.map.MapFragment?
             ?: com.naver.maps.map.MapFragment.newInstance().also {
@@ -255,7 +257,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             }
 
         mapFragment.getMapAsync(this)
-        locationSource = FusedLocationSource(this, REQUEST_CODE_LOCATION_PERMISSION)
     }
 
     @Deprecated("Deprecated in Java")
@@ -266,9 +267,10 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     ) {
         if (requestCode == REQUEST_CODE_LOCATION_PERMISSION && grantResults.isNotEmpty()) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(requireContext(), "위치 권한이 허용되었습니다", Toast.LENGTH_SHORT).show()
                 initMapView()
             } else {
-                Toast.makeText(requireContext(), "Permission denied!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "위치 권한이 거부되었습니다", Toast.LENGTH_SHORT).show()
             }
         }
     }
