@@ -175,8 +175,7 @@ class PlaceInfoFragment: Fragment() {
                             "앱으로 이동",
                             Link(
                                 //바로 앱으로 이동하게 해주는 딥링크
-                                //key랑 value 부분을 사용해서 앱에서 어떤 상세페이지를 띄울지 결정
-                                androidExecutionParams = mapOf("key1" to "value1")
+                                androidExecutionParams = mapOf("screen" to "main", "placeId" to place.id.toString(), "placeType" to place.placeType)
                             )
                         )
                     )
