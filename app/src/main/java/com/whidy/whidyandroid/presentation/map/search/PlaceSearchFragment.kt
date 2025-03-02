@@ -58,7 +58,10 @@ class PlaceSearchFragment : Fragment() {
         (requireActivity() as MainActivity).hideBottomNavigation(true)
 
         val recentSearchList = getRecentSearches()
-        recentSearchAdapter = RecentSearchAdapter(recentSearchList)
+        recentSearchAdapter = RecentSearchAdapter(recentSearchList) { query ->
+            binding.etSearch.setText(query)
+            binding.etSearch.setSelection(query.length) // 커서를 텍스트의 끝으로 이동
+        }
         binding.rvRecentSearch.apply {
             adapter = recentSearchAdapter
             val itemSpace = resources.getDimensionPixelSize(R.dimen.place_tag)

@@ -6,12 +6,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.whidy.whidyandroid.databinding.ItemRecentSearchBinding
 
 class RecentSearchAdapter(
-    private var recentSearchTags: List<String>
+    private var recentSearchTags: List<String>,
+    private val onItemClick: (String) -> Unit
 ) : RecyclerView.Adapter<RecentSearchAdapter.RecentSearchViewHolder>(){
 
-    class RecentSearchViewHolder(private val binding: ItemRecentSearchBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class RecentSearchViewHolder(private val binding: ItemRecentSearchBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: String) {
             binding.tvRecentSearch.text = item
+            binding.root.setOnClickListener {
+                onItemClick(item)
+            }
         }
     }
 
