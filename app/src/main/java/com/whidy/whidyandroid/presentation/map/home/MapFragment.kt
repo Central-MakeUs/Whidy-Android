@@ -125,7 +125,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         binding.rvPlaceTag.apply {
             adapter = placeTagAdapter
             val itemSpace = resources.getDimensionPixelSize(R.dimen.place_tag)
-            addItemDecoration(ItemHorizontalDecoration(itemSpace))
+            val firstMargin = resources.getDimensionPixelSize(R.dimen.place_tag_first_margin)
+            addItemDecoration(ItemHorizontalDecoration(itemSpace, firstMargin))
         }
 
         placeTagAdapter.onItemClick = { position, tag ->

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="place_tag">4dp</dimen>
+    <dimen name="place_tag_first_margin">14dp</dimen>
     <dimen name="place_review_tag">6dp</dimen>
     <dimen name="place_photo">4dp</dimen>
     <dimen name="place_review">18dp</dimen>
