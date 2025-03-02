@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import com.bumptech.glide.Glide
 import com.whidy.whidyandroid.R
 import com.whidy.whidyandroid.databinding.FragmentMyBinding
 import com.whidy.whidyandroid.presentation.base.MainActivity
@@ -54,9 +55,11 @@ class MyFragment : Fragment() {
             Timber.d("nickname: $nickname")
         }
 
-        viewModel.profileImage.observe(viewLifecycleOwner) { imageRes ->
-            binding.ivUserProfile.setImageResource(imageRes)
-            Timber.d("imageRes: $imageRes")
+        viewModel.profileImageUrl.observe(viewLifecycleOwner) { imageUrl ->
+            Glide.with(requireContext())
+                .load(imageUrl)
+                .into(binding.ivUserProfile)
+            Timber.d("imageUrl: $imageUrl")
         }
     }
 

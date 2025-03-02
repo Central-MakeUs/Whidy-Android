@@ -1,19 +1,16 @@
 package com.whidy.whidyandroid.presentation.my
 
-import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.util.Base64
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.whidy.whidyandroid.data.my.SetMyNameRequest
-import com.whidy.whidyandroid.data.my.SetMyProfileImageRequest
 import com.whidy.whidyandroid.network.RetrofitClient
 import kotlinx.coroutines.launch
-import timber.log.Timber
-import java.io.ByteArrayOutputStream
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import java.io.File
 
 class MyViewModel : ViewModel() {
 
@@ -23,12 +20,11 @@ class MyViewModel : ViewModel() {
     private val _profileImage = MutableLiveData<Int>()
     val profileImage: LiveData<Int> get() = _profileImage
 
+    private val _profileImageUrl = MutableLiveData<String>()
+    val profileImageUrl: LiveData<String> get() = _profileImageUrl
+
     fun setNickname(newNickname: String) {
         _nickname.value = newNickname
-    }
-
-    fun setProfileImage(imageRes: Int) {
-        _profileImage.value = imageRes
     }
 
     fun fetchMyPage() {
@@ -38,6 +34,7 @@ class MyViewModel : ViewModel() {
                 if (response.isSuccessful) {
                     response.body()?.let { myPage ->
                         _nickname.postValue(myPage.name)
+                        _profileImageUrl.postValue(myPage.profileImageUrl)
                     }
                 }
             } catch (e: Exception) {
@@ -59,25 +56,17 @@ class MyViewModel : ViewModel() {
         }
     }
 
-    fun setMyProfileImage(imageRes: Int, context: Context) {
+    fun setMyProfileImage(imageFile: File) {
         viewModelScope.launch {
             try {
-                val encodedImage = encodeImageResource(context, imageRes)
-                Timber.d("encodedImage: $encodedImage")
-                RetrofitClient.myService.setMyProfileImage(SetMyProfileImageRequest(file = encodedImage))
-                // API 호출 성공 시 LiveData 업데이트
-                _profileImage.postValue(imageRes)
+                val requestBody = imageFile.asRequestBody("image/*".toMediaTypeOrNull())
+                val multipartBody = MultipartBody.Part.createFormData("file", imageFile.name, requestBody)
+
+                // API 호출
+                RetrofitClient.myService.setMyProfileImage(multipartBody)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
-    }
-
-    private fun encodeImageResource(context: Context, imageRes: Int): String {
-        val bitmap: Bitmap = BitmapFactory.decodeResource(context.resources, imageRes)
-        val outputStream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
-        val byteArray = outputStream.toByteArray()
-        return Base64.encodeToString(byteArray, Base64.NO_WRAP)
     }
 }

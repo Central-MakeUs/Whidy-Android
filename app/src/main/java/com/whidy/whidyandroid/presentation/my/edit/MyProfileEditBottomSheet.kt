@@ -1,7 +1,5 @@
 package com.whidy.whidyandroid.presentation.my.edit
 
-import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
@@ -9,10 +7,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.whidy.whidyandroid.R
 import com.whidy.whidyandroid.databinding.BottomSheetMyProfileEditBinding
 import com.whidy.whidyandroid.presentation.my.MyViewModel
+import timber.log.Timber
 
 class MyProfileEditBottomSheet(
     private val onImageSelected: (Int) -> Unit
@@ -43,6 +43,13 @@ class MyProfileEditBottomSheet(
             }
         }
 
+        myViewModel.profileImageUrl.observe(viewLifecycleOwner) { imageUrl ->
+            Glide.with(requireContext())
+                .load(imageUrl)
+                .into(binding.ivUserProfile)
+            Timber.d("imageUrl: $imageUrl")
+        }
+
         binding.ivProfileCafe.setOnClickListener {
             selectImage(R.drawable.ic_profile_cafe)
             vibrateDoubleClick()
@@ -69,19 +76,13 @@ class MyProfileEditBottomSheet(
     }
 
     private fun vibrateDoubleClick() {
-        // Vibrator 객체 얻기
-        val vibrator = requireContext().getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-
-        // 진동 패턴: 시작 지연 0ms, 진동 50ms, 대기 50ms, 진동 50ms
-        val pattern = longArrayOf(0, 50, 50, 50)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        val vibrator = requireContext().getSystemService(Vibrator::class.java)
+        vibrator?.let {
+            // 진동 패턴: 시작 지연 0ms, 진동 50ms, 대기 50ms, 진동 50ms
+            val pattern = longArrayOf(0, 50, 50, 50)
             // API 26 이상에서는 VibrationEffect 사용
             val effect = VibrationEffect.createWaveform(pattern, -1)  // -1은 반복 없음
-            vibrator.vibrate(effect)
-        } else {
-            // API 26 미만에서는 기존 방식 사용
-            vibrator.vibrate(pattern, -1)
+            it.vibrate(effect)
         }
     }
 
