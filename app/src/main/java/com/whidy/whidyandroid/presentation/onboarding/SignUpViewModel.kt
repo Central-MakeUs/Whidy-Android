@@ -4,6 +4,8 @@ import androidx.lifecycle.*
 import com.whidy.whidyandroid.data.auth.AuthService
 import com.whidy.whidyandroid.data.auth.SignUpRequest
 import com.whidy.whidyandroid.data.auth.SignUpResponse
+import com.whidy.whidyandroid.data.auth.TokenResponse
+import com.whidy.whidyandroid.network.RetrofitClient
 import com.whidy.whidyandroid.network.TokenManager
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -69,6 +71,25 @@ class SignUpViewModel(
                 }
             } catch (e: Exception) {
                 _signUpResult.value = Result.failure(e)
+            }
+        }
+    }
+
+    fun logout(onLogoutSuccess: () -> Unit, onLogoutFailure: () -> Unit) {
+        viewModelScope.launch {
+            try {
+                val accessToken = RetrofitClient.tokenManager.getAccessToken() ?: ""
+                val refreshToken = RetrofitClient.tokenManager.getRefreshToken() ?: ""
+
+                val logoutRequest = TokenResponse(accessToken, refreshToken)
+
+                RetrofitClient.authService.logout(true.toString(), logoutRequest)
+
+                RetrofitClient.clearTokens()
+                onLogoutSuccess()
+            } catch (e: Exception) {
+                e.printStackTrace()
+                onLogoutFailure()
             }
         }
     }

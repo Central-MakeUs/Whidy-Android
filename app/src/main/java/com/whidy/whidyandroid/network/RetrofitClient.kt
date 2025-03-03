@@ -10,21 +10,44 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitClient {
-    private lateinit var tokenManager: TokenManager
+    lateinit var tokenManager: TokenManager
 
     fun init(tokenManager: TokenManager) {
         this.tokenManager = tokenManager
+    }
+
+    fun clearTokens() {
+        tokenManager.clearTokens()
     }
 
     private val okHttpClient: OkHttpClient by lazy {
         OkHttpClient.Builder()
             .addInterceptor { chain ->
                 val originalRequest = chain.request()
-                val builder = originalRequest.newBuilder()
-                tokenManager.getAccessToken()?.let { token ->
-                    builder.addHeader("Authorization", "Bearer $token")
+                val requestBuilder = originalRequest.newBuilder()
+
+                // 요청에 커스텀 헤더가 있으면 해당 플래그에 따라 토큰을 다르게 처리
+                when {
+                    originalRequest.header("Use-Refresh") != null -> {
+                        // "Use-Refresh" 헤더가 있으면 리프레시 토큰 사용
+                        requestBuilder.removeHeader("Use-Refresh")
+                        tokenManager.getRefreshToken()?.let { token ->
+                            requestBuilder.addHeader("Authorization", "Bearer $token")
+                        }
+                    }
+                    originalRequest.header("No-Auth") != null -> {
+                        // "No-Auth" 헤더가 있으면 토큰을 아예 추가하지 않음
+                        requestBuilder.removeHeader("No-Auth")
+                    }
+                    else -> {
+                        // 기본: 액세스 토큰 추가
+                        tokenManager.getAccessToken()?.let { token ->
+                            requestBuilder.addHeader("Authorization", "Bearer $token")
+                        }
+                    }
                 }
-                chain.proceed(builder.build())
+
+                chain.proceed(requestBuilder.build())
             }
             .build()
     }
