@@ -63,7 +63,7 @@
         android:id="@+id/tv_user_nickname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="거부기"
+        android:text=""
         android:textColor="@color/G900"
         style="@style/t2_b"
         android:layout_marginStart="11dp"
