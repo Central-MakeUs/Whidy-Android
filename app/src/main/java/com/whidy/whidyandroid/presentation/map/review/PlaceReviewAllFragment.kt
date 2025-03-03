@@ -1,4 +1,4 @@
-package com.whidy.whidyandroid.presentation.map.info
+package com.whidy.whidyandroid.presentation.map.review
 
 import android.animation.ValueAnimator
 import android.os.Bundle
@@ -11,8 +11,6 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.whidy.whidyandroid.R
 import com.whidy.whidyandroid.databinding.FragmentPlaceReviewAllBinding
-import com.whidy.whidyandroid.presentation.map.ItemType
-import com.whidy.whidyandroid.utils.ItemVerticalDecoration
 
 class PlaceReviewAllFragment : Fragment() {
     private lateinit var navController: NavController
@@ -45,20 +43,20 @@ class PlaceReviewAllFragment : Fragment() {
         }
 
         // 3개만 보이는 RecyclerView 설정
-        val collapsedAdapter = PlaceReviewTagAdapter(getPlaceReviewTagData().take(3))
-        binding.rvPlaceReviewTagCollapsed.apply {
-            adapter = collapsedAdapter
-            val itemSpace = resources.getDimensionPixelSize(R.dimen.place_review_tag)
-            addItemDecoration(ItemVerticalDecoration(itemSpace))
-        }
-
-        // 전체 리스트를 보이는 RecyclerView 설정
-        val expandedAdapter = PlaceReviewTagAdapter(getPlaceReviewTagData())
-        binding.rvPlaceReviewTagExpanded.apply {
-            adapter = expandedAdapter
-            val itemSpace = resources.getDimensionPixelSize(R.dimen.place_review_tag)
-            addItemDecoration(ItemVerticalDecoration(itemSpace))
-        }
+//        val collapsedAdapter = PlaceReviewTagAdapter(getPlaceReviewTagData().take(3))
+//        binding.rvPlaceReviewTagCollapsed.apply {
+//            adapter = collapsedAdapter
+//            val itemSpace = resources.getDimensionPixelSize(R.dimen.place_review_tag)
+//            addItemDecoration(ItemVerticalDecoration(itemSpace))
+//        }
+//
+//        // 전체 리스트를 보이는 RecyclerView 설정
+//        val expandedAdapter = PlaceReviewTagAdapter(getPlaceReviewTagData())
+//        binding.rvPlaceReviewTagExpanded.apply {
+//            adapter = expandedAdapter
+//            val itemSpace = resources.getDimensionPixelSize(R.dimen.place_review_tag)
+//            addItemDecoration(ItemVerticalDecoration(itemSpace))
+//        }
 
         binding.btnPlaceReviewTagAllDown.setOnClickListener {
             isExpanded = !isExpanded
@@ -76,10 +74,10 @@ class PlaceReviewAllFragment : Fragment() {
             binding.btnPlaceReviewTagAllDown.visibility = View.VISIBLE
         }
 
-        placeReviewCommentAdapter = PlaceReviewCommentAdapter(getPlaceReviewCommentData())
-        binding.rvPlaceReview.apply {
-            adapter = placeReviewCommentAdapter
-        }
+//        placeReviewCommentAdapter = PlaceReviewCommentAdapter(getPlaceReviewCommentData())
+//        binding.rvPlaceReview.apply {
+//            adapter = placeReviewCommentAdapter
+//        }
 
         binding.clPlaceReviewStars.setOnClickListener {
             navController.navigate(R.id.action_navigation_place_review_all_to_write)
@@ -119,42 +117,6 @@ class PlaceReviewAllFragment : Fragment() {
         animator.duration = 500
         animator.interpolator = AccelerateDecelerateInterpolator()
         animator.start()
-    }
-
-    private fun getPlaceReviewTagData(): List<PlaceReviewTag> {
-        return listOf(
-            PlaceReviewTag(ItemType.COFFEE, 10),
-            PlaceReviewTag(ItemType.SEAT, 6),
-            PlaceReviewTag(ItemType.FOCUS, 3),
-            PlaceReviewTag(ItemType.OTHER, 2),
-            PlaceReviewTag(ItemType.ETC, 1)
-        )
-    }
-
-    private fun getPlaceReviewCommentData(): List<PlaceReviewComment> {
-        return listOf(
-            PlaceReviewComment("https://helios-i.mashable.com/imagery/articles/04GeUVUQwZxpTYXdqbocKH2/hero-image.fill.size_1248x702.v1722586579.jpg",
-                "거부기",
-                3,
-                "2024.12.31",
-                "1층은 분위기 좋고 2층은 작업이나 공부하기 좋은 곳이네요 ㅎㅎ 인테리어도 이쁘고 음악도 잔잔하니 다시 방문하고 싶 어요! 말차라떼랑 크로플도 맛있네요 :)",
-                listOf(ItemType.COFFEE, ItemType.SEAT)
-            ),
-            PlaceReviewComment("https://helios-i.mashable.com/imagery/articles/04GeUVUQwZxpTYXdqbocKH2/hero-image.fill.size_1248x702.v1722586579.jpg",
-                "거부기",
-                3,
-                "2024.12.31",
-                "1층은 분위기 좋고 2층은 작업이나 공부하기 좋은 곳이네요 ㅎㅎ 인테리어도 이쁘고 음악도 잔잔하니 다시 방문하고 싶 어요! 말차라떼랑 크로플도 맛있네요 :)",
-                listOf(ItemType.FOCUS)
-            ),
-            PlaceReviewComment("https://helios-i.mashable.com/imagery/articles/04GeUVUQwZxpTYXdqbocKH2/hero-image.fill.size_1248x702.v1722586579.jpg",
-                "거부기",
-                3,
-                "2024.12.31",
-                "1층은 분위기 좋고 2층은 작업이나 공부하기 좋은 곳이네요 ㅎㅎ 인테리어도 이쁘고 음악도 잔잔하니 다시 방문하고 싶 어요! 말차라떼랑 크로플도 맛있네요 :)",
-                listOf(ItemType.FOCUS)
-            )
-        )
     }
 
     override fun onDestroyView() {

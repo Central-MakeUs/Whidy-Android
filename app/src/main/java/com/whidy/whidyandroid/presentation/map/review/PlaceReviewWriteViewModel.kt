@@ -1,4 +1,4 @@
-package com.whidy.whidyandroid.presentation.map.info
+package com.whidy.whidyandroid.presentation.map.review
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
