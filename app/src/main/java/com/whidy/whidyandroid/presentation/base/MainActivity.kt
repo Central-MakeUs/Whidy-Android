@@ -7,6 +7,9 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
@@ -80,10 +83,19 @@ class MainActivity : AppCompatActivity() {
                     else -> Timber.e("Unknown placeType: $placeType")
                 }
             }
-            viewModel.placeDetail.observe(this) {
+            viewModel.placeDetail.observeOnce(this) {
                 findNavController(R.id.fragment_container).navigate(R.id.navigation_place_info)
             }
         }
+    }
+
+    private fun <T> LiveData<T>.observeOnce(owner: LifecycleOwner, observer: Observer<T>) {
+        observe(owner, object : Observer<T> {
+            override fun onChanged(value: T) {
+                observer.onChanged(value)
+                removeObserver(this)
+            }
+        })
     }
 
     fun hideBottomNavigation(state:Boolean){
