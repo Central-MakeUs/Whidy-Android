@@ -1,6 +1,6 @@
 package com.whidy.whidyandroid.presentation.my.review
 
-import com.whidy.whidyandroid.presentation.map.ItemType
+import com.whidy.whidyandroid.model.ItemType
 
 data class MyReview(
     val placeName: String,

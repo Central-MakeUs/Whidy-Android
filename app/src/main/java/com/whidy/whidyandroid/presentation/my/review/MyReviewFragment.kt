@@ -12,7 +12,7 @@ import com.naver.maps.geometry.LatLng
 import com.whidy.whidyandroid.R
 import com.whidy.whidyandroid.databinding.FragmentMyReviewBinding
 import com.whidy.whidyandroid.presentation.base.MainActivity
-import com.whidy.whidyandroid.presentation.map.ItemType
+import com.whidy.whidyandroid.model.ItemType
 import com.whidy.whidyandroid.presentation.map.home.MapViewModel
 
 class MyReviewFragment : Fragment() {
@@ -30,42 +30,42 @@ class MyReviewFragment : Fragment() {
             score = 4.5f,
             reviewTime = "2024.12.31",
             reviewComment = "커피 맛이 좋고 분위기가 훌륭합니다.",
-            tags = listOf(ItemType.COFFEE, ItemType.SEAT)
+            tags = listOf(ItemType.TASTY_COFFEE, ItemType.TASTY_COFFEE)
         ),
         MyReview(
             placeName = "스타벅스",
             score = 3.8f,
             reviewTime = "2024.11.22",
             reviewComment = "조용해서 공부하기 좋아요.",
-            tags = listOf(ItemType.FOCUS)
+            tags = listOf(ItemType.TASTY_COFFEE)
         ),
         MyReview(
             placeName = "블루보틀",
             score = 4.7f,
             reviewTime = "2024.10.15",
             reviewComment = "핸드드립 커피가 정말 맛있어요. 공간도 넓고 쾌적합니다.",
-            tags = listOf(ItemType.COFFEE, ItemType.SEAT, ItemType.FOCUS)
+            tags = listOf(ItemType.TASTY_COFFEE, ItemType.TASTY_COFFEE, ItemType.TASTY_COFFEE)
         ),
         MyReview(
             placeName = "빽다방",
             score = 3.5f,
             reviewTime = "2024.09.30",
             reviewComment = "가격이 저렴하고 양이 많아요. 하지만 자리 찾기가 힘듭니다.",
-            tags = listOf(ItemType.COFFEE)
+            tags = listOf(ItemType.TASTY_COFFEE)
         ),
         MyReview(
             placeName = "커피빈",
             score = 4.2f,
             reviewTime = "2024.08.10",
             reviewComment = "라떼가 부드럽고 매장이 조용해서 대화하기 좋아요.",
-            tags = listOf(ItemType.COFFEE, ItemType.SEAT)
+            tags = listOf(ItemType.TASTY_COFFEE, ItemType.TASTY_COFFEE)
         ),
         MyReview(
             placeName = "탐앤탐스",
             score = 3.9f,
             reviewTime = "2024.07.05",
             reviewComment = "넓은 테이블이 많아서 공부나 작업하기 좋아요.",
-            tags = listOf(ItemType.SEAT, ItemType.FOCUS)
+            tags = listOf(ItemType.TASTY_COFFEE, ItemType.TASTY_COFFEE)
         )
     )
 

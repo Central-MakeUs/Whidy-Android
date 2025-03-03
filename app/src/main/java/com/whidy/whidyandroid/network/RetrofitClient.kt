@@ -5,6 +5,7 @@ import com.whidy.whidyandroid.data.auth.AuthService
 import com.whidy.whidyandroid.data.my.MyPageService
 import com.whidy.whidyandroid.data.naver.NaverMapService
 import com.whidy.whidyandroid.data.place.PlaceService
+import com.whidy.whidyandroid.data.review.ReviewService
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -81,6 +82,10 @@ object RetrofitClient {
 
     val placeService: PlaceService by lazy {
         retrofit.create(PlaceService::class.java)
+    }
+
+    val reviewService: ReviewService by lazy {
+        retrofit.create(ReviewService::class.java)
     }
 
     val scrapService: ScrapService by lazy {
