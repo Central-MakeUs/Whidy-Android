@@ -31,6 +31,7 @@ import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.util.FusedLocationSource
 import com.whidy.whidyandroid.R
 import com.whidy.whidyandroid.databinding.FragmentMapBinding
+import com.whidy.whidyandroid.model.PlaceType
 import com.whidy.whidyandroid.presentation.base.MainActivity
 import com.whidy.whidyandroid.presentation.map.add.PlaceAddDialog
 import com.whidy.whidyandroid.presentation.map.info.PlaceInfoPopup
@@ -96,28 +97,38 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             }
         }
 
+        scrapViewModel.fetchScrapItems()
+
         mapViewModel.placeDetail.observe(viewLifecycleOwner) { place ->
+            Timber.d("placeDetail: $place")
             binding.tvPlaceName.text = place.name
+            binding.tvPlaceType.text = PlaceType.fromString(place.placeType)
             binding.tvPlaceAddress.text = place.address
             binding.tvPlacePrice.text = "${place.beveragePrice}원"
             binding.tvPlaceScore.text = (place.reviewScore ?: 0.0).toString()
             binding.tvPlaceReview.text = "후기 ${place.reviewNum}개"
 
-            val isScrapped = scrapViewModel.isScrapped(place.id)
-            binding.btnScrap.isSelected = isScrapped
+            updateScrapStatus(place.id)
 
             binding.btnScrap.setOnClickListener {
                 if (!binding.btnScrap.isSelected) {
                     scrapViewModel.setScrap(place.id)
                 } else {
-                    scrapViewModel.deleteScrap(place.id)
+                    val scrapItem = scrapViewModel.scrapItems.value?.find { it.placeId == place.id }
+                    if (scrapItem != null) {
+                        scrapViewModel.deleteScrap(scrapItem.scrapId)
+                    }
                 }
             }
 
             binding.apply {
-                Glide.with(ivPlaceImage.context)
-                    .load(place.images[0])
-                    .into(ivPlaceImage)
+                if (place.images.isNotEmpty()) {
+                    Glide.with(ivPlaceImage.context)
+                        .load(place.images[0])
+                        .into(ivPlaceImage)
+                } else {
+                    ivPlaceImage.visibility = View.GONE
+                }
             }
 
             val calendar = java.util.Calendar.getInstance()
@@ -145,6 +156,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 val openTime = sdf.parse(openTimeStr)
                 val closeTime = sdf.parse(closeTimeStr)
 
+                binding.tvPlaceTime.text = "${closeTimeStr} 까지"
+
                 if (currentTime.after(openTime) && currentTime.before(closeTime)) "영업중" else "영업종료"
             } else {
                 "휴무"
@@ -155,6 +168,12 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 binding.tvPlaceOpen.setTextColor(ContextCompat.getColor(requireContext(), R.color.R400))
             } else {
                 binding.tvPlaceOpen.setTextColor(ContextCompat.getColor(requireContext(), R.color.G900))
+            }
+        }
+
+        scrapViewModel.scrapItems.observe(viewLifecycleOwner) { scrapItems ->
+            mapViewModel.placeDetail.value?.let { place ->
+                updateScrapStatus(place.id)
             }
         }
 
@@ -263,6 +282,11 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         binding.btnScrap.setOnClickListener {
             it.isSelected = !it.isSelected
         }
+    }
+
+    private fun updateScrapStatus(placeId: Int) {
+        val isScrapped = scrapViewModel.isScrapped(placeId)
+        binding.btnScrap.isSelected = isScrapped
     }
 
     private fun hasPermission(): Boolean {
