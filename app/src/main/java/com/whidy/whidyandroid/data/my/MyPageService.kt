@@ -27,9 +27,9 @@ interface MyPageService {
 
     @GET("api/my/review")
     suspend fun getMyPlaceReviews(
-        @Query("placeId") placeId: Int,
-        @Query("offset") offset: Int,
-        @Query("limit") limit: Int
+        @Query("placeId") placeId: Int? = null,
+        @Query("offset") offset: Int = 0,
+        @Query("limit") limit: Int = 100
     ): Response<List<MyReviewResponse>>
 
     @GET("api/my/place-request")

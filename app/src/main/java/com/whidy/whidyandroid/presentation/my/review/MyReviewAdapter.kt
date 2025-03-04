@@ -3,38 +3,50 @@ package com.whidy.whidyandroid.presentation.my.review
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
+import com.whidy.whidyandroid.data.my.MyReviewResponse
 import com.whidy.whidyandroid.databinding.ItemMyReviewBinding
+import com.whidy.whidyandroid.model.ItemType
+import com.whidy.whidyandroid.presentation.map.info.PlaceInfoReviewTagAdapter
+import timber.log.Timber
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class MyReviewAdapter(
-    private var reviews: MutableList<MyReview>,
-    private val onDeleteClick: (MyReview) -> Unit,
-    private val onPlaceNameClick: (MyReview) -> Unit,
-    private val onEditClick: (MyReview) -> Unit
+    var items: MutableList<MyReviewResponse>,
+    private val onItemClick: (MyReviewResponse) -> Unit,
+    private val onDeleteClick: (MyReviewResponse) -> Unit
 ) : RecyclerView.Adapter<MyReviewAdapter.ReviewViewHolder>() {
 
     inner class ReviewViewHolder(private val binding: ItemMyReviewBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(review: MyReview) {
-            binding.tvPlaceName.text = review.placeName
-            binding.tvPlaceScore.text = review.score.toString()
-            binding.tvPlaceReviewTime.text = review.reviewTime
-            binding.tvPlaceReviewComment.text = review.reviewComment
+        fun bind(item: MyReviewResponse) {
+            binding.apply {
+                tvPlaceName.text = item.placeName
+                tvPlaceScore.text = item.score.toString()
+                val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
+                val date = inputFormat.parse(item.lastModifiedDateTime)
+                val outputFormat = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault())
+                val formattedDate = date?.let { outputFormat.format(it) }
+                tvPlaceReviewTime.text = formattedDate
+                tvPlaceReviewComment.text = ""
 
-            // 태그 설정
-            val tagAdapter = MyReviewTagAdapter(review.tags)
-            binding.rvPlaceReviewTag.adapter = tagAdapter
+                val displayTags = item.keywords.map { keyword ->
+                    try {
+                        ItemType.valueOf(keyword).description
+                    } catch (e: Exception) {
+                        Timber.e(e, "Unknown keyword: $keyword")
+                        keyword
+                    }
+                }
+                val tagAdapter = MyReviewTagAdapter(displayTags)
+                rvPlaceReviewTag.adapter = tagAdapter
 
-            binding.tvPlaceName.setOnClickListener {
-                onPlaceNameClick(review)
-            }
+                root.setOnClickListener { onItemClick(item) }
 
-            binding.btnEdit.setOnClickListener {
-                onEditClick(review)
-            }
-
-            binding.btnDelete.setOnClickListener {
-                onDeleteClick(review)
+                btnDelete.setOnClickListener { onDeleteClick(item) }
             }
         }
     }
@@ -46,17 +58,13 @@ class MyReviewAdapter(
     }
 
     override fun onBindViewHolder(holder: ReviewViewHolder, position: Int) {
-        holder.bind(reviews[position])
+        holder.bind(items[position])
     }
 
-    override fun getItemCount() = reviews.size
+    override fun getItemCount() = items.size
 
-    fun removeItem(review: MyReview) {
-        val position = reviews.indexOf(review)
-        if (position != -1) {
-            reviews.removeAt(position)
-            notifyItemRemoved(position)
-            notifyItemRangeChanged(position, reviews.size) // 인덱스 재조정
-        }
+    fun updateData(newItems: MutableList<MyReviewResponse>) {
+        items = newItems
+        notifyDataSetChanged()
     }
 }

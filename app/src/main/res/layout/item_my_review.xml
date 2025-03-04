@@ -53,6 +53,7 @@
         android:paddingEnd="12dp"
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
+        android:layout_marginEnd="4dp"
         app:layout_constraintEnd_toStartOf="@+id/btn_delete"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -76,6 +77,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_star_18"
+        android:layout_marginTop="4dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_place_name" />
 
@@ -107,7 +109,7 @@
         android:id="@+id/tv_place_review_comment"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="1층은 분위기 좋고 2층은 작업이나 공부하기 좋은 곳이네요 ㅎㅎ 인테리어도 이쁘고 음악도 잔잔하니 다시 방문하고 싶어요! 말차라떼랑 크로플도 맛있네요 :)"
+        android:text=""
         android:textColor="@color/G900"
         style="@style/b2_m"
         android:layout_marginTop="12dp"

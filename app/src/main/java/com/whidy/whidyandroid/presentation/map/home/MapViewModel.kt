@@ -7,8 +7,10 @@ import androidx.lifecycle.viewModelScope
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.NaverMap
 import com.whidy.whidyandroid.R
+import com.whidy.whidyandroid.data.my.MyReviewResponse
 import com.whidy.whidyandroid.data.place.GetPlaceResponse
 import com.whidy.whidyandroid.data.place.PlaceResponse
+import com.whidy.whidyandroid.data.review.ReviewResponse
 import com.whidy.whidyandroid.network.RetrofitClient
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -54,8 +56,8 @@ class MapViewModel : ViewModel() {
                     businessDayOfWeek = null,
                     visitTimeFromHour = null,
                     visitTimeToHour = null,
-                    centerLatitude = 37.541113416270406,
-                    centerLongitude = 127.05062406417724,
+                    centerLatitude = 37.545532,
+                    centerLongitude = 126.952514,
                     radius = 100000000,
                     keyword = keyword
                 )
@@ -69,6 +71,57 @@ class MapViewModel : ViewModel() {
                 }
             } catch (e: Exception) {
                 Timber.e(e, "fetchPlaceList API 호출 중 예외 발생")
+            }
+        }
+    }
+
+    private val _reviews = MutableLiveData<List<ReviewResponse>>()
+    val reviews: LiveData<List<ReviewResponse>> get() = _reviews
+
+    fun fetchReviews(placeId: Int, offset: Int = 0, limit: Int = 100) {
+        viewModelScope.launch {
+            try {
+                val response = RetrofitClient.reviewService.getReviews(placeId, offset, limit)
+                if (response.isSuccessful) {
+                    _reviews.value = response.body() ?: emptyList()
+                    Timber.d("Fetched reviews for placeId $placeId: ${_reviews.value}")
+                } else {
+                    Timber.e("Failed to fetch reviews: ${response.code()} ${response.errorBody()?.string()}")
+                }
+            } catch (e: Exception) {
+                Timber.e(e, "Exception fetching reviews for placeId $placeId")
+            }
+        }
+    }
+
+    private val _myReviews = MutableLiveData<MutableList<MyReviewResponse>>()
+    val myReviews: LiveData<MutableList<MyReviewResponse>> get() = _myReviews
+
+    fun fetchMyReviews(placeId: Int? = null, offset: Int = 0, limit: Int = 100) {
+        viewModelScope.launch {
+            try {
+                val response = RetrofitClient.myService.getMyPlaceReviews(placeId, offset, limit)
+                if (response.isSuccessful) {
+                    _myReviews.value = (response.body() ?: emptyList()) as MutableList<MyReviewResponse>?
+                    Timber.d("Fetched reviews for placeId $placeId: ${_myReviews.value}")
+                } else {
+                    Timber.e("Failed to fetch reviews: ${response.code()} ${response.errorBody()?.string()}")
+                }
+            } catch (e: Exception) {
+                Timber.e(e, "Exception fetching reviews for placeId $placeId")
+            }
+        }
+    }
+
+    fun deleteReview(reviewId: Int, onResult: (Boolean) -> Unit) {
+        viewModelScope.launch {
+            try {
+                RetrofitClient.reviewService.deleteReview(reviewId)
+                Timber.d("Review $reviewId deleted successfully")
+                onResult(true)
+            } catch (e: Exception) {
+                Timber.e(e, "Exception deleting review with id $reviewId")
+                onResult(false)
             }
         }
     }
