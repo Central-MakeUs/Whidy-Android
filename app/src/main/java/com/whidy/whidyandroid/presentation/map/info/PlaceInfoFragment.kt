@@ -329,14 +329,6 @@ class PlaceInfoFragment: Fragment() {
         mapViewModel.reviews.observe(viewLifecycleOwner) { reviews ->
             placeReviewCommentAdapter.updateData(reviews)
 
-            reviews.forEach { review ->
-                mapViewModel.fetchReviewDate(review.id) { lastModifiedDate ->
-                    lastModifiedDate?.let {
-                        placeReviewCommentAdapter.updateReviewTime(review.id, it)
-                    }
-                }
-            }
-
             val keywordCountMap = mutableMapOf<String, Int>()
             reviews.forEach { review ->
                 review.keywords.forEach { keyword ->

@@ -10,12 +10,12 @@ import com.whidy.whidyandroid.databinding.ItemPlaceReviewCommentBinding
 import com.whidy.whidyandroid.model.ItemType
 import com.whidy.whidyandroid.presentation.map.info.PlaceInfoReviewTagAdapter
 import timber.log.Timber
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class PlaceReviewCommentAdapter(
     private var items: List<ReviewResponse>
 ) : RecyclerView.Adapter<PlaceReviewCommentAdapter.ViewHolder>() {
-
-    private val reviewTimes: MutableMap<Int, String> = mutableMapOf()
 
     inner class ViewHolder(private val binding: ItemPlaceReviewCommentBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -29,7 +29,11 @@ class PlaceReviewCommentAdapter(
 
                 tvUserNickname.text = item.userName
                 tvPlaceScore.text = item.score.toString()
-                tvPlaceReviewTime.text = reviewTimes[item.id] ?: ""
+                val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
+                val date = inputFormat.parse(item.lastModifiedDateTime)
+                val outputFormat = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault())
+                val formattedDate = date?.let { outputFormat.format(it) }
+                tvPlaceReviewTime.text = formattedDate
                 tvPlaceReviewComment.text = ""
 
                 val displayTags = item.keywords.map { keyword ->
@@ -60,14 +64,5 @@ class PlaceReviewCommentAdapter(
     fun updateData(newItems: List<ReviewResponse>) {
         items = newItems
         notifyDataSetChanged()
-    }
-
-    fun updateReviewTime(reviewId: Int, time: String) {
-        reviewTimes[reviewId] = time
-        // 해당 리뷰 항목만 새로고침
-        val index = items.indexOfFirst { it.id == reviewId }
-        if (index != -1) {
-            notifyItemChanged(index)
-        }
     }
 }

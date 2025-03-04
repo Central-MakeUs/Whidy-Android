@@ -13,5 +13,7 @@ data class MyReviewResponse(
     val companionType: String,
     val userId: Int,
     val userName: String,
-    val userProfileImage: String
+    val userProfileImage: String,
+    val createdDateTime: String,
+    val lastModifiedDateTime: String
 )
