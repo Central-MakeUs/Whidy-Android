@@ -83,7 +83,7 @@
 
     <fragment
         android:id="@+id/navigation_place_review_all"
-        android:name="com.whidy.whidyandroid.presentation.map.info.PlaceReviewAllFragment"
+        android:name="com.whidy.whidyandroid.presentation.map.review.PlaceReviewAllFragment"
         android:label="fragment_place_review_all"
         tools:layout="@layout/fragment_place_review_all">
         <action
@@ -94,7 +94,7 @@
 
     <fragment
         android:id="@+id/navigation_place_review_write"
-        android:name="com.whidy.whidyandroid.presentation.map.info.PlaceReviewWriteFragment"
+        android:name="com.whidy.whidyandroid.presentation.map.review.PlaceReviewWriteFragment"
         android:label="fragment_place_review_write"
         tools:layout="@layout/fragment_place_review_write">
         <action
@@ -105,7 +105,7 @@
 
     <fragment
         android:id="@+id/navigation_place_review_write_2"
-        android:name="com.whidy.whidyandroid.presentation.map.info.PlaceReviewWrite2Fragment"
+        android:name="com.whidy.whidyandroid.presentation.map.review.PlaceReviewWrite2Fragment"
         android:label="fragment_place_review_write_2"
         tools:layout="@layout/fragment_place_review_write_2">
         <action
