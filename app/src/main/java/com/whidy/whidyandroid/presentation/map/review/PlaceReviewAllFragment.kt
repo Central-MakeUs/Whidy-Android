@@ -7,10 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.whidy.whidyandroid.R
 import com.whidy.whidyandroid.databinding.FragmentPlaceReviewAllBinding
+import com.whidy.whidyandroid.model.ItemType
+import com.whidy.whidyandroid.presentation.map.home.MapViewModel
+import com.whidy.whidyandroid.utils.ItemVerticalDecoration
 
 class PlaceReviewAllFragment : Fragment() {
     private lateinit var navController: NavController
@@ -21,6 +25,8 @@ class PlaceReviewAllFragment : Fragment() {
     private lateinit var placeReviewCommentAdapter: PlaceReviewCommentAdapter
 
     private var isExpanded = false
+
+    private val mapViewModel: MapViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -42,21 +48,62 @@ class PlaceReviewAllFragment : Fragment() {
             navController.navigateUp()
         }
 
+        mapViewModel.placeDetail.observe(viewLifecycleOwner) { place ->
+            binding.tvPlaceInfoScore.text = (place.reviewScore ?: 0.0).toString()
+            binding.tvPlaceInfoReviewAmount.text = "(${place.reviewNum})"
+        }
+
+        placeReviewCommentAdapter = PlaceReviewCommentAdapter(emptyList())
+        binding.rvPlaceReview.adapter = placeReviewCommentAdapter
+
         // 3개만 보이는 RecyclerView 설정
-//        val collapsedAdapter = PlaceReviewTagAdapter(getPlaceReviewTagData().take(3))
-//        binding.rvPlaceReviewTagCollapsed.apply {
-//            adapter = collapsedAdapter
-//            val itemSpace = resources.getDimensionPixelSize(R.dimen.place_review_tag)
-//            addItemDecoration(ItemVerticalDecoration(itemSpace))
-//        }
-//
-//        // 전체 리스트를 보이는 RecyclerView 설정
-//        val expandedAdapter = PlaceReviewTagAdapter(getPlaceReviewTagData())
-//        binding.rvPlaceReviewTagExpanded.apply {
-//            adapter = expandedAdapter
-//            val itemSpace = resources.getDimensionPixelSize(R.dimen.place_review_tag)
-//            addItemDecoration(ItemVerticalDecoration(itemSpace))
-//        }
+        val collapsedAdapter = PlaceReviewTagAdapter(emptyList())
+        binding.rvPlaceReviewTagCollapsed.apply {
+            adapter = collapsedAdapter
+            addItemDecoration(ItemVerticalDecoration(resources.getDimensionPixelSize(R.dimen.place_review_tag)))
+        }
+
+        // 전체 리스트를 보이는 RecyclerView 설정
+        val expandedAdapter = PlaceReviewTagAdapter(emptyList())
+        binding.rvPlaceReviewTagExpanded.apply {
+            adapter = expandedAdapter
+            addItemDecoration(ItemVerticalDecoration(resources.getDimensionPixelSize(R.dimen.place_review_tag)))
+        }
+
+        mapViewModel.reviews.observe(viewLifecycleOwner) { reviews ->
+            placeReviewCommentAdapter.updateData(reviews)
+
+            val keywordCountMap = mutableMapOf<String, Int>()
+            reviews.forEach { review ->
+                review.keywords.forEach { keyword ->
+                    // 키워드가 이미 존재하면 +1, 없으면 1로 초기화
+                    keywordCountMap[keyword] = keywordCountMap.getOrDefault(keyword, 0) + 1
+                }
+            }
+
+            // 각 키워드를 ItemType enum으로 변환하여 PlaceReviewTag 객체 생성
+            val placeReviewTags = keywordCountMap.mapNotNull { (keyword, count) ->
+                try {
+                    val itemType = ItemType.valueOf(keyword)
+                    PlaceReviewTag(type = itemType, peopleCount = count)
+                } catch (e: Exception) {
+                    null
+                }
+            }
+
+            // 어댑터에 업데이트
+            collapsedAdapter.updateData(placeReviewTags.take(3))
+            expandedAdapter.updateData(placeReviewTags)
+
+            if (placeReviewTags.size <= 3) {
+                binding.btnPlaceReviewTagAllDown.visibility = View.GONE
+                binding.btnPlaceReviewTagAllUp.visibility = View.GONE
+            } else {
+                // 3개 초과이면 기본적으로 축소 상태이므로 down 버튼 보이고, up 버튼 숨김
+                binding.btnPlaceReviewTagAllDown.visibility = View.VISIBLE
+                binding.btnPlaceReviewTagAllUp.visibility = View.INVISIBLE
+            }
+        }
 
         binding.btnPlaceReviewTagAllDown.setOnClickListener {
             isExpanded = !isExpanded
@@ -73,11 +120,6 @@ class PlaceReviewAllFragment : Fragment() {
             binding.btnPlaceReviewTagAllUp.visibility = View.INVISIBLE
             binding.btnPlaceReviewTagAllDown.visibility = View.VISIBLE
         }
-
-//        placeReviewCommentAdapter = PlaceReviewCommentAdapter(getPlaceReviewCommentData())
-//        binding.rvPlaceReview.apply {
-//            adapter = placeReviewCommentAdapter
-//        }
 
         binding.clPlaceReviewStars.setOnClickListener {
             navController.navigate(R.id.action_navigation_place_review_all_to_write)
