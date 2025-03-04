@@ -6,19 +6,25 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.whidy.whidyandroid.R
 import com.whidy.whidyandroid.databinding.FragmentPlaceReviewWrite2Binding
 import com.whidy.whidyandroid.presentation.base.MainActivity
+import com.whidy.whidyandroid.presentation.map.home.MapViewModel
 
 class PlaceReviewWrite2Fragment : Fragment() {
     private lateinit var navController: NavController
     private var _binding: FragmentPlaceReviewWrite2Binding? = null
     private val binding: FragmentPlaceReviewWrite2Binding
         get() = requireNotNull(_binding){"FragmentPlaceReviewWrite2Binding -> null"}
+
+    private val mapViewModel: MapViewModel by activityViewModels()
+    private val viewModel: PlaceReviewWriteViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -75,7 +81,29 @@ class PlaceReviewWrite2Fragment : Fragment() {
         })
 
         binding.btnPlaceReviewWriteComplete.setOnClickListener {
-            navController.navigate(R.id.action_navigation_place_write_2_to_info)
+            mapViewModel.placeDetail.observe(viewLifecycleOwner) { place ->
+                if (viewModel.existingReviewId.value == null) {
+                    // 신규 리뷰 저장 (POST)
+                    viewModel.postReview(place.id,
+                        onSuccess = {
+                            navController.navigate(R.id.action_navigation_place_write_2_to_info)
+                        },
+                        onFailure = {
+                            Toast.makeText(requireContext(), "리뷰 저장 실패", Toast.LENGTH_SHORT).show()
+                        }
+                    )
+                } else {
+                    // 기존 리뷰 업데이트 (PUT)
+                    viewModel.updateReview(place.id,
+                        onSuccess = {
+                            navController.navigate(R.id.action_navigation_place_write_2_to_info)
+                        },
+                        onFailure = {
+                            Toast.makeText(requireContext(), "리뷰 업데이트 실패", Toast.LENGTH_SHORT).show()
+                        }
+                    )
+                }
+            }
         }
     }
 

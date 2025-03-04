@@ -74,6 +74,7 @@ class PlaceInfoFragment: Fragment() {
         }
 
         scrapViewModel.fetchScrapItems()
+        mapViewModel.fetchMyReviews()
 
         mapViewModel.placeDetail.observe(viewLifecycleOwner) { place ->
             binding.tvPlaceName.text = place.name

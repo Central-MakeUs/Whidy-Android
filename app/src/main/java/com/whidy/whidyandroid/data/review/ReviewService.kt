@@ -1,6 +1,5 @@
 package com.whidy.whidyandroid.data.review
 
-import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -27,11 +26,6 @@ interface ReviewService {
     suspend fun postReview(
         @Body reviewRequest: ReviewRequest
     ): Unit
-
-    @GET("api/review/{reviewId}")
-    suspend fun getReviewDate(
-        @Path("reviewId") reviewId: Int
-    ): Response<ResponseBody>
 
     @DELETE("api/review/{reviewId}")
     suspend fun deleteReview(

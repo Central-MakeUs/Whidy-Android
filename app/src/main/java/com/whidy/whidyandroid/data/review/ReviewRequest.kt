@@ -1,7 +1,7 @@
 package com.whidy.whidyandroid.data.review
 
 data class ReviewRequest(
-    val reviewId: Int,
+    val reviewId: Int = 0,
     val placeId: Int,
     val score: Double,
     val keywords: List<String>,
