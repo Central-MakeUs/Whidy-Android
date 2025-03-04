@@ -17,6 +17,7 @@ import com.whidy.whidyandroid.R
 import com.whidy.whidyandroid.data.place.GetPlaceResponse
 import com.whidy.whidyandroid.databinding.FragmentPlaceSearchBinding
 import com.whidy.whidyandroid.presentation.base.MainActivity
+import com.whidy.whidyandroid.presentation.map.filter.PlaceFilterViewModel
 import com.whidy.whidyandroid.presentation.map.home.MapViewModel
 import com.whidy.whidyandroid.utils.ItemHorizontalDecoration
 import kotlinx.coroutines.Job
@@ -35,6 +36,7 @@ class PlaceSearchFragment : Fragment() {
     private lateinit var searchResultAdapter: SearchResultAdapter
 
     private val mapViewModel: MapViewModel by activityViewModels()
+    private val placeFilterViewModel: PlaceFilterViewModel by activityViewModels()
     private var currentSearchResults: List<GetPlaceResponse> = emptyList()
 
     private var searchJob: Job? = null
@@ -87,6 +89,36 @@ class PlaceSearchFragment : Fragment() {
             } else {
                 binding.btnDeleteEt.visibility = View.GONE
             }
+        }
+
+        placeFilterViewModel.searchResults.observe(viewLifecycleOwner) { places ->
+            if (places != null) {
+                searchResultAdapter.updateData(places)
+            }
+            Timber.d("검색 결과 업데이트: $places")
+            if (places != null) {
+                searchResultAdapter.updateData(places)
+                if (places.isEmpty()) {
+                    Timber.d("검색 결과가 비어있음")
+                    binding.rvSearchResult.visibility = View.GONE
+                    binding.clSearchEmptyView.visibility = View.VISIBLE
+                    binding.tvTitleRecentSearch.visibility = View.VISIBLE
+                    binding.rvRecentSearch.visibility = View.VISIBLE
+                    binding.btnDeleteEntire.visibility = View.VISIBLE
+                } else {
+                    Timber.d("검색 결과가 있음 - 아이템 개수: ${places.size}")
+                    binding.rvSearchResult.visibility = View.VISIBLE
+                    binding.clSearchEmptyView.visibility = View.GONE
+                    binding.tvTitleRecentSearch.visibility = View.GONE
+                    binding.rvRecentSearch.visibility = View.GONE
+                    binding.btnDeleteEntire.visibility = View.GONE
+                }
+            } else {
+                Timber.d("검색 결과가 null")
+                binding.rvSearchResult.visibility = View.GONE
+                binding.clSearchEmptyView.visibility = View.GONE
+            }
+
         }
 
         binding.etSearch.addTextChangedListener(object : TextWatcher {

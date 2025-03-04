@@ -9,6 +9,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import com.whidy.whidyandroid.R
 import com.whidy.whidyandroid.databinding.FragmentPlaceFilterBinding
 import com.whidy.whidyandroid.presentation.base.MainActivity
 import kotlinx.coroutines.Job
@@ -193,7 +194,7 @@ class PlaceFilterFragment : Fragment() {
         }
 
         binding.btnPlaceFilterResult.setOnClickListener {
-            navController.navigateUp()
+            navController.navigate(R.id.action_navigation_place_filter_to_search)
         }
 
         // 검색 결과 개수 갱신
