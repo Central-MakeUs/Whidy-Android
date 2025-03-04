@@ -8,5 +8,6 @@ data class ReviewRequest(
     val isReserved: Boolean,
     val waitTime: String,
     val visitPurposes: List<String>,
-    val companionType: String
+    val companionType: String,
+    val comment: String
 )

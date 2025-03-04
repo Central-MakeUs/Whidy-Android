@@ -8,6 +8,7 @@ data class ReviewResponse(
     val score: Double,
     val keywords: List<String>,
     val isReserved: Boolean,
+    val comment: String,
     val waitTime: String,
     val visitPurposes: List<String>,
     val companionType: String,

@@ -34,7 +34,7 @@ class PlaceReviewCommentAdapter(
                 val outputFormat = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault())
                 val formattedDate = date?.let { outputFormat.format(it) }
                 tvPlaceReviewTime.text = formattedDate
-                tvPlaceReviewComment.text = ""
+                tvPlaceReviewComment.text = item.comment
 
                 val displayTags = item.keywords.map { keyword ->
                     try {

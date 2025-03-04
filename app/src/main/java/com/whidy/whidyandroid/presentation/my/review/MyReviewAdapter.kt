@@ -3,12 +3,9 @@ package com.whidy.whidyandroid.presentation.my.review
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import com.whidy.whidyandroid.data.my.MyReviewResponse
 import com.whidy.whidyandroid.databinding.ItemMyReviewBinding
 import com.whidy.whidyandroid.model.ItemType
-import com.whidy.whidyandroid.presentation.map.info.PlaceInfoReviewTagAdapter
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -16,6 +13,7 @@ import java.util.Locale
 class MyReviewAdapter(
     var items: MutableList<MyReviewResponse>,
     private val onItemClick: (MyReviewResponse) -> Unit,
+    private val onEditClick: (MyReviewResponse) -> Unit,
     private val onDeleteClick: (MyReviewResponse) -> Unit
 ) : RecyclerView.Adapter<MyReviewAdapter.ReviewViewHolder>() {
 
@@ -31,7 +29,7 @@ class MyReviewAdapter(
                 val outputFormat = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault())
                 val formattedDate = date?.let { outputFormat.format(it) }
                 tvPlaceReviewTime.text = formattedDate
-                tvPlaceReviewComment.text = ""
+                tvPlaceReviewComment.text = item.comment
 
                 val displayTags = item.keywords.map { keyword ->
                     try {
@@ -45,7 +43,7 @@ class MyReviewAdapter(
                 rvPlaceReviewTag.adapter = tagAdapter
 
                 root.setOnClickListener { onItemClick(item) }
-
+                btnEdit.setOnClickListener { onEditClick(item) }
                 btnDelete.setOnClickListener { onDeleteClick(item) }
             }
         }

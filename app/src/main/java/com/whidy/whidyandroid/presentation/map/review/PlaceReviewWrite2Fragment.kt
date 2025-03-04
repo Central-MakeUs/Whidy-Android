@@ -66,6 +66,7 @@ class PlaceReviewWrite2Fragment : Fragment() {
                 val length = s?.length ?: 0
                 binding.tvCharCount.text = "$length"
                 binding.btnPlaceReviewWriteComplete.isSelected = length > 0
+                viewModel.setComment(binding.etPlaceReview.text.toString())
 
                 // 글자가 400글자면 카운트 TextView의 색상 변경, 아니면 원래 색상 적용
                 if (length == 400) {
@@ -80,13 +81,28 @@ class PlaceReviewWrite2Fragment : Fragment() {
             }
         })
 
+        mapViewModel.placeDetail.observe(viewLifecycleOwner) { place ->
+            val existingReview = mapViewModel.myReviews.value?.find { it.placeId == place.id }
+            if (existingReview != null) {
+                // 기존 리뷰가 있다면 그 id를 ViewModel에 저장
+                viewModel.setExistingReviewId(existingReview.id)
+                binding.etPlaceReview.setText(existingReview.comment)
+            } else {
+                viewModel.setExistingReviewId(null)
+            }
+        }
+
         binding.btnPlaceReviewWriteComplete.setOnClickListener {
             mapViewModel.placeDetail.observe(viewLifecycleOwner) { place ->
                 if (viewModel.existingReviewId.value == null) {
                     // 신규 리뷰 저장 (POST)
                     viewModel.postReview(place.id,
                         onSuccess = {
-                            navController.navigate(R.id.action_navigation_place_write_2_to_info)
+                            navController.navigate(R.id.action_navigation_place_write_2_to_info, null,
+                                androidx.navigation.navOptions {
+                                    popUpTo(R.id.navigation_place_review_write) { inclusive = true }
+                                }
+                            )
                         },
                         onFailure = {
                             Toast.makeText(requireContext(), "리뷰 저장 실패", Toast.LENGTH_SHORT).show()
@@ -96,7 +112,11 @@ class PlaceReviewWrite2Fragment : Fragment() {
                     // 기존 리뷰 업데이트 (PUT)
                     viewModel.updateReview(place.id,
                         onSuccess = {
-                            navController.navigate(R.id.action_navigation_place_write_2_to_info)
+                            navController.navigate(R.id.action_navigation_place_write_2_to_info, null,
+                                androidx.navigation.navOptions {
+                                    popUpTo(R.id.navigation_place_review_write) { inclusive = true }
+                                }
+                            )
                         },
                         onFailure = {
                             Toast.makeText(requireContext(), "리뷰 업데이트 실패", Toast.LENGTH_SHORT).show()

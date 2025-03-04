@@ -12,6 +12,7 @@ import com.whidy.whidyandroid.R
 import com.whidy.whidyandroid.databinding.FragmentMyReviewBinding
 import com.whidy.whidyandroid.presentation.base.MainActivity
 import com.whidy.whidyandroid.presentation.map.home.MapViewModel
+import timber.log.Timber
 
 class MyReviewFragment : Fragment() {
     private lateinit var navController: NavController
@@ -42,7 +43,28 @@ class MyReviewFragment : Fragment() {
         (requireActivity() as MainActivity).hideBottomNavigation(true)
 
         myReviewAdapter = MyReviewAdapter(mutableListOf(),
-            onItemClick = {},
+            onItemClick = { review ->
+                when (review.placeType) {
+                    "GENERAL_CAFE" -> mapViewModel.fetchPlaceGeneralCafe(review.placeId)
+                    "STUDY_CAFE" -> mapViewModel.fetchPlaceStudyCafe(review.placeId)
+                    "FREE_STUDY_SPACE" -> mapViewModel.fetchPlaceFreeStudy(review.placeId)
+                    "FREE_PICTURE" -> mapViewModel.fetchPlaceFreePicture(review.placeId)
+                    "FREE_CLOTHES_RENTAL" -> mapViewModel.fetchPlaceFreeClothes(review.placeId)
+                    "FRANCHISE_CAFE" -> mapViewModel.fetchPlaceFranchiseCafe(review.placeId)
+                    else -> Timber.e("Unknown reviewType: ${review.placeType}")
+                }
+                navController.navigate(R.id.navigation_place_info) },
+            onEditClick = { review ->
+                when (review.placeType) {
+                    "GENERAL_CAFE" -> mapViewModel.fetchPlaceGeneralCafe(review.placeId)
+                    "STUDY_CAFE" -> mapViewModel.fetchPlaceStudyCafe(review.placeId)
+                    "FREE_STUDY_SPACE" -> mapViewModel.fetchPlaceFreeStudy(review.placeId)
+                    "FREE_PICTURE" -> mapViewModel.fetchPlaceFreePicture(review.placeId)
+                    "FREE_CLOTHES_RENTAL" -> mapViewModel.fetchPlaceFreeClothes(review.placeId)
+                    "FRANCHISE_CAFE" -> mapViewModel.fetchPlaceFranchiseCafe(review.placeId)
+                    else -> Timber.e("Unknown reviewType: ${review.placeType}")
+                }
+                navController.navigate(R.id.navigation_place_review_write) },
             onDeleteClick = { review ->
                 mapViewModel.deleteReview(review.id) { success ->
                     if (success) {

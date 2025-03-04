@@ -29,6 +29,9 @@ class PlaceReviewWriteViewModel : ViewModel() {
     private val _visitPurpose = MutableLiveData<List<String>>()
     val visitPurpose: LiveData<List<String>> get() = _visitPurpose
 
+    private val _comment = MutableLiveData<String>()
+    val comment: LiveData<String> get() = _comment
+
     fun setScore(rating: Double) {
         _score.value = rating
     }
@@ -53,6 +56,10 @@ class PlaceReviewWriteViewModel : ViewModel() {
         _visitPurpose.value = selectedList
     }
 
+    fun setComment(value: String) {
+        _comment.value = value
+    }
+
     fun postReview(placeId: Int, onSuccess: () -> Unit, onFailure: () -> Unit) {
         viewModelScope.launch {
             try {
@@ -67,7 +74,8 @@ class PlaceReviewWriteViewModel : ViewModel() {
                     },
                     waitTime = _howLongWait.value ?: "NO_WAIT",
                     visitPurposes = _visitPurpose.value ?: emptyList(),
-                    companionType = _withWho.value ?: "SOLO"
+                    companionType = _withWho.value ?: "SOLO",
+                    comment = _comment.value ?: ""
                 )
                 RetrofitClient.reviewService.postReview(reviewRequest)
                 Timber.d("Review posted successfully: $reviewRequest")
@@ -100,7 +108,8 @@ class PlaceReviewWriteViewModel : ViewModel() {
                     },
                     waitTime = _howLongWait.value ?: "NO_WAIT",
                     visitPurposes = _visitPurpose.value ?: emptyList(),
-                    companionType = _withWho.value ?: "SOLO"
+                    companionType = _withWho.value ?: "SOLO",
+                    comment = _comment.value ?: ""
                 )
                 RetrofitClient.reviewService.updateReview(reviewRequest)
                 Timber.d("Review updated: $reviewRequest")
