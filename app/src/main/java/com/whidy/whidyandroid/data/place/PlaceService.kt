@@ -21,7 +21,7 @@ interface PlaceService {
         @Query("beverageFrom") beverageFrom: Int? = null,
         @Query("beverageTo") beverageTo: Int? = null,
         @Query("placeType") placeType: List<String>? = null,
-        @Query("businessDayOfWeek") businessDayOfWeek: List<String>? = null,
+        @Query("businessDayOfWeek") businessDayOfWeek: String? = null,
         @Query("visitTimeFrom") visitTimeFromHour: Int? = null,
         @Query("visitTimeTo") visitTimeToHour: Int? = null,
         @Query("centerLatitude") centerLatitude: Double? = null,
