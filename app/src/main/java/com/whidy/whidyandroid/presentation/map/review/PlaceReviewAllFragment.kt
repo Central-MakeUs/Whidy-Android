@@ -1,4 +1,4 @@
-package com.whidy.whidyandroid.presentation.map.info
+package com.whidy.whidyandroid.presentation.map.review
 
 import android.animation.ValueAnimator
 import android.os.Bundle
@@ -7,11 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.whidy.whidyandroid.R
 import com.whidy.whidyandroid.databinding.FragmentPlaceReviewAllBinding
-import com.whidy.whidyandroid.presentation.map.ItemType
+import com.whidy.whidyandroid.model.ItemType
+import com.whidy.whidyandroid.presentation.map.home.MapViewModel
 import com.whidy.whidyandroid.utils.ItemVerticalDecoration
 
 class PlaceReviewAllFragment : Fragment() {
@@ -23,6 +25,8 @@ class PlaceReviewAllFragment : Fragment() {
     private lateinit var placeReviewCommentAdapter: PlaceReviewCommentAdapter
 
     private var isExpanded = false
+
+    private val mapViewModel: MapViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,20 +48,61 @@ class PlaceReviewAllFragment : Fragment() {
             navController.navigateUp()
         }
 
+        mapViewModel.placeDetail.observe(viewLifecycleOwner) { place ->
+            binding.tvPlaceInfoScore.text = (place.reviewScore ?: 0.0).toString()
+            binding.tvPlaceInfoReviewAmount.text = "(${place.reviewNum})"
+        }
+
+        placeReviewCommentAdapter = PlaceReviewCommentAdapter(emptyList())
+        binding.rvPlaceReview.adapter = placeReviewCommentAdapter
+
         // 3개만 보이는 RecyclerView 설정
-        val collapsedAdapter = PlaceReviewTagAdapter(getPlaceReviewTagData().take(3))
+        val collapsedAdapter = PlaceReviewTagAdapter(emptyList())
         binding.rvPlaceReviewTagCollapsed.apply {
             adapter = collapsedAdapter
-            val itemSpace = resources.getDimensionPixelSize(R.dimen.place_review_tag)
-            addItemDecoration(ItemVerticalDecoration(itemSpace))
+            addItemDecoration(ItemVerticalDecoration(resources.getDimensionPixelSize(R.dimen.place_review_tag)))
         }
 
         // 전체 리스트를 보이는 RecyclerView 설정
-        val expandedAdapter = PlaceReviewTagAdapter(getPlaceReviewTagData())
+        val expandedAdapter = PlaceReviewTagAdapter(emptyList())
         binding.rvPlaceReviewTagExpanded.apply {
             adapter = expandedAdapter
-            val itemSpace = resources.getDimensionPixelSize(R.dimen.place_review_tag)
-            addItemDecoration(ItemVerticalDecoration(itemSpace))
+            addItemDecoration(ItemVerticalDecoration(resources.getDimensionPixelSize(R.dimen.place_review_tag)))
+        }
+
+        mapViewModel.reviews.observe(viewLifecycleOwner) { reviews ->
+            placeReviewCommentAdapter.updateData(reviews)
+
+            val keywordCountMap = mutableMapOf<String, Int>()
+            reviews.forEach { review ->
+                review.keywords.forEach { keyword ->
+                    // 키워드가 이미 존재하면 +1, 없으면 1로 초기화
+                    keywordCountMap[keyword] = keywordCountMap.getOrDefault(keyword, 0) + 1
+                }
+            }
+
+            // 각 키워드를 ItemType enum으로 변환하여 PlaceReviewTag 객체 생성
+            val placeReviewTags = keywordCountMap.mapNotNull { (keyword, count) ->
+                try {
+                    val itemType = ItemType.valueOf(keyword)
+                    PlaceReviewTag(type = itemType, peopleCount = count)
+                } catch (e: Exception) {
+                    null
+                }
+            }
+
+            // 어댑터에 업데이트
+            collapsedAdapter.updateData(placeReviewTags.take(3))
+            expandedAdapter.updateData(placeReviewTags)
+
+            if (placeReviewTags.size <= 3) {
+                binding.btnPlaceReviewTagAllDown.visibility = View.GONE
+                binding.btnPlaceReviewTagAllUp.visibility = View.GONE
+            } else {
+                // 3개 초과이면 기본적으로 축소 상태이므로 down 버튼 보이고, up 버튼 숨김
+                binding.btnPlaceReviewTagAllDown.visibility = View.VISIBLE
+                binding.btnPlaceReviewTagAllUp.visibility = View.INVISIBLE
+            }
         }
 
         binding.btnPlaceReviewTagAllDown.setOnClickListener {
@@ -74,11 +119,6 @@ class PlaceReviewAllFragment : Fragment() {
             expandView(binding.rvPlaceReviewTagCollapsed) // 3개 보이는 RecyclerView 다시 보이기
             binding.btnPlaceReviewTagAllUp.visibility = View.INVISIBLE
             binding.btnPlaceReviewTagAllDown.visibility = View.VISIBLE
-        }
-
-        placeReviewCommentAdapter = PlaceReviewCommentAdapter(getPlaceReviewCommentData())
-        binding.rvPlaceReview.apply {
-            adapter = placeReviewCommentAdapter
         }
 
         binding.clPlaceReviewStars.setOnClickListener {
@@ -119,42 +159,6 @@ class PlaceReviewAllFragment : Fragment() {
         animator.duration = 500
         animator.interpolator = AccelerateDecelerateInterpolator()
         animator.start()
-    }
-
-    private fun getPlaceReviewTagData(): List<PlaceReviewTag> {
-        return listOf(
-            PlaceReviewTag(ItemType.COFFEE, 10),
-            PlaceReviewTag(ItemType.SEAT, 6),
-            PlaceReviewTag(ItemType.FOCUS, 3),
-            PlaceReviewTag(ItemType.OTHER, 2),
-            PlaceReviewTag(ItemType.ETC, 1)
-        )
-    }
-
-    private fun getPlaceReviewCommentData(): List<PlaceReviewComment> {
-        return listOf(
-            PlaceReviewComment("https://helios-i.mashable.com/imagery/articles/04GeUVUQwZxpTYXdqbocKH2/hero-image.fill.size_1248x702.v1722586579.jpg",
-                "거부기",
-                3,
-                "2024.12.31",
-                "1층은 분위기 좋고 2층은 작업이나 공부하기 좋은 곳이네요 ㅎㅎ 인테리어도 이쁘고 음악도 잔잔하니 다시 방문하고 싶 어요! 말차라떼랑 크로플도 맛있네요 :)",
-                listOf(ItemType.COFFEE, ItemType.SEAT)
-            ),
-            PlaceReviewComment("https://helios-i.mashable.com/imagery/articles/04GeUVUQwZxpTYXdqbocKH2/hero-image.fill.size_1248x702.v1722586579.jpg",
-                "거부기",
-                3,
-                "2024.12.31",
-                "1층은 분위기 좋고 2층은 작업이나 공부하기 좋은 곳이네요 ㅎㅎ 인테리어도 이쁘고 음악도 잔잔하니 다시 방문하고 싶 어요! 말차라떼랑 크로플도 맛있네요 :)",
-                listOf(ItemType.FOCUS)
-            ),
-            PlaceReviewComment("https://helios-i.mashable.com/imagery/articles/04GeUVUQwZxpTYXdqbocKH2/hero-image.fill.size_1248x702.v1722586579.jpg",
-                "거부기",
-                3,
-                "2024.12.31",
-                "1층은 분위기 좋고 2층은 작업이나 공부하기 좋은 곳이네요 ㅎㅎ 인테리어도 이쁘고 음악도 잔잔하니 다시 방문하고 싶 어요! 말차라떼랑 크로플도 맛있네요 :)",
-                listOf(ItemType.FOCUS)
-            )
-        )
     }
 
     override fun onDestroyView() {

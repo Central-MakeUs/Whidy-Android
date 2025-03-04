@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.whidy.whidyandroid.databinding.ItemPlacePhotoBinding
 
-class PlacePhotoAdapter(private val imageUrls: List<String>) :
+class PlacePhotoAdapter(private var imageUrls: List<String>) :
     RecyclerView.Adapter<PlacePhotoAdapter.ImageViewHolder>() {
 
     inner class ImageViewHolder(private val binding: ItemPlacePhotoBinding) :
@@ -30,4 +30,9 @@ class PlacePhotoAdapter(private val imageUrls: List<String>) :
     }
 
     override fun getItemCount(): Int = imageUrls.size
+
+    fun updateData(newImageUrls: List<String>) {
+        imageUrls = newImageUrls
+        notifyDataSetChanged()
+    }
 }

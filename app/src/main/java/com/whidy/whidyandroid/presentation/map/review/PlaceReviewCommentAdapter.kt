@@ -1,28 +1,33 @@
-package com.whidy.whidyandroid.presentation.my.review
+package com.whidy.whidyandroid.presentation.map.review
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.whidy.whidyandroid.data.my.MyReviewResponse
-import com.whidy.whidyandroid.databinding.ItemMyReviewBinding
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
+import com.whidy.whidyandroid.data.review.ReviewResponse
+import com.whidy.whidyandroid.databinding.ItemPlaceReviewCommentBinding
 import com.whidy.whidyandroid.model.ItemType
+import com.whidy.whidyandroid.presentation.map.info.PlaceInfoReviewTagAdapter
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class MyReviewAdapter(
-    var items: MutableList<MyReviewResponse>,
-    private val onItemClick: (MyReviewResponse) -> Unit,
-    private val onEditClick: (MyReviewResponse) -> Unit,
-    private val onDeleteClick: (MyReviewResponse) -> Unit
-) : RecyclerView.Adapter<MyReviewAdapter.ReviewViewHolder>() {
+class PlaceReviewCommentAdapter(
+    private var items: List<ReviewResponse>
+) : RecyclerView.Adapter<PlaceReviewCommentAdapter.ViewHolder>() {
 
-    inner class ReviewViewHolder(private val binding: ItemMyReviewBinding) :
+    inner class ViewHolder(private val binding: ItemPlaceReviewCommentBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: MyReviewResponse) {
+        fun bind(item: ReviewResponse) {
             binding.apply {
-                tvPlaceName.text = item.placeName
+                Glide.with(ivUserProfile.context)
+                    .load(item.userProfileImage)
+                    .apply(RequestOptions.circleCropTransform())
+                    .into(ivUserProfile)
+
+                tvUserNickname.text = item.userName
                 tvPlaceScore.text = item.score.toString()
                 val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
                 val date = inputFormat.parse(item.lastModifiedDateTime)
@@ -39,29 +44,24 @@ class MyReviewAdapter(
                         keyword
                     }
                 }
-                val tagAdapter = MyReviewTagAdapter(displayTags)
+                val tagAdapter = PlaceInfoReviewTagAdapter(displayTags)
                 rvPlaceReviewTag.adapter = tagAdapter
-
-                root.setOnClickListener { onItemClick(item) }
-                btnEdit.setOnClickListener { onEditClick(item) }
-                btnDelete.setOnClickListener { onDeleteClick(item) }
             }
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReviewViewHolder {
-        val inflater = LayoutInflater.from(parent.context)
-        val binding = ItemMyReviewBinding.inflate(inflater, parent, false)
-        return ReviewViewHolder(binding)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val binding = ItemPlaceReviewCommentBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: ReviewViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(items[position])
     }
 
-    override fun getItemCount() = items.size
+    override fun getItemCount(): Int = items.size
 
-    fun updateData(newItems: MutableList<MyReviewResponse>) {
+    fun updateData(newItems: List<ReviewResponse>) {
         items = newItems
         notifyDataSetChanged()
     }

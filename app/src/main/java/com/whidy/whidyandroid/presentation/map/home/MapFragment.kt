@@ -9,6 +9,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -30,6 +31,7 @@ import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.util.FusedLocationSource
 import com.whidy.whidyandroid.R
 import com.whidy.whidyandroid.databinding.FragmentMapBinding
+import com.whidy.whidyandroid.model.PlaceType
 import com.whidy.whidyandroid.presentation.base.MainActivity
 import com.whidy.whidyandroid.presentation.map.add.PlaceAddDialog
 import com.whidy.whidyandroid.presentation.map.info.PlaceInfoPopup
@@ -82,40 +84,96 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
         (requireActivity() as MainActivity).hideBottomNavigation(false)
 
-        navController.currentBackStackEntry?.savedStateHandle
-            ?.getLiveData<Boolean>("showPlaceAddSuccessDialog")
-            ?.observe(viewLifecycleOwner) { showDialog ->
-                if (showDialog == true) {
-                    val dialog = PlaceAddDialog(
-                        context = requireContext()
-                    )
-                    dialog.show()
-                    navController.currentBackStackEntry?.savedStateHandle?.remove<Boolean>("showPlaceAddSuccessDialog")
-                }
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                requireActivity().finish()
             }
+        })
+
+        arguments?.let { bundle ->
+            if (bundle.getBoolean("showPlaceAddSuccessDialog", false)) {
+                val dialog = PlaceAddDialog(requireContext())
+                dialog.show()
+            }
+        }
+
+        scrapViewModel.fetchScrapItems()
 
         mapViewModel.placeDetail.observe(viewLifecycleOwner) { place ->
+            Timber.d("placeDetail: $place")
             binding.tvPlaceName.text = place.name
+            binding.tvPlaceType.text = PlaceType.fromString(place.placeType)
             binding.tvPlaceAddress.text = place.address
             binding.tvPlacePrice.text = "${place.beveragePrice}원"
-            binding.tvPlaceScore.text = place.reviewScore.toString()
+            binding.tvPlaceScore.text = (place.reviewScore ?: 0.0).toString()
             binding.tvPlaceReview.text = "후기 ${place.reviewNum}개"
 
-            val isScrapped = scrapViewModel.isScrapped(place.id)
-            binding.btnScrap.isSelected = isScrapped
+            updateScrapStatus(place.id)
 
             binding.btnScrap.setOnClickListener {
                 if (!binding.btnScrap.isSelected) {
                     scrapViewModel.setScrap(place.id)
                 } else {
-                    scrapViewModel.deleteScrap(place.id)
+                    val scrapItem = scrapViewModel.scrapItems.value?.find { it.placeId == place.id }
+                    if (scrapItem != null) {
+                        scrapViewModel.deleteScrap(scrapItem.scrapId)
+                    }
                 }
             }
 
             binding.apply {
-                Glide.with(ivPlaceImage.context)
-                    .load(place.images[0])
-                    .into(ivPlaceImage)
+                if (place.images.isNotEmpty()) {
+                    Glide.with(ivPlaceImage.context)
+                        .load(place.images[0])
+                        .into(ivPlaceImage)
+                } else {
+                    ivPlaceImage.visibility = View.GONE
+                }
+            }
+
+            val calendar = java.util.Calendar.getInstance()
+            val currentDayOfWeek = when(calendar.get(java.util.Calendar.DAY_OF_WEEK)) {
+                java.util.Calendar.MONDAY -> "MONDAY"
+                java.util.Calendar.TUESDAY -> "TUESDAY"
+                java.util.Calendar.WEDNESDAY -> "WEDNESDAY"
+                java.util.Calendar.THURSDAY -> "THURSDAY"
+                java.util.Calendar.FRIDAY -> "FRIDAY"
+                java.util.Calendar.SATURDAY -> "SATURDAY"
+                java.util.Calendar.SUNDAY -> "SUNDAY"
+                else -> ""
+            }
+            val sdf = java.text.SimpleDateFormat("HH:mm", java.util.Locale.getDefault())
+            val currentTimeStr = sdf.format(calendar.time)
+            val currentTime = sdf.parse(currentTimeStr)
+
+            // 현재 요일에 해당하는 영업시간 찾기
+            val currentBusinessHour = place.businessHours.find { it.dayOfWeek == currentDayOfWeek }
+            val statusText = if (currentBusinessHour?.openTime != null &&
+                currentBusinessHour.closeTime != null) {
+
+                val openTimeStr = currentBusinessHour.openTime.substring(0, 5)
+                val closeTimeStr = currentBusinessHour.closeTime.substring(0, 5)
+                val openTime = sdf.parse(openTimeStr)
+                val closeTime = sdf.parse(closeTimeStr)
+
+                binding.tvPlaceTime.text = "${closeTimeStr} 까지"
+
+                if (currentTime.after(openTime) && currentTime.before(closeTime)) "영업중" else "영업종료"
+            } else {
+                "휴무"
+            }
+            binding.tvPlaceOpen.text = statusText
+
+            if (statusText == "영업종료") {
+                binding.tvPlaceOpen.setTextColor(ContextCompat.getColor(requireContext(), R.color.R400))
+            } else {
+                binding.tvPlaceOpen.setTextColor(ContextCompat.getColor(requireContext(), R.color.G900))
+            }
+        }
+
+        scrapViewModel.scrapItems.observe(viewLifecycleOwner) { scrapItems ->
+            mapViewModel.placeDetail.value?.let { place ->
+                updateScrapStatus(place.id)
             }
         }
 
@@ -123,7 +181,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         binding.rvPlaceTag.apply {
             adapter = placeTagAdapter
             val itemSpace = resources.getDimensionPixelSize(R.dimen.place_tag)
-            addItemDecoration(ItemHorizontalDecoration(itemSpace))
+            val firstMargin = resources.getDimensionPixelSize(R.dimen.place_tag_first_margin)
+            addItemDecoration(ItemHorizontalDecoration(itemSpace, firstMargin))
         }
 
         placeTagAdapter.onItemClick = { position, tag ->
@@ -225,6 +284,11 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
+    private fun updateScrapStatus(placeId: Int) {
+        val isScrapped = scrapViewModel.isScrapped(placeId)
+        binding.btnScrap.isSelected = isScrapped
+    }
+
     private fun hasPermission(): Boolean {
         for (permission in PERMISSIONS) {
             if (ContextCompat.checkSelfPermission(requireContext(), permission)
@@ -241,6 +305,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun initMapView() {
+        locationSource = FusedLocationSource(this, REQUEST_CODE_LOCATION_PERMISSION)
+
         val fm = childFragmentManager
         val mapFragment = fm.findFragmentById(R.id.map_fragment) as com.naver.maps.map.MapFragment?
             ?: com.naver.maps.map.MapFragment.newInstance().also {
@@ -248,7 +314,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             }
 
         mapFragment.getMapAsync(this)
-        locationSource = FusedLocationSource(this, REQUEST_CODE_LOCATION_PERMISSION)
     }
 
     @Deprecated("Deprecated in Java")
@@ -259,9 +324,10 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     ) {
         if (requestCode == REQUEST_CODE_LOCATION_PERMISSION && grantResults.isNotEmpty()) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(requireContext(), "위치 권한이 허용되었습니다", Toast.LENGTH_SHORT).show()
                 initMapView()
             } else {
-                Toast.makeText(requireContext(), "Permission denied!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "위치 권한이 거부되었습니다", Toast.LENGTH_SHORT).show()
             }
         }
     }

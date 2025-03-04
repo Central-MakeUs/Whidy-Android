@@ -5,10 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.whidy.whidyandroid.R
 import com.whidy.whidyandroid.databinding.FragmentPlacePhotoBinding
+import com.whidy.whidyandroid.presentation.map.home.MapViewModel
 import com.whidy.whidyandroid.utils.ItemMixDecoration
 
 class PlacePhotoFragment : Fragment() {
@@ -16,6 +18,10 @@ class PlacePhotoFragment : Fragment() {
     private var _binding: FragmentPlacePhotoBinding? = null
     private val binding: FragmentPlacePhotoBinding
         get() = requireNotNull(_binding){"FragmentPlacePhotoBinding -> null"}
+
+    private val mapViewModel: MapViewModel by activityViewModels()
+
+    private lateinit var placePhotoAdapter: PlacePhotoAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,37 +43,16 @@ class PlacePhotoFragment : Fragment() {
             navController.navigateUp()
         }
 
-        val placePhotoAdapter = PlacePhotoAdapter(getPlacePhotoData())
+        placePhotoAdapter = PlacePhotoAdapter(emptyList())
         binding.rvPhoto.apply {
             adapter = placePhotoAdapter
             val itemSpace = resources.getDimensionPixelSize(R.dimen.place_photo)
             addItemDecoration(ItemMixDecoration(itemSpace))
         }
-    }
 
-    private fun getPlacePhotoData() : List<String> {
-        return listOf(
-            "https://images.pexels.com/photos/303324/pexels-photo-303324.jpeg",
-            "https://images.pexels.com/photos/374885/pexels-photo-374885.jpeg",
-            "https://images.pexels.com/photos/1267320/pexels-photo-1267320.jpeg",
-            "https://images.pexels.com/photos/1107840/pexels-photo-1107840.jpeg",
-            "https://images.pexels.com/photos/110854/pexels-photo-110854.jpeg",
-            "https://images.pexels.com/photos/549083/pexels-photo-549083.jpeg",
-            "https://images.pexels.com/photos/1395158/pexels-photo-1395158.jpeg",
-            "https://images.pexels.com/photos/303324/pexels-photo-303324.jpeg",
-            "https://images.pexels.com/photos/374885/pexels-photo-374885.jpeg",
-            "https://images.pexels.com/photos/1267320/pexels-photo-1267320.jpeg",
-            "https://images.pexels.com/photos/1107840/pexels-photo-1107840.jpeg",
-            "https://images.pexels.com/photos/110854/pexels-photo-110854.jpeg",
-            "https://images.pexels.com/photos/549083/pexels-photo-549083.jpeg",
-            "https://images.pexels.com/photos/1395158/pexels-photo-1395158.jpeg",
-            "https://images.pexels.com/photos/303324/pexels-photo-303324.jpeg",
-            "https://images.pexels.com/photos/374885/pexels-photo-374885.jpeg",
-            "https://images.pexels.com/photos/1267320/pexels-photo-1267320.jpeg",
-            "https://images.pexels.com/photos/1107840/pexels-photo-1107840.jpeg",
-            "https://images.pexels.com/photos/110854/pexels-photo-110854.jpeg",
-            "https://images.pexels.com/photos/549083/pexels-photo-549083.jpeg"
-        )
+        mapViewModel.placeDetail.observe(viewLifecycleOwner) { place ->
+            placePhotoAdapter.updateData(place.images)
+        }
     }
 
     override fun onDestroyView() {
