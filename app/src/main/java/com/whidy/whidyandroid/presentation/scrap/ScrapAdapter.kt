@@ -30,11 +30,11 @@ class ScrapAdapter(
 
         private fun getIconForType(placeType: PlaceType): Int {
             return when (placeType) {
-                PlaceType.STUDY_CAFE -> R.drawable.ic_scrap_personal_cafe
+                PlaceType.STUDY_CAFE -> R.drawable.ic_scrap_study_cafe
                 PlaceType.GENERAL_CAFE -> R.drawable.ic_scrap_personal_cafe
-                PlaceType.FREE_STUDY_SPACE -> R.drawable.ic_scrap_personal_cafe
-                PlaceType.FREE_PICTURE -> R.drawable.ic_scrap_personal_cafe
-                PlaceType.FREE_CLOTHES_RENTAL -> R.drawable.ic_scrap_personal_cafe
+                PlaceType.FREE_STUDY_SPACE -> R.drawable.ic_scrap_free_study_space
+                PlaceType.FREE_PICTURE -> R.drawable.ic_scrap_free_picture
+                PlaceType.FREE_CLOTHES_RENTAL -> R.drawable.ic_scrap_free_clothes_rental
                 PlaceType.FRANCHISE_CAFE -> R.drawable.ic_scrap_franchise_cafe
             }
         }
