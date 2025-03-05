@@ -10,10 +10,10 @@
   <a href="https://android-arsenal.com/api?level=34"><img alt="API" src="https://img.shields.io/badge/API-34%2B-brightgreen.svg?style=flat"/></a>
   <a href="https://github.com/Team-ToYou/ToYou-Android/blob/master/.github/workflows/android.yml"><img alt="Build Status" src="https://github.com/GetStream/android-xr-video/actions/workflows/android.yml/badge.svg"/></a>
   <p align="center">
-  <a href="https://play.google.com/store/apps/details?id=com.whidy.whidyandroid">
+  <a href="https://play.google.com/store/apps/details?id=com.whidy.whidyandroid" target="_blank" rel="noopener noreferrer">
     <img src="https://github.com/user-attachments/assets/d3b08e64-c601-4eb4-a8d2-91e5248dffc7" alt="클릭 시 이동">
   </a>
-  </p>
+</p>
 </div>
 
 <br>
