@@ -62,6 +62,10 @@ class MyFragment : Fragment() {
             navController.navigate(R.id.action_navigation_my_to_my_review)
         }
 
+        binding.clMyPlace.setOnClickListener {
+            navController.navigate(R.id.action_navigation_my_to_my_place_request)
+        }
+
         binding.btnLogout.setOnClickListener {
             signUpViewModel.logout(
                 onLogoutSuccess = {

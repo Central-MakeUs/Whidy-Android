@@ -4,12 +4,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.whidy.whidyandroid.data.my.MyPlaceRequestResponse
 import com.whidy.whidyandroid.data.my.SetMyNameRequest
 import com.whidy.whidyandroid.network.RetrofitClient
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
+import timber.log.Timber
 import java.io.File
 
 class MyViewModel : ViewModel() {
@@ -86,6 +88,25 @@ class MyViewModel : ViewModel() {
                 RetrofitClient.myService.setMyProfileImage(multipartBody)
             } catch (e: Exception) {
                 e.printStackTrace()
+            }
+        }
+    }
+
+    private val _myPlaceRequests = MutableLiveData<List<MyPlaceRequestResponse>>()
+    val myPlaceRequests: LiveData<List<MyPlaceRequestResponse>> get() = _myPlaceRequests
+
+    fun fetchMyPlaceRequests(name: String = "", address: String = "", processed: String = "") {
+        viewModelScope.launch {
+            try {
+                val response = RetrofitClient.myService.getMyPlaceRequest(name, address, processed)
+                if (response.isSuccessful) {
+                    _myPlaceRequests.value = response.body() ?: emptyList()
+                    Timber.d("Fetched MyPlaceRequests: ${_myPlaceRequests.value}")
+                } else {
+                    Timber.e("getMyPlaceRequest API 호출 실패: ${response.code()} ${response.errorBody()?.string()}")
+                }
+            } catch (e: Exception) {
+                Timber.e(e, "getMyPlaceRequest API 호출 중 예외 발생")
             }
         }
     }

@@ -27,14 +27,14 @@
         android:src="@drawable/ic_back"
         android:layout_marginEnd="10dp"
         app:layout_constraintStart_toStartOf="@+id/gl_start"
-        app:layout_constraintTop_toTopOf="@+id/tv_title_place_add"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_title_place_add" />
+        app:layout_constraintTop_toTopOf="@+id/tv_title_my_place_request"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_title_my_place_request" />
 
     <TextView
-        android:id="@+id/tv_title_place_add"
+        android:id="@+id/tv_title_my_place_request"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="내가 작성한 후기"
+        android:text="내가 추가한 장소"
         android:textColor="@color/G900"
         style="@style/t2_b"
         android:layout_marginTop="15dp"
@@ -48,10 +48,10 @@
         android:layout_height="1dp"
         android:background="@color/G100"
         android:layout_marginTop="22dp"
-        app:layout_constraintTop_toBottomOf="@+id/tv_title_place_add" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_title_my_place_request" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_my_review"
+        android:id="@+id/rv_my_place_request"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="vertical"
@@ -59,10 +59,10 @@
         app:layout_constraintStart_toStartOf="@+id/gl_start"
         app:layout_constraintEnd_toEndOf="@+id/gl_end"
         app:layout_constraintTop_toBottomOf="@+id/line_seperate"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/cl_my_review_empty_view"
+        android:id="@+id/cl_my_place_request_empty_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
@@ -72,7 +72,7 @@
         app:layout_constraintBottom_toBottomOf="parent">
 
         <ImageView
-            android:id="@+id/iv_scrap_empty_view"
+            android:id="@+id/iv_my_place_request_empty_view"
             android:layout_width="120dp"
             android:layout_height="116dp"
             android:src="@drawable/ic_scrap_empty_view"
@@ -81,21 +81,21 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/tv_scrap_empty_view_1"
+            android:id="@+id/tv_my_place_request_empty_view_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="작성한 후기가 없습니다."
+            android:text="내가 추가한 장소가 없습니다."
             android:textColor="@color/G700"
             style="@style/b1_sb"
             android:layout_marginTop="16dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/iv_scrap_empty_view" />
+            app:layout_constraintTop_toBottomOf="@+id/iv_my_place_request_empty_view" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="방문했던 장소를 검색해,\n솔직한 후기를 작성해주세요!"
+            android:text="홈에서 추가한 장소의 진행 상황이\n표시됩니다."
             android:textColor="@color/G400"
             style="@style/b2_m"
             android:layout_marginTop="8dp"
@@ -103,7 +103,7 @@
             android:lineSpacingExtra="3sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_scrap_empty_view_1" />
+            app:layout_constraintTop_toBottomOf="@+id/iv_my_place_request_empty_view" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

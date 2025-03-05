@@ -1,8 +1,12 @@
 package com.whidy.whidyandroid.data.my
 
+import com.google.gson.annotations.SerializedName
+
 data class MyPlaceRequestResponse(
-    val createdDate: String,
-    val lastModifiedDate: String,
+    @SerializedName("createdDateTime")
+    val createdDate: String?,
+    @SerializedName("lastModifiedDateTime")
+    val lastModifiedDate: String?,
     val createUser: Int,
     val lastModifyingUser: Int,
     val id: Int,

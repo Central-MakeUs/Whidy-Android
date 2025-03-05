@@ -263,6 +263,15 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+
+        <action
+            android:id="@+id/action_navigation_my_to_my_place_request"
+            app:destination="@id/navigation_my_place_request"
+            app:popUpTo="@id/navigation_my_place_request"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
 
     <fragment
@@ -283,6 +292,13 @@
         android:name="com.whidy.whidyandroid.presentation.my.review.MyReviewFragment"
         android:label="fragment_my_review"
         tools:layout="@layout/fragment_my_review">
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_my_place_request"
+        android:name="com.whidy.whidyandroid.presentation.my.review.MyPlaceRequestFragment"
+        android:label="fragment_my_place_request"
+        tools:layout="@layout/fragment_my_place_request">
     </fragment>
 
 </navigation>
