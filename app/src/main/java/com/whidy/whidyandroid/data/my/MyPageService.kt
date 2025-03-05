@@ -36,6 +36,6 @@ interface MyPageService {
     suspend fun getMyPlaceRequest(
         @Query("name") name: String = "",
         @Query("address") address: String = "",
-        @Query("processed") limit: Boolean = false
+        @Query("processed") limit: String = ""
     ): Response<List<MyPlaceRequestResponse>>
 }
