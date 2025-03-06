@@ -10,7 +10,8 @@ import com.whidy.whidyandroid.model.PlaceType
 class ScrapAdapter(
     private var items: MutableList<ScrapItem>,
     private val onItemRemoved: (Int) -> Unit,
-    private val onDeleteScrap: (scrapId: Int) -> Unit
+    private val onDeleteScrap: (scrapId: Int) -> Unit,
+    private val onItemClick: (ScrapItem) -> Unit
 ) : RecyclerView.Adapter<ScrapAdapter.ScrapViewHolder>() {
 
     inner class ScrapViewHolder(private val binding: ItemScrapBinding) :
@@ -19,23 +20,26 @@ class ScrapAdapter(
         fun bind(item: ScrapItem) {
             binding.tvName.text = item.name
             binding.tvAddress.text = item.address
-            binding.tvPlaceType.text = item.placeType.displayName
+            binding.tvPlaceType.text = PlaceType.fromString(item.placeType)
             binding.ivScrapIc.setImageResource(getIconForType(item.placeType))
 
             binding.btnScrap.setOnClickListener {
                 removeItem(position)
                 onDeleteScrap(item.scrapId)
             }
+
+            binding.root.setOnClickListener { onItemClick(item) }
         }
 
-        private fun getIconForType(placeType: PlaceType): Int {
+        private fun getIconForType(placeType: String): Int {
             return when (placeType) {
-                PlaceType.STUDY_CAFE -> R.drawable.ic_scrap_study_cafe
-                PlaceType.GENERAL_CAFE -> R.drawable.ic_scrap_personal_cafe
-                PlaceType.FREE_STUDY_SPACE -> R.drawable.ic_scrap_free_study_space
-                PlaceType.FREE_PICTURE -> R.drawable.ic_scrap_free_picture
-                PlaceType.FREE_CLOTHES_RENTAL -> R.drawable.ic_scrap_free_clothes_rental
-                PlaceType.FRANCHISE_CAFE -> R.drawable.ic_scrap_franchise_cafe
+                "STUDY_CAFE" -> R.drawable.ic_scrap_study_cafe
+                "GENERAL_CAFE" -> R.drawable.ic_scrap_personal_cafe
+                "FREE_STUDY_SPACE" -> R.drawable.ic_scrap_free_study_space
+                "FREE_PICTURE" -> R.drawable.ic_scrap_free_picture
+                "FREE_CLOTHES_RENTAL" -> R.drawable.ic_scrap_free_clothes_rental
+                "FRANCHISE_CAFE" -> R.drawable.ic_scrap_franchise_cafe
+                else -> { R.drawable.ic_scrap_study_cafe }
             }
         }
     }

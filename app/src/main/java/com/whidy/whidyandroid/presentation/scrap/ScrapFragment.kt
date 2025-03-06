@@ -8,8 +8,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import com.whidy.whidyandroid.R
 import com.whidy.whidyandroid.databinding.FragmentScrapBinding
 import com.whidy.whidyandroid.presentation.base.MainActivity
+import com.whidy.whidyandroid.presentation.map.home.MapViewModel
+import timber.log.Timber
 
 class ScrapFragment : Fragment() {
     private lateinit var navController: NavController
@@ -21,6 +24,7 @@ class ScrapFragment : Fragment() {
     private var scrapList = mutableListOf<ScrapItem>()
 
     private val viewModel: ScrapViewModel by activityViewModels()
+    private val mapViewModel: MapViewModel by activityViewModels()
 
     private var isSortedByName = false
 
@@ -47,8 +51,18 @@ class ScrapFragment : Fragment() {
         scrapAdapter = ScrapAdapter(scrapList, { itemCount ->
             updateItemCount(itemCount)
         }, { scrapId ->
-            // 삭제 API 호출: ViewModel에서 처리
             viewModel.deleteScrap(scrapId)
+        }, { item ->
+            when (item.placeType) {
+                "GENERAL_CAFE" -> mapViewModel.fetchPlaceGeneralCafe(item.placeId)
+                "STUDY_CAFE" -> mapViewModel.fetchPlaceStudyCafe(item.placeId)
+                "FREE_STUDY_SPACE" -> mapViewModel.fetchPlaceFreeStudy(item.placeId)
+                "FREE_PICTURE" -> mapViewModel.fetchPlaceFreePicture(item.placeId)
+                "FREE_CLOTHES_RENTAL" -> mapViewModel.fetchPlaceFreeClothes(item.placeId)
+                "FRANCHISE_CAFE" -> mapViewModel.fetchPlaceFranchiseCafe(item.placeId)
+                else -> Timber.e("Unknown reviewType: ${item.placeType}")
+            }
+            navController.navigate(R.id.navigation_place_info)
         })
         binding.rvScrap.adapter = scrapAdapter
 
