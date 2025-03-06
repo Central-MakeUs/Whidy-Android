@@ -142,7 +142,7 @@ class PlaceSearchFragment : Fragment() {
                         binding.rvRecentSearch.visibility = View.GONE
                         binding.btnDeleteEntire.visibility = View.GONE
                         binding.rvSearchResult.visibility = View.VISIBLE
-                        mapViewModel.fetchPlaceList(query)
+                        mapViewModel.fetchPlaceList(query, 37.545532, 126.952514, 100000000)
                     }
                 }
 
