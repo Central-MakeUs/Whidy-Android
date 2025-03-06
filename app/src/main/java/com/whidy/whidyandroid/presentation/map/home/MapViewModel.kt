@@ -26,7 +26,7 @@ class MapViewModel : ViewModel() {
     private val _selectedLocation = MutableLiveData<LatLng?>()
     val selectedLocation: LiveData<LatLng?> = _selectedLocation
 
-    fun setSelectedLocation(latLng: LatLng) {
+    private fun setSelectedLocation(latLng: LatLng) {
         _selectedLocation.value = latLng
     }
 
@@ -40,11 +40,41 @@ class MapViewModel : ViewModel() {
     private val _searchResults = MutableLiveData<List<GetPlaceResponse>?>()
     val searchResults: LiveData<List<GetPlaceResponse>?> get() = _searchResults
 
+    // 장소 종류별 LiveData
+    private val _searchFreeStudySpaceResults = MutableLiveData<List<GetPlaceResponse>?>()
+    val searchFreeStudySpaceResults: LiveData<List<GetPlaceResponse>?> get() = _searchFreeStudySpaceResults
+
+    private val _searchFranchiseCafeResults = MutableLiveData<List<GetPlaceResponse>?>()
+    val searchFranchiseCafeResults: LiveData<List<GetPlaceResponse>?> get() = _searchFranchiseCafeResults
+
+    private val _searchGeneralCafeResults = MutableLiveData<List<GetPlaceResponse>?>()
+    val searchGeneralCafeResults: LiveData<List<GetPlaceResponse>?> get() = _searchGeneralCafeResults
+
+    private val _searchStudyCafeResults = MutableLiveData<List<GetPlaceResponse>?>()
+    val searchStudyCafeResults: LiveData<List<GetPlaceResponse>?> get() = _searchStudyCafeResults
+
+    private val _searchFreeClothesRentalResults = MutableLiveData<List<GetPlaceResponse>?>()
+    val searchFreeClothesRentalResults: LiveData<List<GetPlaceResponse>?> get() = _searchFreeClothesRentalResults
+
+    private val _searchFreePictureResults = MutableLiveData<List<GetPlaceResponse>?>()
+    val searchFreePictureResults: LiveData<List<GetPlaceResponse>?> get() = _searchFreePictureResults
+
     fun clearSearchResults() {
         _searchResults.value = null
+        _searchFreeStudySpaceResults.value = null
+        _searchFranchiseCafeResults.value = null
+        _searchGeneralCafeResults.value = null
+        _searchStudyCafeResults.value = null
+        _searchFreeClothesRentalResults.value = null
+        _searchFreePictureResults.value = null
     }
 
-    fun fetchPlaceList(keyword: String) {
+    fun fetchPlaceList(
+        keyword: String,
+        centerLatitude: Double = 37.545532,
+        centerLongitude: Double = 126.952514,
+        radius: Int = 500
+    ) {
         viewModelScope.launch {
             try {
                 val response = RetrofitClient.placeService.getPlace(
@@ -56,15 +86,33 @@ class MapViewModel : ViewModel() {
                     businessDayOfWeek = null,
                     visitTimeFromHour = null,
                     visitTimeToHour = null,
-                    centerLatitude = 37.545532,
-                    centerLongitude = 126.952514,
-                    radius = 100000000,
+                    centerLatitude = centerLatitude,
+                    centerLongitude = centerLongitude,
+                    radius = radius,
                     keyword = keyword
                 )
                 if (response.isSuccessful) {
                     response.body()?.let { placeList ->
                         _searchResults.postValue(placeList)
-                        Timber.d("fetchPlaceList 성공")
+                        Timber.d("fetchPlaceList 성공: $placeList")
+                        _searchFreeStudySpaceResults.postValue(
+                            placeList.filter { it.placeType == "FREE_STUDY_SPACE" }
+                        )
+                        _searchFranchiseCafeResults.postValue(
+                            placeList.filter { it.placeType == "FRANCHISE_CAFE" }
+                        )
+                        _searchGeneralCafeResults.postValue(
+                            placeList.filter { it.placeType == "GENERAL_CAFE" }
+                        )
+                        _searchStudyCafeResults.postValue(
+                            placeList.filter { it.placeType == "STUDY_CAFE" }
+                        )
+                        _searchFreeClothesRentalResults.postValue(
+                            placeList.filter { it.placeType == "FREE_CLOTHES_RENTAL" }
+                        )
+                        _searchFreePictureResults.postValue(
+                            placeList.filter { it.placeType == "FREE_PICTURE" }
+                        )
                     }
                 } else {
                     Timber.e("fetchPlaceList API 호출 실패: ${response.code()}")

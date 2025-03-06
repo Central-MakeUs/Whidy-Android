@@ -107,6 +107,23 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <TextView
+                android:id="@+id/btn_re_search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="현 지도에서 재검색"
+                android:textColor="@color/B500"
+                style="@style/b2_sb"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp"
+                android:paddingTop="9dp"
+                android:paddingBottom="9dp"
+                android:background="@drawable/bg_btn_re_search"
+                android:layout_marginTop="20dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cl_app_bar" />
+
             <ImageView
                 android:id="@+id/btn_gps"
                 android:layout_width="wrap_content"

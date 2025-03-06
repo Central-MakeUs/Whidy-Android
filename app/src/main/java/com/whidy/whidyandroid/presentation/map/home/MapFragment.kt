@@ -1,6 +1,9 @@
 package com.whidy.whidyandroid.presentation.map.home
 
+import android.content.Context
 import android.content.pm.PackageManager
+import android.graphics.Color
+import android.graphics.PointF
 import android.location.Location
 import android.os.Bundle
 import android.view.Gravity
@@ -14,6 +17,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.bumptech.glide.Glide
@@ -26,17 +30,30 @@ import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.LocationTrackingMode
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
+import com.naver.maps.map.clustering.ClusterMarkerInfo
+import com.naver.maps.map.clustering.Clusterer
+import com.naver.maps.map.clustering.DefaultClusterMarkerUpdater
+import com.naver.maps.map.clustering.DefaultLeafMarkerUpdater
+import com.naver.maps.map.clustering.LeafMarkerInfo
 import com.naver.maps.map.overlay.Marker
+import com.naver.maps.map.overlay.Overlay
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.util.FusedLocationSource
+import com.naver.maps.map.util.MarkerIcons
 import com.whidy.whidyandroid.R
+import com.whidy.whidyandroid.data.place.GetPlaceResponse
 import com.whidy.whidyandroid.databinding.FragmentMapBinding
+import com.whidy.whidyandroid.databinding.ItemClusterBinding
 import com.whidy.whidyandroid.model.PlaceType
 import com.whidy.whidyandroid.presentation.base.MainActivity
 import com.whidy.whidyandroid.presentation.map.add.PlaceAddDialog
 import com.whidy.whidyandroid.presentation.map.info.PlaceInfoPopup
 import com.whidy.whidyandroid.presentation.scrap.ScrapViewModel
 import com.whidy.whidyandroid.utils.ItemHorizontalDecoration
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class MapFragment : Fragment(), OnMapReadyCallback {
@@ -58,7 +75,11 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private val scrapViewModel: ScrapViewModel by activityViewModels()
 
     private var currentMarker: Marker? = null
+    private var selectedCategoryPosition: Int = 0
     private val multiMarkers = mutableListOf<Marker>()
+    private var currentClusterer: Clusterer<PlaceClusterItem>? = null
+
+    private var loadingJob: Job? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -185,14 +206,18 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             addItemDecoration(ItemHorizontalDecoration(itemSpace, firstMargin))
         }
 
-        placeTagAdapter.onItemClick = { position, tag ->
-            if (position == 2) {  // 0부터 시작하므로 3번째 아이템은 인덱스 2
-                addMultiMarkers()
-            }
+        placeTagAdapter.onItemClick = { position, _ ->
+            selectedCategoryPosition = position
+            performSearch()
+        }
+
+        binding.btnReSearch.setOnClickListener {
+            performSearch()
         }
 
         binding.tvSearch.setOnClickListener {
             binding.tvSearch.setBackgroundResource(R.drawable.bg_search_bar_clicked)
+            clearMarkers()
             navController.navigate(R.id.action_navigation_map_to_place_search)
         }
 
@@ -284,6 +309,264 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
+    private fun performSearch() {
+        startLoadingAnimation()
+        // 현재 카메라 중심 좌표를 가져옵니다.
+        val centerLatLng = naverMap.cameraPosition.target
+        // Projection 객체를 통해 화면 좌표로 변환합니다.
+        val projection = naverMap.projection
+        val centerPoint = projection.toScreenLocation(centerLatLng)
+        // 화면 중앙의 x 좌표와 최상단 y 좌표(0f)를 사용하여 화면 상단의 좌표 생성
+        val topPoint = PointF(centerPoint.x, 0f)
+        // 화면 좌표를 다시 지도 좌표로 변환합니다.
+        val topLatLng = projection.fromScreenLocation(topPoint)
+        // 두 지점 간의 거리를 미터 단위로 계산
+        val results = FloatArray(1)
+        Location.distanceBetween(
+            centerLatLng.latitude, centerLatLng.longitude,
+            topLatLng.latitude, topLatLng.longitude,
+            results
+        )
+        val radius = results[0].toInt()
+        Timber.d("Center: $centerLatLng, Top: $topLatLng, radius: $radius")
+
+        mapViewModel.fetchPlaceList("", centerLatLng.latitude, centerLatLng.longitude, radius)
+
+        when (selectedCategoryPosition) {
+            0 -> mapViewModel.searchFreeStudySpaceResults.value?.let { addClusterMarkers(it, naverMap, requireContext()) }
+            1 -> mapViewModel.searchFranchiseCafeResults.value?.let { addClusterMarkers(it, naverMap, requireContext()) }
+            2 -> mapViewModel.searchGeneralCafeResults.value?.let { addClusterMarkers(it, naverMap, requireContext()) }
+            3 -> mapViewModel.searchStudyCafeResults.value?.let { addClusterMarkers(it, naverMap, requireContext()) }
+            4 -> mapViewModel.searchFreeClothesRentalResults.value?.let { addClusterMarkers(it, naverMap, requireContext()) }
+            5 -> mapViewModel.searchFreePictureResults.value?.let { addClusterMarkers(it, naverMap, requireContext()) }
+        }
+    }
+
+    private fun moveCameraToMarkers(coordinates: List<LatLng>, naverMap: NaverMap) {
+        if (coordinates.isEmpty()) return
+
+        // 좌표들의 경계 영역 계산
+        val builder = LatLngBounds.Builder()
+        coordinates.forEach { builder.include(it) }
+        val bounds = builder.build()
+
+        // 패딩을 주어 카메라 이동 (패딩 값은 필요에 따라 조정)
+        val padding = 100
+        val cameraUpdate = CameraUpdate.fitBounds(bounds, padding)
+        naverMap.moveCamera(cameraUpdate)
+    }
+
+    // 취소 버튼 클릭 시 단일 마커와 다중 마커 모두 제거
+    private fun clearMarkers() {
+        currentMarker?.map = null
+        currentMarker = null
+        multiMarkers.forEach { it.map = null }
+        multiMarkers.clear()
+        currentClusterer?.clear()
+        currentClusterer?.map = null
+    }
+
+    private fun addClusterMarkers(
+        places: List<GetPlaceResponse>,
+        naverMap: NaverMap,
+        context: Context
+    ) {
+        currentClusterer?.clear()
+        currentClusterer?.map = null
+
+        val clusterBinding = ItemClusterBinding.inflate(LayoutInflater.from(context))
+
+        // 클러스터러 빌더 설정 (커스텀 LeafMarkerUpdater를 통해 개별 마커 설정)
+        val builder = Clusterer.Builder<PlaceClusterItem>().apply {
+            // 클러스터(여러 아이템이 모인 경우) 마커 업데이트
+            clusterMarkerUpdater(object : DefaultClusterMarkerUpdater() {
+                override fun updateClusterMarker(info: ClusterMarkerInfo, marker: Marker) {
+                    super.updateClusterMarker(info, marker)
+                    marker.icon = if (info.size < 5) {
+                        MarkerIcons.CLUSTER_LOW_DENSITY
+                    } else if (info.size < 10){
+                        MarkerIcons.CLUSTER_MEDIUM_DENSITY
+                    } else if (info.size < 20){
+                        MarkerIcons.CLUSTER_HIGH_DENSITY
+                    } else {
+                        clusterBinding.tvCluster.text = info.size.toString()
+                        OverlayImage.fromView(clusterBinding.root)
+                    }
+                }
+            })
+            // 개별(leaf) 마커 업데이트 – 기존 addMarkersWithInfo와 동일하게 커스텀
+            leafMarkerUpdater(object : DefaultLeafMarkerUpdater() {
+                override fun updateLeafMarker(info: LeafMarkerInfo, marker: Marker) {
+                    val item = info.key as PlaceClusterItem
+                    // 기존 코드와 같이 장소 타입에 따라 아이콘을 설정
+                    marker.icon = OverlayImage.fromResource(mapViewModel.getMarkerIcon(item.place.placeType))
+                    marker.captionText = item.place.name
+                    marker.captionTextSize = 17F
+                    marker.captionColor = Color.BLACK
+                    marker.captionHaloColor = Color.TRANSPARENT
+                    marker.tag = item.place  // 마커에 장소 정보 저장
+                    marker.onClickListener = Overlay.OnClickListener { clickedMarker ->
+                        val selectedPlace = clickedMarker.tag as? GetPlaceResponse
+                        selectedPlace?.let { place ->
+                            when (place.placeType) {
+                                "GENERAL_CAFE" -> mapViewModel.fetchPlaceGeneralCafe(place.id)
+                                "STUDY_CAFE" -> mapViewModel.fetchPlaceStudyCafe(place.id)
+                                "FREE_STUDY_SPACE" -> mapViewModel.fetchPlaceFreeStudy(place.id)
+                                "FREE_CLOTHES_RENTAL" -> mapViewModel.fetchPlaceFreeClothes(place.id)
+                                "FREE_PICTURE" -> mapViewModel.fetchPlaceFreePicture(place.id)
+                                "FRANCHISE_CAFE" -> mapViewModel.fetchPlaceFranchiseCafe(place.id)
+                                else -> {
+                                    Toast.makeText(context, "알 수 없는 장소 타입", Toast.LENGTH_SHORT).show()
+                                    return@OnClickListener false
+                                }
+                            }
+                            navController.navigate(R.id.navigation_place_info)
+                        }
+                        true
+                    }
+                }
+            })
+        }
+
+        val clusterer: Clusterer<PlaceClusterItem> = builder.build()
+
+        // 클러스터 아이템 리스트 생성
+        val items = places.map { place ->
+            PlaceClusterItem(place)
+        }
+
+        // clusterer.addAll은 Map<ClusterItem, *>
+        val itemMap = items.associateWith { null }
+        clusterer.addAll(itemMap)
+
+        clusterer.map = naverMap
+
+        currentClusterer = clusterer
+
+        // 기존 마커 방식과 동일하게, 모든 마커 영역을 포함하도록 카메라 이동
+        val coordinates = places.map { LatLng(it.latitude, it.longitude) }
+        moveCameraToMarkers(coordinates, naverMap)
+    }
+
+    override fun onMapReady(naverMap: NaverMap) {
+        this.naverMap = naverMap
+        mapViewModel.setNaverMap(naverMap)
+
+        naverMap.locationSource = locationSource
+        naverMap.locationTrackingMode = LocationTrackingMode.Follow
+
+        naverMap.uiSettings.logoGravity = Gravity.END and Gravity.TOP
+        naverMap.uiSettings.setLogoMargin(30, 350, 0, 0)
+
+        naverMap.minZoom = 10.0
+        naverMap.maxZoom = 20.0
+
+        if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                android.Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return
+        }
+
+        binding.btnGps.setOnClickListener {
+            fusedLocationClient.lastLocation
+                .addOnSuccessListener { location: Location? ->
+                    location?.let {
+                        naverMap.locationOverlay.run {
+                            isVisible = true
+                            position = LatLng(it.latitude, it.longitude)
+                        }
+                        val cameraUpdate = CameraUpdate.scrollTo(LatLng(it.latitude, it.longitude))
+                        naverMap.moveCamera(cameraUpdate)
+                    }
+                }
+        }
+
+        mapViewModel.selectedLocation.observe(viewLifecycleOwner) { latLng ->
+            if (latLng == null) {
+                currentMarker?.map = null
+                currentMarker = null
+
+                binding.btnFilter.visibility = View.VISIBLE
+                binding.btnSearch.visibility = View.VISIBLE
+                binding.rvPlaceTag.visibility = View.VISIBLE
+                binding.btnCancel.visibility = View.GONE
+                binding.homeBottomSheet.visibility = View.GONE
+            } else {
+                currentMarker?.map = null
+
+                mapViewModel.placeDetail.observe(viewLifecycleOwner) { place ->
+                    currentMarker = Marker().apply {
+                        position = LatLng(place.latitude, place.longitude)
+                        icon = OverlayImage.fromResource(mapViewModel.getMarkerIcon(place.placeType))
+                        map = naverMap
+                        captionText = place.name
+                        captionTextSize = 17F
+                        captionColor = Color.BLACK
+                        captionHaloColor = Color.TRANSPARENT
+                    }
+                }
+
+                val cameraUpdate = CameraUpdate.scrollTo(latLng)
+                naverMap.moveCamera(cameraUpdate)
+
+                binding.btnFilter.visibility = View.GONE
+                binding.btnSearch.visibility = View.GONE
+                binding.rvPlaceTag.visibility = View.GONE
+                binding.btnCancel.visibility = View.VISIBLE
+                binding.homeBottomSheet.visibility = View.VISIBLE
+            }
+        }
+
+        mapViewModel.searchFreeStudySpaceResults.observe(viewLifecycleOwner) { data ->
+            if (selectedCategoryPosition == 0) {
+                if (data != null) {
+                    addClusterMarkers(data, naverMap, requireContext())
+                    stopLoadingAnimation("현재 지도에서 재검색")
+                }
+            }
+        }
+        mapViewModel.searchFranchiseCafeResults.observe(viewLifecycleOwner) { data ->
+            if (selectedCategoryPosition == 1) {
+                if (data != null) {
+                    addClusterMarkers(data, naverMap, requireContext())
+                    stopLoadingAnimation("현재 지도에서 재검색")
+                }
+            }
+        }
+        mapViewModel.searchGeneralCafeResults.observe(viewLifecycleOwner) { data ->
+            if (selectedCategoryPosition == 2) {
+                if (data != null) {
+                    addClusterMarkers(data, naverMap, requireContext())
+                    stopLoadingAnimation("현재 지도에서 재검색")
+                }
+            }
+        }
+        mapViewModel.searchStudyCafeResults.observe(viewLifecycleOwner) { data ->
+            if (selectedCategoryPosition == 3) {
+                if (data != null) {
+                    addClusterMarkers(data, naverMap, requireContext())
+                    stopLoadingAnimation("현재 지도에서 재검색")
+                }
+            }
+        }
+        mapViewModel.searchFreeClothesRentalResults.observe(viewLifecycleOwner) { data ->
+            if (selectedCategoryPosition == 4) {
+                if (data != null) {
+                    addClusterMarkers(data, naverMap, requireContext())
+                }
+            }
+        }
+        mapViewModel.searchFreePictureResults.observe(viewLifecycleOwner) { data ->
+            if (selectedCategoryPosition == 5) {
+                if (data != null) {
+                    addClusterMarkers(data, naverMap, requireContext())
+                }
+            }
+        }
+    }
+
     private fun updateScrapStatus(placeId: Int) {
         val isScrapped = scrapViewModel.isScrapped(placeId)
         binding.btnScrap.isSelected = isScrapped
@@ -332,116 +615,27 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
-    // 다중 마커 추가 함수 (예시 좌표 3개)
-    private fun addMultiMarkers() {
-        // 기존 다중 마커가 있다면 지도에서 제거
-        multiMarkers.forEach { it.map = null }
-        multiMarkers.clear()
-
-        val coordinates = listOf(
-            LatLng(37.541113416270406, 127.05062406417724),
-            LatLng(37.54611341627041,  127.05362406417724),
-            LatLng(37.53711341627041, 127.05762406417723)
-        )
-
-        coordinates.forEach { latLng ->
-            val marker = Marker().apply {
-                position = latLng
-                icon = OverlayImage.fromResource(R.drawable.ic_marker_general_cafe)
-                map = naverMap
-            }
-            multiMarkers.add(marker)
-        }
-
-        moveCameraToMarkers(coordinates)
-    }
-
-    private fun moveCameraToMarkers(coordinates: List<LatLng>) {
-        if (coordinates.isEmpty()) return
-
-        // 좌표들의 경계 영역 계산
-        val builder = LatLngBounds.Builder()
-        coordinates.forEach { builder.include(it) }
-        val bounds = builder.build()
-
-        // 패딩을 주어 카메라 이동 (패딩 값은 필요에 따라 조정)
-        val padding = 100
-        val cameraUpdate = CameraUpdate.fitBounds(bounds, padding)
-        naverMap.moveCamera(cameraUpdate)
-    }
-
-    // 취소 버튼 클릭 시 단일 마커와 다중 마커 모두 제거
-    private fun clearMarkers() {
-        currentMarker?.map = null
-        currentMarker = null
-        multiMarkers.forEach { it.map = null }
-        multiMarkers.clear()
-    }
-
-
-    override fun onMapReady(naverMap: NaverMap) {
-        this.naverMap = naverMap
-        mapViewModel.setNaverMap(naverMap)
-
-        naverMap.locationSource = locationSource
-        naverMap.locationTrackingMode = LocationTrackingMode.Follow
-
-        naverMap.uiSettings.logoGravity = Gravity.END and Gravity.TOP
-        naverMap.uiSettings.setLogoMargin(30, 350, 0, 0)
-
-        if (ContextCompat.checkSelfPermission(
-                requireContext(),
-                android.Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            return
-        }
-
-        binding.btnGps.setOnClickListener {
-            fusedLocationClient.lastLocation
-                .addOnSuccessListener { location: Location? ->
-                    location?.let {
-                        naverMap.locationOverlay.run {
-                            isVisible = true
-                            position = LatLng(it.latitude, it.longitude)
-                        }
-                        val cameraUpdate = CameraUpdate.scrollTo(LatLng(it.latitude, it.longitude))
-                        naverMap.moveCamera(cameraUpdate)
-                    }
-                }
-        }
-
-        mapViewModel.selectedLocation.observe(viewLifecycleOwner) { latLng ->
-            if (latLng == null) {
-                currentMarker?.map = null
-                currentMarker = null
-
-                binding.btnFilter.visibility = View.VISIBLE
-                binding.btnSearch.visibility = View.VISIBLE
-                binding.rvPlaceTag.visibility = View.VISIBLE
-                binding.btnCancel.visibility = View.GONE
-                binding.homeBottomSheet.visibility = View.GONE
-            } else {
-                currentMarker?.map = null
-
-                mapViewModel.placeDetail.observe(viewLifecycleOwner) { place ->
-                    currentMarker = Marker().apply {
-                        position = LatLng(place.latitude, place.longitude)
-                        icon = OverlayImage.fromResource(mapViewModel.getMarkerIcon(place.placeType))
-                        map = naverMap
-                    }
-                }
-
-                val cameraUpdate = CameraUpdate.scrollTo(latLng)
-                naverMap.moveCamera(cameraUpdate)
-
-                binding.btnFilter.visibility = View.GONE
-                binding.btnSearch.visibility = View.GONE
-                binding.rvPlaceTag.visibility = View.GONE
-                binding.btnCancel.visibility = View.VISIBLE
-                binding.homeBottomSheet.visibility = View.VISIBLE
+    // 재검색 버튼 텍스트에 로딩 애니메이션을 적용하는 함수
+    private fun startLoadingAnimation() {
+        Timber.d("애니메이션 시작")
+        loadingJob?.cancel()
+        loadingJob = viewLifecycleOwner.lifecycleScope.launch {
+            val baseText = "검색중"
+            var dotCount = 0
+            while (isActive) {
+                val dots = ".".repeat(dotCount)
+                binding.btnReSearch.text = "$baseText$dots"
+                dotCount = (dotCount + 1) % 4
+                delay(100)
             }
         }
+    }
+
+    // 애니메이션 정지 후 최종 텍스트를 설정하는 함수
+    private fun stopLoadingAnimation(finalText: String) {
+        Timber.d("애니메이션 정지")
+        loadingJob?.cancel()
+        binding.btnReSearch.text = finalText
     }
 
     companion object {
