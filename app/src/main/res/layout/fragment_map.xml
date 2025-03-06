@@ -120,7 +120,6 @@
                 android:paddingBottom="9dp"
                 android:background="@drawable/bg_btn_re_search"
                 android:layout_marginTop="20dp"
-                android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/cl_app_bar" />
