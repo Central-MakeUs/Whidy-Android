@@ -1,6 +1,8 @@
 package com.whidy.whidyandroid.presentation.map.home
 
+import android.content.Context
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.location.Location
 import android.os.Bundle
 import android.view.Gravity
@@ -8,6 +10,8 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -30,6 +34,7 @@ import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.util.FusedLocationSource
 import com.whidy.whidyandroid.R
+import com.whidy.whidyandroid.data.place.GetPlaceResponse
 import com.whidy.whidyandroid.databinding.FragmentMapBinding
 import com.whidy.whidyandroid.model.PlaceType
 import com.whidy.whidyandroid.presentation.base.MainActivity
@@ -58,6 +63,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private val scrapViewModel: ScrapViewModel by activityViewModels()
 
     private var currentMarker: Marker? = null
+    private var selectedCategoryPosition: Int = 0
     private val multiMarkers = mutableListOf<Marker>()
 
     override fun onCreateView(
@@ -185,15 +191,43 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             addItemDecoration(ItemHorizontalDecoration(itemSpace, firstMargin))
         }
 
-        placeTagAdapter.onItemClick = { position, tag ->
-            if (position == 2) {  // 0부터 시작하므로 3번째 아이템은 인덱스 2
-                addMultiMarkers()
+        mapViewModel.fetchPlaceList("")
+
+        placeTagAdapter.onItemClick = { position, _ ->
+            selectedCategoryPosition = position
+            val center = naverMap.cameraPosition.target
+            mapViewModel.fetchPlaceList("", center.latitude, center.longitude)
+            Timber.d("${center.latitude}, ${center.longitude}")
+            when (position) {
+                0 -> mapViewModel.searchFreeStudySpaceResults.value?.let { addMarkersWithInfo(it, naverMap, requireContext()) }
+                1 -> mapViewModel.searchFranchiseCafeResults.value?.let { addMarkersWithInfo(it, naverMap, requireContext()) }
+                2 -> mapViewModel.searchGeneralCafeResults.value?.let { addMarkersWithInfo(it, naverMap, requireContext()) }
+                3 -> mapViewModel.searchStudyCafeResults.value?.let { addMarkersWithInfo(it, naverMap, requireContext()) }
+                4 -> mapViewModel.searchFreeClothesRentalResults.value?.let { addMarkersWithInfo(it, naverMap, requireContext()) }
+                5 -> mapViewModel.searchFreePictureResults.value?.let { addMarkersWithInfo(it, naverMap, requireContext()) }
             }
         }
 
         binding.tvSearch.setOnClickListener {
             binding.tvSearch.setBackgroundResource(R.drawable.bg_search_bar_clicked)
             navController.navigate(R.id.action_navigation_map_to_place_search)
+        }
+
+        binding.btnReSearch.setOnClickListener {
+            hideReSearchButton()
+            val center = naverMap.cameraPosition.target
+            val currentZoom = naverMap.cameraPosition.zoom
+            mapViewModel.fetchPlaceList("", center.latitude, center.longitude)
+
+            Timber.d("${center.latitude}, ${center.longitude}")
+            when (selectedCategoryPosition) {
+                0 -> mapViewModel.searchFreeStudySpaceResults.value?.let { addMarkersWithInfo(it, naverMap, requireContext()) }
+                1 -> mapViewModel.searchFranchiseCafeResults.value?.let { addMarkersWithInfo(it, naverMap, requireContext()) }
+                2 -> mapViewModel.searchGeneralCafeResults.value?.let { addMarkersWithInfo(it, naverMap, requireContext()) }
+                3 -> mapViewModel.searchStudyCafeResults.value?.let { addMarkersWithInfo(it, naverMap, requireContext()) }
+                4 -> mapViewModel.searchFreeClothesRentalResults.value?.let { addMarkersWithInfo(it, naverMap, requireContext()) }
+                5 -> mapViewModel.searchFreePictureResults.value?.let { addMarkersWithInfo(it, naverMap, requireContext()) }
+            }
         }
 
         binding.btnFilter.setOnClickListener {
@@ -332,31 +366,54 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
-    // 다중 마커 추가 함수 (예시 좌표 3개)
-    private fun addMultiMarkers() {
-        // 기존 다중 마커가 있다면 지도에서 제거
+    private fun addMarkersWithInfo(places: List<GetPlaceResponse>, naverMap: NaverMap, context: Context) {
+        // 기존 마커 제거
         multiMarkers.forEach { it.map = null }
         multiMarkers.clear()
+        Timber.d("places: $places")
+        Timber.d("$multiMarkers")
 
-        val coordinates = listOf(
-            LatLng(37.541113416270406, 127.05062406417724),
-            LatLng(37.54611341627041,  127.05362406417724),
-            LatLng(37.53711341627041, 127.05762406417723)
-        )
-
-        coordinates.forEach { latLng ->
+        places.forEach { place ->
+            val position = LatLng(place.latitude, place.longitude)
             val marker = Marker().apply {
-                position = latLng
-                icon = OverlayImage.fromResource(R.drawable.ic_marker_general_cafe)
-                map = naverMap
+                this.position = position
+                this.icon = OverlayImage.fromResource(mapViewModel.getMarkerIcon(place.placeType))
+                captionText = place.name
+                captionTextSize = 17F
+                captionColor = Color.BLACK
+                captionHaloColor = Color.TRANSPARENT
+                tag = place  // 마커에 장소 정보 저장
+                this.map = naverMap
+            }
+            marker.setOnClickListener { clickedMarker ->
+                val selectedPlace = clickedMarker.tag as? GetPlaceResponse
+                selectedPlace?.let { place ->
+                    when (place.placeType) {
+                        "GENERAL_CAFE" -> mapViewModel.fetchPlaceGeneralCafe(place.id)
+                        "STUDY_CAFE" -> mapViewModel.fetchPlaceStudyCafe(place.id)
+                        "FREE_STUDY_SPACE" -> mapViewModel.fetchPlaceFreeStudy(place.id)
+                        "FREE_CLOTHES_RENTAL" -> mapViewModel.fetchPlaceFreeClothes(place.id)
+                        "FREE_PICTURE" -> mapViewModel.fetchPlaceFreePicture(place.id)
+                        "FRANCHISE_CAFE" -> mapViewModel.fetchPlaceFranchiseCafe(place.id)
+                        else -> {
+                            Toast.makeText(context, "알 수 없는 장소 타입", Toast.LENGTH_SHORT).show()
+                            return@setOnClickListener false
+                        }
+                    }
+                    navController.navigate(R.id.navigation_place_info)
+                }
+                true  // 이벤트 소비
             }
             multiMarkers.add(marker)
         }
 
-        moveCameraToMarkers(coordinates)
+        // 모든 마커를 포함하도록 카메라 이동
+        val coordinates = places.map { LatLng(it.latitude, it.longitude) }
+        Timber.d("coordinates: $coordinates")
+        moveCameraToMarkers(coordinates, naverMap)
     }
 
-    private fun moveCameraToMarkers(coordinates: List<LatLng>) {
+    private fun moveCameraToMarkers(coordinates: List<LatLng>, naverMap: NaverMap) {
         if (coordinates.isEmpty()) return
 
         // 좌표들의 경계 영역 계산
@@ -378,10 +435,13 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         multiMarkers.clear()
     }
 
-
     override fun onMapReady(naverMap: NaverMap) {
         this.naverMap = naverMap
         mapViewModel.setNaverMap(naverMap)
+
+        naverMap.addOnCameraIdleListener {
+            showReSearchButton()
+        }
 
         naverMap.locationSource = locationSource
         naverMap.locationTrackingMode = LocationTrackingMode.Follow
@@ -442,6 +502,75 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 binding.homeBottomSheet.visibility = View.VISIBLE
             }
         }
+
+        mapViewModel.searchFreeStudySpaceResults.observe(viewLifecycleOwner) { data ->
+            if (selectedCategoryPosition == 0) {
+                if (data != null) {
+                    addMarkersWithInfo(data, naverMap, requireContext())
+                    moveCameraToMarkers(data.map { LatLng(it.latitude, it.longitude) }, naverMap)
+                }
+            }
+        }
+        mapViewModel.searchFranchiseCafeResults.observe(viewLifecycleOwner) { data ->
+            if (selectedCategoryPosition == 1) {
+                if (data != null) {
+                    addMarkersWithInfo(data, naverMap, requireContext())
+                    moveCameraToMarkers(data.map { LatLng(it.latitude, it.longitude) }, naverMap)
+                }
+            }
+        }
+        mapViewModel.searchGeneralCafeResults.observe(viewLifecycleOwner) { data ->
+            if (selectedCategoryPosition == 2) {
+                if (data != null) {
+                    addMarkersWithInfo(data, naverMap, requireContext())
+                    moveCameraToMarkers(data.map { LatLng(it.latitude, it.longitude) }, naverMap)
+                }
+            }
+        }
+        mapViewModel.searchStudyCafeResults.observe(viewLifecycleOwner) { data ->
+            if (selectedCategoryPosition == 3) {
+                if (data != null) {
+                    addMarkersWithInfo(data, naverMap, requireContext())
+                    moveCameraToMarkers(data.map { LatLng(it.latitude, it.longitude) }, naverMap)
+                }
+            }
+        }
+        mapViewModel.searchFreeClothesRentalResults.observe(viewLifecycleOwner) { data ->
+            if (selectedCategoryPosition == 4) {
+                if (data != null) {
+                    addMarkersWithInfo(data, naverMap, requireContext())
+                    moveCameraToMarkers(data.map { LatLng(it.latitude, it.longitude) }, naverMap)
+                }
+            }
+        }
+        mapViewModel.searchFreePictureResults.observe(viewLifecycleOwner) { data ->
+            if (selectedCategoryPosition == 5) {
+                if (data != null) {
+                    addMarkersWithInfo(data, naverMap, requireContext())
+                    moveCameraToMarkers(data.map { LatLng(it.latitude, it.longitude) }, naverMap)
+                }
+            }
+        }
+    }
+
+    private fun showReSearchButton() {
+        binding.btnReSearch.visibility = View.VISIBLE
+        val slideInAnim = AnimationUtils.loadAnimation(requireContext(), R.anim.slide_in_top)
+        binding.btnReSearch.startAnimation(slideInAnim)
+    }
+
+    private fun hideReSearchButton() {
+        val slideOutAnim = AnimationUtils.loadAnimation(requireContext(), R.anim.slide_out_top)
+        slideOutAnim.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationStart(animation: Animation?) {}
+
+            override fun onAnimationEnd(animation: Animation?) {
+                binding.btnReSearch.visibility = View.GONE
+            }
+
+            override fun onAnimationRepeat(animation: Animation?) {}
+        })
+        binding.btnReSearch.startAnimation(slideOutAnim)
     }
 
     companion object {
