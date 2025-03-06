@@ -7,7 +7,7 @@ data class GetPlaceResponse(
     val latitude: Double,
     val longitude: Double,
     val beveragePrice: Int,
-    val reviewScore: Int,
+    val reviewScore: Double?,
     val placeType: String,
     val thumbnail: String
 )
