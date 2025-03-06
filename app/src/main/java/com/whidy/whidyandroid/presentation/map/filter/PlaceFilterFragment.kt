@@ -249,7 +249,7 @@ class PlaceFilterFragment : Fragment() {
     private fun startLoadingAnimation() {
         loadingJob?.cancel()  // 기존 애니메이션 취소
         loadingJob = viewLifecycleOwner.lifecycleScope.launch {
-            val baseText = "검색 결과 로딩중"
+            val baseText = "로딩중"
             var dotCount = 0
             while (isActive) {
                 val dots = ".".repeat(dotCount)
