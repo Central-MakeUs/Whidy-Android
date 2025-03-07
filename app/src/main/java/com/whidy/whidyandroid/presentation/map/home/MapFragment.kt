@@ -77,7 +77,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     private var currentMarker: Marker? = null
     private var selectedCategoryPosition: Int? = null
-    private val multiMarkers = mutableListOf<Marker>()
     private var currentClusterer: Clusterer<PlaceClusterItem>? = null
 
     private var loadingJob: Job? = null
@@ -312,7 +311,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     private fun performSearch() {
         if (selectedCategoryPosition == null) {
-            stopLoadingAnimation("현재 지도에서 재검색")
+            stopLoadingAnimation("현 지도에서 재검색")
             Toast.makeText(requireContext(), "장소 태그를 선택해 주세요", Toast.LENGTH_SHORT).show()
             return
         }
@@ -368,8 +367,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private fun clearMarkers() {
         currentMarker?.map = null
         currentMarker = null
-        multiMarkers.forEach { it.map = null }
-        multiMarkers.clear()
         currentClusterer?.clear()
         currentClusterer?.map = null
     }
@@ -444,7 +441,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             PlaceClusterItem(place)
         }
 
-        // clusterer.addAll은 Map<ClusterItem, *>
         val itemMap = items.associateWith { null }
         clusterer.addAll(itemMap)
 
@@ -457,12 +453,32 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         moveCameraToMarkers(coordinates, naverMap)
     }
 
+    override fun onPause() {
+        super.onPause()
+        // 카메라 위치를 저장 (카메라 위치가 준비되어 있다면)
+        if (::naverMap.isInitialized) {
+            val currentPosition = naverMap.cameraPosition
+            mapViewModel.setLastCameraPosition(currentPosition)
+        }
+    }
+
     override fun onMapReady(naverMap: NaverMap) {
         this.naverMap = naverMap
         mapViewModel.setNaverMap(naverMap)
 
+        mapViewModel.lastCameraPosition.observe(viewLifecycleOwner) { lastPosition ->
+            if (lastPosition != null) {
+                // 저장된 카메라 위치로 이동
+                val cameraUpdate = CameraUpdate.scrollTo(lastPosition.target)
+                naverMap.moveCamera(cameraUpdate)
+            } else {
+                // 저장된 위치가 없다면 현재 위치로 이동
+                naverMap.locationTrackingMode = LocationTrackingMode.Follow
+            }
+        }
+
         naverMap.locationSource = locationSource
-        naverMap.locationTrackingMode = LocationTrackingMode.Follow
+        naverMap.locationTrackingMode = LocationTrackingMode.NoFollow
 
         naverMap.uiSettings.logoGravity = Gravity.END and Gravity.TOP
         naverMap.uiSettings.setLogoMargin(30, 350, 0, 0)
@@ -532,9 +548,9 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             if (selectedCategoryPosition == 0) {
                 if (data != null) {
                     addClusterMarkers(data, naverMap, requireContext())
-                    stopLoadingAnimation("현재 지도에서 재검색")
+                    stopLoadingAnimation("현 지도에서 재검색")
                 } else {
-                    stopLoadingAnimation("현재 지도에서 재검색")
+                    stopLoadingAnimation("현 지도에서 재검색")
                 }
             }
         }
@@ -542,9 +558,9 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             if (selectedCategoryPosition == 1) {
                 if (data != null) {
                     addClusterMarkers(data, naverMap, requireContext())
-                    stopLoadingAnimation("현재 지도에서 재검색")
+                    stopLoadingAnimation("현 지도에서 재검색")
                 } else {
-                    stopLoadingAnimation("현재 지도에서 재검색")
+                    stopLoadingAnimation("현 지도에서 재검색")
                 }
             }
         }
@@ -552,9 +568,9 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             if (selectedCategoryPosition == 2) {
                 if (data != null) {
                     addClusterMarkers(data, naverMap, requireContext())
-                    stopLoadingAnimation("현재 지도에서 재검색")
+                    stopLoadingAnimation("현 지도에서 재검색")
                 } else {
-                    stopLoadingAnimation("현재 지도에서 재검색")
+                    stopLoadingAnimation("현 지도에서 재검색")
                 }
             }
         }
@@ -562,9 +578,9 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             if (selectedCategoryPosition == 3) {
                 if (data != null) {
                     addClusterMarkers(data, naverMap, requireContext())
-                    stopLoadingAnimation("현재 지도에서 재검색")
+                    stopLoadingAnimation("현 지도에서 재검색")
                 } else {
-                    stopLoadingAnimation("현재 지도에서 재검색")
+                    stopLoadingAnimation("현 지도에서 재검색")
                 }
             }
         }
@@ -572,6 +588,9 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             if (selectedCategoryPosition == 4) {
                 if (data != null) {
                     addClusterMarkers(data, naverMap, requireContext())
+                    stopLoadingAnimation("현 지도에서 재검색")
+                } else {
+                    stopLoadingAnimation("현 지도에서 재검색")
                 }
             }
         }
@@ -579,14 +598,12 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             if (selectedCategoryPosition == 5) {
                 if (data != null) {
                     addClusterMarkers(data, naverMap, requireContext())
+                    stopLoadingAnimation("현 지도에서 재검색")
+                } else {
+                    stopLoadingAnimation("현 지도에서 재검색")
                 }
             }
         }
-    }
-
-    private fun updateScrapStatus(placeId: Int) {
-        val isScrapped = scrapViewModel.isScrapped(placeId)
-        binding.btnScrap.isSelected = isScrapped
     }
 
     private fun hasPermission(): Boolean {
@@ -630,6 +647,11 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 Toast.makeText(requireContext(), "위치 권한이 거부되었습니다", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    private fun updateScrapStatus(placeId: Int) {
+        val isScrapped = scrapViewModel.isScrapped(placeId)
+        binding.btnScrap.isSelected = isScrapped
     }
 
     // 재검색 버튼 텍스트에 로딩 애니메이션을 적용하는 함수

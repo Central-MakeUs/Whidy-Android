@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.naver.maps.geometry.LatLng
+import com.naver.maps.map.CameraPosition
 import com.naver.maps.map.NaverMap
 import com.whidy.whidyandroid.R
 import com.whidy.whidyandroid.data.my.MyReviewResponse
@@ -21,6 +22,13 @@ class MapViewModel : ViewModel() {
 
     fun setNaverMap(naverMap: NaverMap) {
         _naverMapLiveData.value = naverMap
+    }
+
+    private val _lastCameraPosition = MutableLiveData<CameraPosition?>()
+    val lastCameraPosition: LiveData<CameraPosition?> get() = _lastCameraPosition
+
+    fun setLastCameraPosition(position: CameraPosition) {
+        _lastCameraPosition.value = position
     }
 
     private val _selectedLocation = MutableLiveData<LatLng?>()
