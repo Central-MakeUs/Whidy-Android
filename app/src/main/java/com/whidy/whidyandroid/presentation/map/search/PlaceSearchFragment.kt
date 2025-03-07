@@ -127,7 +127,7 @@ class PlaceSearchFragment : Fragment() {
                 searchJob?.cancel()  // 이전에 진행 중인 작업 취소
 
                 searchJob = lifecycleScope.launch {
-                    delay(200) // 200ms 후에 실행 (디바운스 시간)
+                    delay(300) // 디바운스 시간
                     if (query.isEmpty()) {
                         Timber.d("입력 값이 비어있음 - 최근 검색 UI 보임")
                         binding.tvTitleRecentSearch.visibility = View.VISIBLE
