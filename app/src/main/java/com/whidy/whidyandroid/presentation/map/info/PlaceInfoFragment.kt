@@ -382,6 +382,14 @@ class PlaceInfoFragment: Fragment() {
             navController.navigate(R.id.action_navigation_place_info_to_review_all)
         }
 
+        binding.tvPlaceReview.setOnClickListener {
+            navController.navigate(R.id.action_navigation_place_info_to_review_all)
+        }
+
+        binding.placeReviewArrow.setOnClickListener {
+            navController.navigate(R.id.action_navigation_place_info_to_review_all)
+        }
+
         binding.clPlaceReviewStars.setOnClickListener {
             navController.navigate(R.id.action_navigation_place_info_to_review_write)
         }
