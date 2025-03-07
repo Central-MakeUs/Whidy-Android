@@ -111,7 +111,9 @@
         <action
             android:id="@+id/action_navigation_place_write_2_to_info"
             app:destination="@id/navigation_place_info"
-            app:popUpTo="@id/navigation_place_info" />
+            app:popUpTo="@id/navigation_place_info"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out" />
     </fragment>
 
     <fragment
