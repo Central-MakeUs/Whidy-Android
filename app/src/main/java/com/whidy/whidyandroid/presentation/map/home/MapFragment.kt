@@ -311,7 +311,9 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun performSearch() {
-        startLoadingAnimation()
+        if (selectedCategoryPosition < 4) {
+            startLoadingAnimation()
+        }
         // 현재 카메라 중심 좌표를 가져옵니다.
         val centerLatLng = naverMap.cameraPosition.target
         // Projection 객체를 통해 화면 좌표로 변환합니다.
@@ -526,6 +528,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 if (data != null) {
                     addClusterMarkers(data, naverMap, requireContext())
                     stopLoadingAnimation("현재 지도에서 재검색")
+                } else {
+                    stopLoadingAnimation("현재 지도에서 재검색")
                 }
             }
         }
@@ -533,6 +537,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             if (selectedCategoryPosition == 1) {
                 if (data != null) {
                     addClusterMarkers(data, naverMap, requireContext())
+                    stopLoadingAnimation("현재 지도에서 재검색")
+                } else {
                     stopLoadingAnimation("현재 지도에서 재검색")
                 }
             }
@@ -542,6 +548,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 if (data != null) {
                     addClusterMarkers(data, naverMap, requireContext())
                     stopLoadingAnimation("현재 지도에서 재검색")
+                } else {
+                    stopLoadingAnimation("현재 지도에서 재검색")
                 }
             }
         }
@@ -549,6 +557,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             if (selectedCategoryPosition == 3) {
                 if (data != null) {
                     addClusterMarkers(data, naverMap, requireContext())
+                    stopLoadingAnimation("현재 지도에서 재검색")
+                } else {
                     stopLoadingAnimation("현재 지도에서 재검색")
                 }
             }
