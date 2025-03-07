@@ -382,15 +382,16 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             clusterMarkerUpdater(object : DefaultClusterMarkerUpdater() {
                 override fun updateClusterMarker(info: ClusterMarkerInfo, marker: Marker) {
                     super.updateClusterMarker(info, marker)
-                    marker.icon = if (info.size < 5) {
-                        MarkerIcons.CLUSTER_LOW_DENSITY
+                    if (info.size < 5) {
+                        marker.icon = MarkerIcons.CLUSTER_LOW_DENSITY
                     } else if (info.size < 10){
-                        MarkerIcons.CLUSTER_MEDIUM_DENSITY
+                        marker.icon = MarkerIcons.CLUSTER_MEDIUM_DENSITY
                     } else if (info.size < 20){
-                        MarkerIcons.CLUSTER_HIGH_DENSITY
+                        marker.icon = MarkerIcons.CLUSTER_HIGH_DENSITY
                     } else {
                         clusterBinding.tvCluster.text = info.size.toString()
-                        OverlayImage.fromView(clusterBinding.root)
+                        marker.captionColor = ContextCompat.getColor(context, R.color.transparent)
+                        marker.icon = OverlayImage.fromView(clusterBinding.root)
                     }
                 }
             })
