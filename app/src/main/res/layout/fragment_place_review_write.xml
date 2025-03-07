@@ -194,7 +194,7 @@
             <ImageView
                 android:id="@+id/line_seperate"
                 android:layout_width="match_parent"
-                android:layout_height="8dp"
+                android:layout_height="1dp"
                 android:background="@color/G100"
                 android:layout_marginTop="70dp"
                 app:layout_constraintStart_toStartOf="parent"
