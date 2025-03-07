@@ -10,4 +10,5 @@
 
     <dimen name="dialog_place_add_width">296dp</dimen>
     <dimen name="dialog_place_add_height">210dp</dimen>
+    <dimen name="dialog_sign_out_height">190dp</dimen>
 </resources>

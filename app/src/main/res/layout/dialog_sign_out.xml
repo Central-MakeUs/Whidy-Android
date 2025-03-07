@@ -1,0 +1,77 @@
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="296dp"
+    android:layout_height="190dp"
+    android:orientation="vertical"
+    android:paddingTop="28dp"
+    android:paddingBottom="22dp"
+    android:paddingStart="25dp"
+    android:paddingEnd="25dp"
+    android:background="@drawable/bg_dialog">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_middle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <TextView
+        android:id="@+id/tv_title_dialog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="회원 탈퇴"
+        android:textColor="@color/G900"
+        style="@style/t2_b"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_subtitle_dialog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="탈퇴한 지 30일 이후부터 재가입할 수\n있어요. 정말 탈퇴하시겠어요?"
+        android:textColor="@color/G600"
+        style="@style/b2_m"
+        android:gravity="center"
+        android:layout_marginTop="7dp"
+        android:lineSpacingExtra="3sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_title_dialog" />
+
+    <TextView
+        android:id="@+id/btn_dismiss"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="취소"
+        android:textColor="@color/PB600"
+        style="@style/b2_sb"
+        android:gravity="center"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:layout_marginEnd="4dp"
+        android:background="@drawable/bg_input_place_add_active"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/gl_middle"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <TextView
+        android:id="@+id/btn_sign_out"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="탈퇴하기"
+        android:textColor="@color/White"
+        style="@style/b2_sb"
+        android:gravity="center"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:layout_marginStart="4dp"
+        android:background="@drawable/bg_btn_place_add_default"
+        app:layout_constraintStart_toStartOf="@+id/gl_middle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
