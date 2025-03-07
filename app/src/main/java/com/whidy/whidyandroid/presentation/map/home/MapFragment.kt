@@ -44,6 +44,7 @@ import com.whidy.whidyandroid.R
 import com.whidy.whidyandroid.data.place.GetPlaceResponse
 import com.whidy.whidyandroid.databinding.FragmentMapBinding
 import com.whidy.whidyandroid.databinding.ItemClusterBinding
+import com.whidy.whidyandroid.databinding.ItemClusterLeafBinding
 import com.whidy.whidyandroid.model.PlaceType
 import com.whidy.whidyandroid.presentation.base.MainActivity
 import com.whidy.whidyandroid.presentation.map.add.PlaceAddDialog
@@ -375,6 +376,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         currentClusterer?.map = null
 
         val clusterBinding = ItemClusterBinding.inflate(LayoutInflater.from(context))
+        val clusterLeafBinding = ItemClusterLeafBinding.inflate(LayoutInflater.from(context))
 
         // 클러스터러 빌더 설정 (커스텀 LeafMarkerUpdater를 통해 개별 마커 설정)
         val builder = Clusterer.Builder<PlaceClusterItem>().apply {
@@ -399,12 +401,11 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             leafMarkerUpdater(object : DefaultLeafMarkerUpdater() {
                 override fun updateLeafMarker(info: LeafMarkerInfo, marker: Marker) {
                     val item = info.key as PlaceClusterItem
-                    // 기존 코드와 같이 장소 타입에 따라 아이콘을 설정
-                    marker.icon = OverlayImage.fromResource(mapViewModel.getMarkerIcon(item.place.placeType))
-                    marker.captionText = item.place.name
-                    marker.captionTextSize = 17F
-                    marker.captionColor = Color.BLACK
-                    marker.captionHaloColor = Color.TRANSPARENT
+
+                    clusterLeafBinding.ivMarker.setImageResource(mapViewModel.getMarkerIcon(item.place.placeType))
+                    clusterLeafBinding.tvClusterLeaf.text = item.place.name
+                    marker.captionColor = ContextCompat.getColor(context, R.color.transparent)
+                    marker.icon = OverlayImage.fromView(clusterLeafBinding.root)
                     marker.tag = item.place  // 마커에 장소 정보 저장
                     marker.onClickListener = Overlay.OnClickListener { clickedMarker ->
                         val selectedPlace = clickedMarker.tag as? GetPlaceResponse
