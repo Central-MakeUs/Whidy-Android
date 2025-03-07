@@ -14,7 +14,7 @@ interface ScrapService {
     suspend fun getScrapList(
         @Query("keyword") keyword: String = "",
         @Query("offset") offset: Int = 0,
-        @Query("limit") limit: Int = 10
+        @Query("limit") limit: Int = 100
     ): List<ScrapResponse>
 
     @POST("api/scrap")

@@ -44,6 +44,7 @@ import com.whidy.whidyandroid.R
 import com.whidy.whidyandroid.data.place.GetPlaceResponse
 import com.whidy.whidyandroid.databinding.FragmentMapBinding
 import com.whidy.whidyandroid.databinding.ItemClusterBinding
+import com.whidy.whidyandroid.databinding.ItemClusterLeafBinding
 import com.whidy.whidyandroid.model.PlaceType
 import com.whidy.whidyandroid.presentation.base.MainActivity
 import com.whidy.whidyandroid.presentation.map.add.PlaceAddDialog
@@ -310,7 +311,9 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun performSearch() {
-        startLoadingAnimation()
+        if (selectedCategoryPosition < 4) {
+            startLoadingAnimation()
+        }
         // 현재 카메라 중심 좌표를 가져옵니다.
         val centerLatLng = naverMap.cameraPosition.target
         // Projection 객체를 통해 화면 좌표로 변환합니다.
@@ -375,6 +378,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         currentClusterer?.map = null
 
         val clusterBinding = ItemClusterBinding.inflate(LayoutInflater.from(context))
+        val clusterLeafBinding = ItemClusterLeafBinding.inflate(LayoutInflater.from(context))
 
         // 클러스터러 빌더 설정 (커스텀 LeafMarkerUpdater를 통해 개별 마커 설정)
         val builder = Clusterer.Builder<PlaceClusterItem>().apply {
@@ -382,15 +386,16 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             clusterMarkerUpdater(object : DefaultClusterMarkerUpdater() {
                 override fun updateClusterMarker(info: ClusterMarkerInfo, marker: Marker) {
                     super.updateClusterMarker(info, marker)
-                    marker.icon = if (info.size < 5) {
-                        MarkerIcons.CLUSTER_LOW_DENSITY
+                    if (info.size < 5) {
+                        marker.icon = MarkerIcons.CLUSTER_LOW_DENSITY
                     } else if (info.size < 10){
-                        MarkerIcons.CLUSTER_MEDIUM_DENSITY
+                        marker.icon = MarkerIcons.CLUSTER_MEDIUM_DENSITY
                     } else if (info.size < 20){
-                        MarkerIcons.CLUSTER_HIGH_DENSITY
+                        marker.icon = MarkerIcons.CLUSTER_HIGH_DENSITY
                     } else {
                         clusterBinding.tvCluster.text = info.size.toString()
-                        OverlayImage.fromView(clusterBinding.root)
+                        marker.captionColor = ContextCompat.getColor(context, R.color.transparent)
+                        marker.icon = OverlayImage.fromView(clusterBinding.root)
                     }
                 }
             })
@@ -398,12 +403,11 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             leafMarkerUpdater(object : DefaultLeafMarkerUpdater() {
                 override fun updateLeafMarker(info: LeafMarkerInfo, marker: Marker) {
                     val item = info.key as PlaceClusterItem
-                    // 기존 코드와 같이 장소 타입에 따라 아이콘을 설정
-                    marker.icon = OverlayImage.fromResource(mapViewModel.getMarkerIcon(item.place.placeType))
-                    marker.captionText = item.place.name
-                    marker.captionTextSize = 17F
-                    marker.captionColor = Color.BLACK
-                    marker.captionHaloColor = Color.TRANSPARENT
+
+                    clusterLeafBinding.ivMarker.setImageResource(mapViewModel.getMarkerIcon(item.place.placeType))
+                    clusterLeafBinding.tvClusterLeaf.text = item.place.name
+                    marker.captionColor = ContextCompat.getColor(context, R.color.transparent)
+                    marker.icon = OverlayImage.fromView(clusterLeafBinding.root)
                     marker.tag = item.place  // 마커에 장소 정보 저장
                     marker.onClickListener = Overlay.OnClickListener { clickedMarker ->
                         val selectedPlace = clickedMarker.tag as? GetPlaceResponse
@@ -524,6 +528,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 if (data != null) {
                     addClusterMarkers(data, naverMap, requireContext())
                     stopLoadingAnimation("현재 지도에서 재검색")
+                } else {
+                    stopLoadingAnimation("현재 지도에서 재검색")
                 }
             }
         }
@@ -531,6 +537,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             if (selectedCategoryPosition == 1) {
                 if (data != null) {
                     addClusterMarkers(data, naverMap, requireContext())
+                    stopLoadingAnimation("현재 지도에서 재검색")
+                } else {
                     stopLoadingAnimation("현재 지도에서 재검색")
                 }
             }
@@ -540,6 +548,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 if (data != null) {
                     addClusterMarkers(data, naverMap, requireContext())
                     stopLoadingAnimation("현재 지도에서 재검색")
+                } else {
+                    stopLoadingAnimation("현재 지도에서 재검색")
                 }
             }
         }
@@ -547,6 +557,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             if (selectedCategoryPosition == 3) {
                 if (data != null) {
                     addClusterMarkers(data, naverMap, requireContext())
+                    stopLoadingAnimation("현재 지도에서 재검색")
+                } else {
                     stopLoadingAnimation("현재 지도에서 재검색")
                 }
             }
