@@ -231,6 +231,8 @@ class PlaceSearchFragment : Fragment() {
             else -> Timber.e("Unknown placeType: ${place.placeType}")
         }
 
+        mapViewModel.clearSearchResultsOnly()
+
         if (!navController.popBackStack(R.id.navigation_map, false)) {
             navController.navigate(R.id.navigation_map)
         }

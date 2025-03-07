@@ -69,6 +69,10 @@ class MapViewModel : ViewModel() {
         _searchFreePictureResults.value = null
     }
 
+    fun clearSearchResultsOnly() {
+        _searchResults.value = null
+    }
+
     fun fetchPlaceList(
         keyword: String,
         centerLatitude: Double = 37.545532,
