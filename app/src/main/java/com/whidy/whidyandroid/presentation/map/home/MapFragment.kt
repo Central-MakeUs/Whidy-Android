@@ -540,48 +540,78 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         mapViewModel.searchFreeStudySpaceResults.observe(viewLifecycleOwner) { data ->
             if (selectedCategoryPosition == 0) {
                 if (data != null) {
-                    addClusterMarkers(data, naverMap, requireContext())
-                    stopLoadingAnimation("현 지도에서 재검색")
+                    if (data.isEmpty()) {
+                        Toast.makeText(requireContext(), "현 위치에는 존재하지 않습니다", Toast.LENGTH_SHORT).show()
+                        stopLoadingAnimation("현 지도에서 재검색")
+                    } else {
+                        addClusterMarkers(data, naverMap, requireContext())
+                        stopLoadingAnimation("현 지도에서 재검색")
+                    }
                 }
             }
         }
         mapViewModel.searchFranchiseCafeResults.observe(viewLifecycleOwner) { data ->
             if (selectedCategoryPosition == 1) {
                 if (data != null) {
-                    addClusterMarkers(data, naverMap, requireContext())
-                    stopLoadingAnimation("현 지도에서 재검색")
+                    if (data.isEmpty()) {
+                        Toast.makeText(requireContext(), "현 위치에는 존재하지 않습니다", Toast.LENGTH_SHORT).show()
+                        stopLoadingAnimation("현 지도에서 재검색")
+                    } else {
+                        addClusterMarkers(data, naverMap, requireContext())
+                        stopLoadingAnimation("현 지도에서 재검색")
+                    }
                 }
             }
         }
         mapViewModel.searchGeneralCafeResults.observe(viewLifecycleOwner) { data ->
             if (selectedCategoryPosition == 2) {
                 if (data != null) {
-                    addClusterMarkers(data, naverMap, requireContext())
-                    stopLoadingAnimation("현 지도에서 재검색")
+                    if (data.isEmpty()) {
+                        Toast.makeText(requireContext(), "현 위치에는 존재하지 않습니다", Toast.LENGTH_SHORT).show()
+                        stopLoadingAnimation("현 지도에서 재검색")
+                    } else {
+                        addClusterMarkers(data, naverMap, requireContext())
+                        stopLoadingAnimation("현 지도에서 재검색")
+                    }
                 }
             }
         }
         mapViewModel.searchStudyCafeResults.observe(viewLifecycleOwner) { data ->
             if (selectedCategoryPosition == 3) {
                 if (data != null) {
-                    addClusterMarkers(data, naverMap, requireContext())
-                    stopLoadingAnimation("현 지도에서 재검색")
+                    if (data.isEmpty()) {
+                        Toast.makeText(requireContext(), "현 위치에는 존재하지 않습니다", Toast.LENGTH_SHORT).show()
+                        stopLoadingAnimation("현 지도에서 재검색")
+                    } else {
+                        addClusterMarkers(data, naverMap, requireContext())
+                        stopLoadingAnimation("현 지도에서 재검색")
+                    }
                 }
             }
         }
         mapViewModel.searchFreeClothesRentalResults.observe(viewLifecycleOwner) { data ->
             if (selectedCategoryPosition == 4) {
                 if (data != null) {
-                    addClusterMarkers(data, naverMap, requireContext())
-                    stopLoadingAnimation("현 지도에서 재검색")
+                    if (data.isEmpty()) {
+                        Toast.makeText(requireContext(), "현 위치에는 존재하지 않습니다", Toast.LENGTH_SHORT).show()
+                        stopLoadingAnimation("현 지도에서 재검색")
+                    } else {
+                        addClusterMarkers(data, naverMap, requireContext())
+                        stopLoadingAnimation("현 지도에서 재검색")
+                    }
                 }
             }
         }
         mapViewModel.searchFreePictureResults.observe(viewLifecycleOwner) { data ->
             if (selectedCategoryPosition == 5) {
                 if (data != null) {
-                    addClusterMarkers(data, naverMap, requireContext())
-                    stopLoadingAnimation("현 지도에서 재검색")
+                    if (data.isEmpty()) {
+                        Toast.makeText(requireContext(), "현 위치에는 존재하지 않습니다", Toast.LENGTH_SHORT).show()
+                        stopLoadingAnimation("현 지도에서 재검색")
+                    } else {
+                        addClusterMarkers(data, naverMap, requireContext())
+                        stopLoadingAnimation("현 지도에서 재검색")
+                    }
                 }
             }
         }
