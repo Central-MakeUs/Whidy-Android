@@ -47,9 +47,9 @@ object RetrofitClient {
                         }
                     }
                 }
-
                 chain.proceed(requestBuilder.build())
             }
+            .authenticator(TokenAuthenticator(tokenManager))
             .build()
     }
 
