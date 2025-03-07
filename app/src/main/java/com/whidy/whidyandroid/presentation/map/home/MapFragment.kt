@@ -76,8 +76,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private val scrapViewModel: ScrapViewModel by activityViewModels()
 
     private var currentMarker: Marker? = null
-    private var selectedCategoryPosition: Int = 0
-    private val multiMarkers = mutableListOf<Marker>()
+    private var selectedCategoryPosition: Int? = null
     private var currentClusterer: Clusterer<PlaceClusterItem>? = null
 
     private var loadingJob: Job? = null
@@ -273,7 +272,9 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 }
             }
 
-            setOnClickListener {}
+            setOnClickListener {
+                navController.navigate(R.id.action_navigation_map_to_place_info)
+            }
         }
 
         binding.btnCancel.setOnClickListener {
@@ -311,9 +312,14 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun performSearch() {
-        if (selectedCategoryPosition < 4) {
-            startLoadingAnimation()
+        if (selectedCategoryPosition == null) {
+            stopLoadingAnimation("현 지도에서 재검색")
+            Toast.makeText(requireContext(), "장소 태그를 선택해 주세요", Toast.LENGTH_SHORT).show()
+            return
         }
+
+        startLoadingAnimation()
+
         // 현재 카메라 중심 좌표를 가져옵니다.
         val centerLatLng = naverMap.cameraPosition.target
         // Projection 객체를 통해 화면 좌표로 변환합니다.
@@ -333,16 +339,9 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         val radius = results[0].toInt()
         Timber.d("Center: $centerLatLng, Top: $topLatLng, radius: $radius")
 
-        mapViewModel.fetchPlaceList("", centerLatLng.latitude, centerLatLng.longitude, radius)
+        mapViewModel.clearSearchResults()
 
-        when (selectedCategoryPosition) {
-            0 -> mapViewModel.searchFreeStudySpaceResults.value?.let { addClusterMarkers(it, naverMap, requireContext()) }
-            1 -> mapViewModel.searchFranchiseCafeResults.value?.let { addClusterMarkers(it, naverMap, requireContext()) }
-            2 -> mapViewModel.searchGeneralCafeResults.value?.let { addClusterMarkers(it, naverMap, requireContext()) }
-            3 -> mapViewModel.searchStudyCafeResults.value?.let { addClusterMarkers(it, naverMap, requireContext()) }
-            4 -> mapViewModel.searchFreeClothesRentalResults.value?.let { addClusterMarkers(it, naverMap, requireContext()) }
-            5 -> mapViewModel.searchFreePictureResults.value?.let { addClusterMarkers(it, naverMap, requireContext()) }
-        }
+        mapViewModel.fetchPlaceList("", centerLatLng.latitude, centerLatLng.longitude, radius)
     }
 
     private fun moveCameraToMarkers(coordinates: List<LatLng>, naverMap: NaverMap) {
@@ -363,8 +362,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private fun clearMarkers() {
         currentMarker?.map = null
         currentMarker = null
-        multiMarkers.forEach { it.map = null }
-        multiMarkers.clear()
         currentClusterer?.clear()
         currentClusterer?.map = null
     }
@@ -439,7 +436,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             PlaceClusterItem(place)
         }
 
-        // clusterer.addAll은 Map<ClusterItem, *>
         val itemMap = items.associateWith { null }
         clusterer.addAll(itemMap)
 
@@ -452,12 +448,32 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         moveCameraToMarkers(coordinates, naverMap)
     }
 
+    override fun onPause() {
+        super.onPause()
+        // 카메라 위치를 저장 (카메라 위치가 준비되어 있다면)
+        if (::naverMap.isInitialized) {
+            val currentPosition = naverMap.cameraPosition
+            mapViewModel.setLastCameraPosition(currentPosition)
+        }
+    }
+
     override fun onMapReady(naverMap: NaverMap) {
         this.naverMap = naverMap
         mapViewModel.setNaverMap(naverMap)
 
+        mapViewModel.lastCameraPosition.observe(viewLifecycleOwner) { lastPosition ->
+            if (lastPosition != null) {
+                // 저장된 카메라 위치로 이동
+                val cameraUpdate = CameraUpdate.scrollTo(lastPosition.target)
+                naverMap.moveCamera(cameraUpdate)
+            } else {
+                // 저장된 위치가 없다면 현재 위치로 이동
+                naverMap.locationTrackingMode = LocationTrackingMode.Follow
+            }
+        }
+
         naverMap.locationSource = locationSource
-        naverMap.locationTrackingMode = LocationTrackingMode.Follow
+        naverMap.locationTrackingMode = LocationTrackingMode.NoFollow
 
         naverMap.uiSettings.logoGravity = Gravity.END and Gravity.TOP
         naverMap.uiSettings.setLogoMargin(30, 350, 0, 0)
@@ -526,62 +542,81 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         mapViewModel.searchFreeStudySpaceResults.observe(viewLifecycleOwner) { data ->
             if (selectedCategoryPosition == 0) {
                 if (data != null) {
-                    addClusterMarkers(data, naverMap, requireContext())
-                    stopLoadingAnimation("현재 지도에서 재검색")
-                } else {
-                    stopLoadingAnimation("현재 지도에서 재검색")
+                    if (data.isEmpty()) {
+                        Toast.makeText(requireContext(), "현 위치에는 존재하지 않습니다", Toast.LENGTH_SHORT).show()
+                        stopLoadingAnimation("현 지도에서 재검색")
+                    } else {
+                        addClusterMarkers(data, naverMap, requireContext())
+                        stopLoadingAnimation("현 지도에서 재검색")
+                    }
                 }
             }
         }
         mapViewModel.searchFranchiseCafeResults.observe(viewLifecycleOwner) { data ->
             if (selectedCategoryPosition == 1) {
                 if (data != null) {
-                    addClusterMarkers(data, naverMap, requireContext())
-                    stopLoadingAnimation("현재 지도에서 재검색")
-                } else {
-                    stopLoadingAnimation("현재 지도에서 재검색")
+                    if (data.isEmpty()) {
+                        Toast.makeText(requireContext(), "현 위치에는 존재하지 않습니다", Toast.LENGTH_SHORT).show()
+                        stopLoadingAnimation("현 지도에서 재검색")
+                    } else {
+                        addClusterMarkers(data, naverMap, requireContext())
+                        stopLoadingAnimation("현 지도에서 재검색")
+                    }
                 }
             }
         }
         mapViewModel.searchGeneralCafeResults.observe(viewLifecycleOwner) { data ->
             if (selectedCategoryPosition == 2) {
                 if (data != null) {
-                    addClusterMarkers(data, naverMap, requireContext())
-                    stopLoadingAnimation("현재 지도에서 재검색")
-                } else {
-                    stopLoadingAnimation("현재 지도에서 재검색")
+                    if (data.isEmpty()) {
+                        Toast.makeText(requireContext(), "현 위치에는 존재하지 않습니다", Toast.LENGTH_SHORT).show()
+                        stopLoadingAnimation("현 지도에서 재검색")
+                    } else {
+                        addClusterMarkers(data, naverMap, requireContext())
+                        stopLoadingAnimation("현 지도에서 재검색")
+                    }
                 }
             }
         }
         mapViewModel.searchStudyCafeResults.observe(viewLifecycleOwner) { data ->
             if (selectedCategoryPosition == 3) {
                 if (data != null) {
-                    addClusterMarkers(data, naverMap, requireContext())
-                    stopLoadingAnimation("현재 지도에서 재검색")
-                } else {
-                    stopLoadingAnimation("현재 지도에서 재검색")
+                    if (data.isEmpty()) {
+                        Toast.makeText(requireContext(), "현 위치에는 존재하지 않습니다", Toast.LENGTH_SHORT).show()
+                        stopLoadingAnimation("현 지도에서 재검색")
+                    } else {
+                        addClusterMarkers(data, naverMap, requireContext())
+                        stopLoadingAnimation("현 지도에서 재검색")
+                    }
                 }
             }
         }
         mapViewModel.searchFreeClothesRentalResults.observe(viewLifecycleOwner) { data ->
             if (selectedCategoryPosition == 4) {
                 if (data != null) {
-                    addClusterMarkers(data, naverMap, requireContext())
+                    if (data.isEmpty()) {
+                        Toast.makeText(requireContext(), "현 위치에는 존재하지 않습니다", Toast.LENGTH_SHORT).show()
+                        stopLoadingAnimation("현 지도에서 재검색")
+                    } else {
+                        addClusterMarkers(data, naverMap, requireContext())
+                        stopLoadingAnimation("현 지도에서 재검색")
+                    }
                 }
             }
         }
         mapViewModel.searchFreePictureResults.observe(viewLifecycleOwner) { data ->
             if (selectedCategoryPosition == 5) {
                 if (data != null) {
-                    addClusterMarkers(data, naverMap, requireContext())
+                    if (data.isEmpty()) {
+                        Toast.makeText(requireContext(), "현 위치에는 존재하지 않습니다", Toast.LENGTH_SHORT).show()
+                        stopLoadingAnimation("현 지도에서 재검색")
+                    } else {
+                        addClusterMarkers(data, naverMap, requireContext())
+                        stopLoadingAnimation("현 지도에서 재검색")
+                    }
                 }
             }
         }
-    }
-
-    private fun updateScrapStatus(placeId: Int) {
-        val isScrapped = scrapViewModel.isScrapped(placeId)
-        binding.btnScrap.isSelected = isScrapped
     }
 
     private fun hasPermission(): Boolean {
@@ -625,6 +660,11 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 Toast.makeText(requireContext(), "위치 권한이 거부되었습니다", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    private fun updateScrapStatus(placeId: Int) {
+        val isScrapped = scrapViewModel.isScrapped(placeId)
+        binding.btnScrap.isSelected = isScrapped
     }
 
     // 재검색 버튼 텍스트에 로딩 애니메이션을 적용하는 함수

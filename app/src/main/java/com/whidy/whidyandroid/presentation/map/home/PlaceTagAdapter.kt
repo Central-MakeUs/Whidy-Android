@@ -19,7 +19,7 @@ class PlaceTagAdapter(
             binding.tvPlaceTag.text = item
             binding.tvPlaceTag.setTextColor(
                 if (position == selectedPosition)
-                    ContextCompat.getColor(itemView.context, R.color.B400)
+                    ContextCompat.getColor(itemView.context, R.color.B500)
                 else
                     ContextCompat.getColor(itemView.context, R.color.G800)
             )

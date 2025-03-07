@@ -82,6 +82,27 @@ class MyFragment : Fragment() {
             )
         }
 
+        binding.btnSignOut.setOnClickListener {
+            val dialog = SignOutDialog(requireContext()) {
+                signUpViewModel.logout(
+                    onLogoutSuccess = {
+                        // 로그아웃 성공 시 로그인 화면으로 이동하고, 뒤로가기 시 앱 종료되도록 백스택 클리어
+                        navController.navigate(
+                            R.id.navigation_login,
+                            null,
+                            androidx.navigation.navOptions {
+                                popUpTo(R.id.nav_graph) { inclusive = true }
+                            }
+                        )
+                    },
+                    onLogoutFailure = {
+                        Toast.makeText(context, "탈퇴 실패", Toast.LENGTH_SHORT).show()
+                    }
+                )
+            }
+            dialog.show()
+        }
+
         viewModel.nickname.observe(viewLifecycleOwner) { nickname ->
             binding.tvUserNickname.text = nickname
             Timber.d("nickname: $nickname")

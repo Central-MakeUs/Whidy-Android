@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.AnimationUtils
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -90,6 +91,10 @@ class PlaceInfoFragment: Fragment() {
             mapViewModel.fetchReviews(place.id)
 
             binding.btnScrap.setOnClickListener {
+
+                val scaleAnimation = AnimationUtils.loadAnimation(context, R.anim.scale)
+                it.startAnimation(scaleAnimation)
+
                 if (!binding.btnScrap.isSelected) {
                     scrapViewModel.setScrap(place.id)
                 } else {
@@ -330,6 +335,13 @@ class PlaceInfoFragment: Fragment() {
         mapViewModel.reviews.observe(viewLifecycleOwner) { reviews ->
             placeReviewCommentAdapter.updateData(reviews)
 
+            val averageScore = if (reviews.isNotEmpty()) reviews.map { it.score }.average() else 0.0
+
+            binding.tvPlaceScore.text = averageScore.toString()
+            binding.tvPlaceReview.text = "후기 ${reviews.size}개"
+            binding.tvPlaceInfoScore.text = averageScore.toString()
+            binding.tvPlaceInfoReviewAmount.text = "(${reviews.size})"
+
             val keywordCountMap = mutableMapOf<String, Int>()
             reviews.forEach { review ->
                 review.keywords.forEach { keyword ->
@@ -379,6 +391,14 @@ class PlaceInfoFragment: Fragment() {
         }
 
         binding.btnPlaceReviewAll.setOnClickListener {
+            navController.navigate(R.id.action_navigation_place_info_to_review_all)
+        }
+
+        binding.tvPlaceReview.setOnClickListener {
+            navController.navigate(R.id.action_navigation_place_info_to_review_all)
+        }
+
+        binding.placeReviewArrow.setOnClickListener {
             navController.navigate(R.id.action_navigation_place_info_to_review_all)
         }
 
