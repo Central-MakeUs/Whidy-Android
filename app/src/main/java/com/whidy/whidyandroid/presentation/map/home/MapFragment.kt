@@ -337,16 +337,9 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         val radius = results[0].toInt()
         Timber.d("Center: $centerLatLng, Top: $topLatLng, radius: $radius")
 
-        mapViewModel.fetchPlaceList("", centerLatLng.latitude, centerLatLng.longitude, radius)
+        mapViewModel.clearSearchResults()
 
-        when (selectedCategoryPosition) {
-            0 -> mapViewModel.searchFreeStudySpaceResults.value?.let { addClusterMarkers(it, naverMap, requireContext()) }
-            1 -> mapViewModel.searchFranchiseCafeResults.value?.let { addClusterMarkers(it, naverMap, requireContext()) }
-            2 -> mapViewModel.searchGeneralCafeResults.value?.let { addClusterMarkers(it, naverMap, requireContext()) }
-            3 -> mapViewModel.searchStudyCafeResults.value?.let { addClusterMarkers(it, naverMap, requireContext()) }
-            4 -> mapViewModel.searchFreeClothesRentalResults.value?.let { addClusterMarkers(it, naverMap, requireContext()) }
-            5 -> mapViewModel.searchFreePictureResults.value?.let { addClusterMarkers(it, naverMap, requireContext()) }
-        }
+        mapViewModel.fetchPlaceList("", centerLatLng.latitude, centerLatLng.longitude, radius)
     }
 
     private fun moveCameraToMarkers(coordinates: List<LatLng>, naverMap: NaverMap) {
@@ -549,8 +542,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 if (data != null) {
                     addClusterMarkers(data, naverMap, requireContext())
                     stopLoadingAnimation("현 지도에서 재검색")
-                } else {
-                    stopLoadingAnimation("현 지도에서 재검색")
                 }
             }
         }
@@ -558,8 +549,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             if (selectedCategoryPosition == 1) {
                 if (data != null) {
                     addClusterMarkers(data, naverMap, requireContext())
-                    stopLoadingAnimation("현 지도에서 재검색")
-                } else {
                     stopLoadingAnimation("현 지도에서 재검색")
                 }
             }
@@ -569,8 +558,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 if (data != null) {
                     addClusterMarkers(data, naverMap, requireContext())
                     stopLoadingAnimation("현 지도에서 재검색")
-                } else {
-                    stopLoadingAnimation("현 지도에서 재검색")
                 }
             }
         }
@@ -578,8 +565,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             if (selectedCategoryPosition == 3) {
                 if (data != null) {
                     addClusterMarkers(data, naverMap, requireContext())
-                    stopLoadingAnimation("현 지도에서 재검색")
-                } else {
                     stopLoadingAnimation("현 지도에서 재검색")
                 }
             }
@@ -589,8 +574,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 if (data != null) {
                     addClusterMarkers(data, naverMap, requireContext())
                     stopLoadingAnimation("현 지도에서 재검색")
-                } else {
-                    stopLoadingAnimation("현 지도에서 재검색")
                 }
             }
         }
@@ -598,8 +581,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             if (selectedCategoryPosition == 5) {
                 if (data != null) {
                     addClusterMarkers(data, naverMap, requireContext())
-                    stopLoadingAnimation("현 지도에서 재검색")
-                } else {
                     stopLoadingAnimation("현 지도에서 재검색")
                 }
             }
