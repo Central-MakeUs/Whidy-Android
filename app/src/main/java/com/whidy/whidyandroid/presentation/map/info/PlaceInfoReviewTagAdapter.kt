@@ -23,8 +23,13 @@ class PlaceInfoReviewTagAdapter(private val tags: List<String>) :
     }
 
     override fun onBindViewHolder(holder: TagViewHolder, position: Int) {
-        holder.bind(tags[position])
+        if (tags.size > 3 && position == 3) {
+            val extraCount = tags.size - 3
+            holder.bind("+$extraCount")
+        } else {
+            holder.bind(tags[position])
+        }
     }
 
-    override fun getItemCount() = tags.size
+    override fun getItemCount() = if (tags.size > 3) 4 else tags.size
 }
