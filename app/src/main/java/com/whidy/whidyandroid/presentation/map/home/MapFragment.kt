@@ -76,7 +76,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private val scrapViewModel: ScrapViewModel by activityViewModels()
 
     private var currentMarker: Marker? = null
-    private var selectedCategoryPosition: Int = 0
+    private var selectedCategoryPosition: Int? = null
     private val multiMarkers = mutableListOf<Marker>()
     private var currentClusterer: Clusterer<PlaceClusterItem>? = null
 
@@ -311,9 +311,14 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun performSearch() {
-        if (selectedCategoryPosition < 4) {
-            startLoadingAnimation()
+        if (selectedCategoryPosition == null) {
+            stopLoadingAnimation("현재 지도에서 재검색")
+            Toast.makeText(requireContext(), "장소 태그를 선택해 주세요", Toast.LENGTH_SHORT).show()
+            return
         }
+
+        startLoadingAnimation()
+
         // 현재 카메라 중심 좌표를 가져옵니다.
         val centerLatLng = naverMap.cameraPosition.target
         // Projection 객체를 통해 화면 좌표로 변환합니다.
