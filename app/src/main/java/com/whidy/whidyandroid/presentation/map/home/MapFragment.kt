@@ -272,7 +272,9 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 }
             }
 
-            setOnClickListener {}
+            setOnClickListener {
+                navController.navigate(R.id.action_navigation_map_to_place_info)
+            }
         }
 
         binding.btnCancel.setOnClickListener {
