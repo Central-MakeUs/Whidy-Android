@@ -51,10 +51,10 @@
 
 <br>
 
-## SCREENSHOTS
+## TABLET SCREENSHOTS
 |       뷰       |                                                              1                                                              |                                                              2                                                              |                                                              3                                                                                        |
 |:-------------:|:---------------------------------------------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------------------------------------------:|
-| 장소 검색 <br> 클러스터링  | <img width="400px" src="https://github.com/user-attachments/assets/d881c9b4-e562-41ff-8fe4-ef4da3568314"/> | <img width="400px" src="https://github.com/user-attachments/assets/3cd46418-3eab-436c-bb3a-1411c42e472f"/> | <img width="400px" src="https://github.com/user-attachments/assets/d0d9e612-abfe-4f85-b901-31aec95cdf66"/> | 
+| 장소 검색 <br> 클러스터링  | <img width="400px" src="https://github.com/user-attachments/assets/d0d9e612-abfe-4f85-b901-31aec95cdf66"/> | <img width="400px" src="https://github.com/user-attachments/assets/3cd46418-3eab-436c-bb3a-1411c42e472f"/> | <img width="400px" src="https://github.com/user-attachments/assets/d881c9b4-e562-41ff-8fe4-ef4da3568314"/> | 
 | 장소 추가 | <img width="400px" src="https://github.com/user-attachments/assets/096fa3cb-659e-452f-87a6-748a65b71f1e"/> | <img width="400px" src="https://github.com/user-attachments/assets/c41ddaf1-4c48-42e6-baa0-a53f0e4b4af8"/> | <img width="400px" src="https://github.com/user-attachments/assets/6208c217-1ecf-4619-b70f-672115c8a34e"/> | 
 | 마이페이지 <br> 스크랩 <br> 내가 작성한 후기 | <img width="400px" src="https://github.com/user-attachments/assets/f89a9e7e-e278-4449-a66e-51793af4455e"/> | <img width="400px" src="https://github.com/user-attachments/assets/5ef5901c-530f-4b01-ad8c-1ecfcd250ae5"/> | <img width="200px" src="https://github.com/user-attachments/assets/9bedbc1a-1752-4e32-a427-67affd345948"/> |
 
