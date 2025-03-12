@@ -60,6 +60,12 @@
 
 <br>
 
+<p align="center">
+  <a href="https://youtu.be/o31M7SlVxm8" target="_blank" rel="noopener noreferrer">
+    <img height="50px" src="https://github.com/user-attachments/assets/c9ef8d15-8d1b-412a-8dba-fb9a7c7778cd" alt="클릭 시 이동">
+  </a>
+</p>
+
 ## TECH STACK
 
 ### Required
